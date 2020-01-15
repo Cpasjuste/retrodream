@@ -4,12 +4,18 @@
 
 #include "cross2d/c2d.h"
 #include "main.h"
+#include "utility.h"
 
 using namespace c2d;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleShape(size) {
 
     renderer = r;
+#ifdef __PLATFORM_LINUX__
+    Font *font = new Font();
+    font->loadFromFile(renderer->getIo()->getDataPath() + "/m23.ttf");
+    renderer->setFont(font);
+#endif
     renderer->getFont()->setOffset({0, 3});
 
     FloatRect filerRect = {8, 64, (size.x / 2) - 12, size.y - (64 + 16)};
@@ -46,7 +52,11 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
         if (filer->getSelection().type == Io::Type::Directory) {
             filer->enter(filer->getIndex());
         } else {
-            // TODO
+            Io::File file = filer->getSelection();
+            if (Utility::endsWith(file.name, ".elf", false)
+                || Utility::endsWith(file.name, ".bin", false)) {
+                RetroUtility::exec(file.path);
+            }
         }
     } else if (keys & Input::Key::Fire2) {
         filer->exit();
