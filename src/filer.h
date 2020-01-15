@@ -68,6 +68,8 @@ public:
 
     void setHighlightUseFileColor(bool enable);
 
+    void setAlpha(uint8_t alpha, bool recursive = false) override;
+
     RectangleShape *getHighlight();
 
     std::vector<c2d::Io::File> getFiles();

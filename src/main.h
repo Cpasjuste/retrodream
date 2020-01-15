@@ -15,16 +15,20 @@
 #define COL_RED         Color(255, 51, 51)
 #define COL_GRAY        Color(40, 40, 40)
 #define COL_GRAY_LIGHT  Color(70, 70, 70)
-#define COL_BLUE        Color(23,86,155)
-#define COL_BLUE_LIGHT  Color(29,108,194)
+#define COL_BLUE        Color(97,190,236)
+#define COL_BLUE_LIGHT  Color(178,226,249)
+#define COL_BLUE_DARK   Color(49,121,159)
+#define COL_BLUE_GRAY   Color(204,228,240)
 
-class RetroDream : public c2d::C2DRenderer {
+class RetroDream : public c2d::RectangleShape {
 
 public:
 
-    explicit RetroDream(const c2d::Vector2f &size);
+    explicit RetroDream(c2d::Renderer *renderer, const c2d::Vector2f &size);
 
     ~RetroDream() override;
+
+    c2d::Renderer *getRender();
 
     bool quit = false;
 
@@ -34,8 +38,11 @@ private:
 
     void onDraw(c2d::Transform &transform, bool draw = true) override;
 
-    Filer *filer = nullptr;
+    c2d::Renderer *renderer = nullptr;
     c2d::C2DClock timer;
+    Filer *filer = nullptr;
+    Filer *filerLeft = nullptr;
+    Filer *filerRight = nullptr;
 };
 
 #endif //RETRODREAM_MAIN_H

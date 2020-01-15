@@ -4,13 +4,15 @@
 
 #include "cross2d/c2d.h"
 #include "main.h"
+#include "filer.h"
+
 
 using namespace c2d;
 
 Line::Line(const FloatRect &rect, const std::string &str, Font *font, unsigned int fontSize) : RectangleShape(rect) {
 
     text = new Text(str, fontSize, font);
-    text->setOutlineColor(Color::Black);
+    text->setOutlineColor(Color::White);
     text->setOrigin(Origin::Left);
     text->setPosition(2, getSize().y / 2);
     text->setSizeMax(getSize().x - ((float) fontSize + 8), 0);
@@ -30,7 +32,7 @@ void Line::setSize(float width, float height) {
 }
 
 void Line::setString(const std::string &string) {
-    text->setString(string);
+    text->setString(Utility::toUpper(string));
 }
 
 void Line::setColor(const Color &color) {
@@ -46,11 +48,11 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     retroDream = rd;
 
     // set default colors
-    colorDir = COL_BLUE;
-    colorFile = COL_BLUE_LIGHT;
+    colorDir = COL_BLUE_DARK;
+    colorFile = COL_BLUE_DARK;
 
     // calculate number of lines shown
-    line_height = 28;
+    line_height = 30;
     max_lines = (int) (getSize().y / line_height);
     if ((float) max_lines * line_height < getSize().y) {
         line_height = getSize().y / (float) max_lines;
@@ -65,8 +67,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
         FloatRect r = {1, (line_height * (float) i) + 1, getSize().x - 2, line_height - 2};
-        auto line = new Line(r, "", retroDream->getFont(), (unsigned int) 24);
-        line->getText()->setOutlineColor(Color::Black);
+        auto line = new Line(r, "", retroDream->getRender()->getFont(), (unsigned int) 19);
         line->getText()->setOutlineThickness(1);
         lines.push_back(line);
         add(line);
@@ -122,7 +123,7 @@ bool Filer::getDir(const std::string &p) {
         path = Utility::removeLastSlash(path);
     }
 
-    files = retroDream->getIo()->getDirList(path, true);
+    files = retroDream->getRender()->getIo()->getDirList(path, true);
     if (files.empty() || files.at(0).name != "..") {
         Io::File file("..", "..", Io::Type::Directory, 0, colorDir);
         files.insert(files.begin(), file);
@@ -287,6 +288,13 @@ void Filer::setTextOutlineThickness(float thickness) {
     for (auto &line : lines) {
         line->getText()->setOutlineThickness(thickness);
     }
+}
+
+void Filer::setAlpha(uint8_t alpha, bool recursive) {
+    for (auto &line : lines) {
+        line->getText()->setAlpha(alpha);
+    }
+    Shape::setAlpha(alpha, recursive);
 }
 
 void Filer::setHighlightEnabled(bool enable) {

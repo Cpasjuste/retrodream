@@ -7,26 +7,27 @@
 
 using namespace c2d;
 
-RetroDream::RetroDream(const c2d::Vector2f &size) : C2DRenderer(size) {
+RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleShape(size) {
 
-    setFillColor(COL_GRAY_LIGHT);
-    setOutlineColor(COL_RED);
-    setOutlineThickness(2);
-    setPosition(1, 1);
-    setSize(size.x - 4, size.y - 4);
+    renderer = r;
+    renderer->getFont()->setOffset({0, 3});
 
-    getFont()->setFilter(Texture::Filter::Point);
+    FloatRect filerRect = {8, 64, (size.x / 2) - 12, size.y - (64 + 16)};
+    filerLeft = new Filer(this, filerRect, "/");
+    filerLeft->setFillColor(COL_BLUE_GRAY);
+    filerLeft->setOutlineColor(Color::White);
+    filerLeft->setOutlineThickness(2);
+    add(filerLeft);
 
-    FloatRect filerRect = {16, 64, (size.x / 2) - 32, size.y - (64 + 16)};
-    filer = new Filer(this, filerRect, "/");
-    filer->setFillColor(COL_GRAY);
-    filer->setOutlineColor(COL_BLUE_LIGHT);
-    filer->setOutlineThickness(2);
-    add(filer);
-}
+    filerRect = {(size.x / 2) + 4, 64, (size.x / 2) - 12, size.y - (64 + 16)};
+    filerRight = new Filer(this, filerRect, "/");
+    filerRight->setFillColor(COL_BLUE_GRAY);
+    filerRight->setOutlineColor(Color::White);
+    filerRight->setOutlineThickness(2);
+    filerRight->setAlpha(100);
+    add(filerRight);
 
-RetroDream::~RetroDream() {
-
+    filer = filerLeft;
 }
 
 bool RetroDream::onInput(c2d::Input::Player *players) {
@@ -49,45 +50,72 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
         }
     } else if (keys & Input::Key::Fire2) {
         filer->exit();
+    } else if (keys & Input::Key::Fire5) {
+        if (filer == filerLeft) {
+            filer->setAlpha(100);
+            filer = filerRight;
+            filer->setAlpha(255);
+        }
+    } else if (keys & Input::Key::Fire6) {
+        if (filer == filerRight) {
+            filer->setAlpha(100);
+            filer = filerLeft;
+            filer->setAlpha(255);
+        }
     }
 
     if (keys & EV_QUIT) {
         quit = true;
     }
 
-    return C2DRenderer::onInput(players);
+    return RectangleShape::onInput(players);
 }
 
 void RetroDream::onDraw(Transform &transform, bool draw) {
 
     // handle key repeat delay
-    unsigned int keys = getInput()->getKeys(0);
+    unsigned int keys = renderer->getInput()->getKeys(0);
     if (keys != Input::Key::Delay) {
-        if (keys && timer.getElapsedTime().asSeconds() > 5) {
-            getInput()->setRepeatDelay(INPUT_DELAY / 12);
-        } else if (keys && timer.getElapsedTime().asSeconds() > 3) {
-            getInput()->setRepeatDelay(INPUT_DELAY / 8);
-        } else if (keys && timer.getElapsedTime().asSeconds() > 1) {
-            getInput()->setRepeatDelay(INPUT_DELAY / 4);
-        } else if (!keys) {
-            getInput()->setRepeatDelay(INPUT_DELAY);
+        if (keys > 0 && timer.getElapsedTime().asSeconds() > 5) {
+            renderer->getInput()->setRepeatDelay(INPUT_DELAY / 12);
+        } else if (keys > 0 && timer.getElapsedTime().asSeconds() > 3) {
+            renderer->getInput()->setRepeatDelay(INPUT_DELAY / 8);
+        } else if (keys > 0 && timer.getElapsedTime().asSeconds() > 1) {
+            renderer->getInput()->setRepeatDelay(INPUT_DELAY / 4);
+        } else if (keys < 1) {
+            renderer->getInput()->setRepeatDelay(INPUT_DELAY);
             timer.restart();
         }
     }
 
-    C2DRenderer::onDraw(transform, draw);
+    RectangleShape::onDraw(transform, draw);
 }
 
-int main(int argc, char **argv) {
+c2d::Renderer *RetroDream::getRender() {
+    return renderer;
+}
 
-    auto *retroDream = new RetroDream(Vector2f(C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT));
-    retroDream->setClearColor(Color::Black);
+RetroDream::~RetroDream() {
+
+}
+
+int main() {
+
+    auto *render = new C2DRenderer({640, 480});
+    render->setClearColor(Color::Black);
+
+    auto *retroDream = new RetroDream(render, {render->getSize().x - 8, render->getSize().y - 8});
+    retroDream->setFillColor(COL_BLUE);
+    retroDream->setOutlineColor(COL_BLUE_DARK);
+    retroDream->setOutlineThickness(4);
+    retroDream->setPosition(4, 4);
+    render->add(retroDream);
 
     while (!retroDream->quit) {
-        retroDream->flip();
+        render->flip();
     }
 
-    delete (retroDream);
+    delete (render);
 
     return 0;
 }
