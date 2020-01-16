@@ -12,9 +12,10 @@ using namespace c2d;
 Line::Line(const FloatRect &rect, const std::string &str, Font *font, unsigned int fontSize) : RectangleShape(rect) {
 
     text = new Text(str, fontSize, font);
-    text->setOutlineColor(Color::White);
+    text->setOutlineColor(Color::Black);
+    text->setOutlineThickness(2);
     text->setOrigin(Origin::Left);
-    text->setPosition(2, getSize().y / 2);
+    text->setPosition(4, getSize().y / 2);
     text->setSizeMax(getSize().x - ((float) fontSize + 8), 0);
 
     setFillColor(Color::Transparent);
@@ -49,7 +50,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
 
     // set default colors
     colorDir = COL_BLUE_DARK;
-    colorFile = COL_BLUE_DARK;
+    colorFile = COL_BLUE;
 
     // calculate number of lines shown
     line_height = 30;
@@ -60,15 +61,16 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
 
     // add selection rectangle (highlight)
     highlight = new RectangleShape(Vector2f(getSize().x - 2, line_height));
-    highlight->setAlpha(100);
-    highlight->setOutlineThickness(1);
+    highlight->setFillColor(COL_BLUE_DARK);
+    highlight->setAlpha(150);
+    highlight->setOutlineColor(COL_BLUE_DARK);
+    highlight->setOutlineThickness(2);
     add(highlight);
 
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
         FloatRect r = {1, (line_height * (float) i) + 1, getSize().x - 2, line_height - 2};
         auto line = new Line(r, "", retroDream->getRender()->getFont(), (unsigned int) 20);
-        line->getText()->setOutlineThickness(1);
         lines.push_back(line);
         add(line);
     }
@@ -91,11 +93,6 @@ void Filer::updateFiles() {
             // set highlight position and color
             if ((int) i == highlight_index) {
                 highlight->setPosition(lines[i]->getPosition());
-                /*
-                highlight->setFillColor({255, 255, 255, 200});
-                highlight->setOutlineColor(lines[i]->getText()->getFillColor());
-                highlight->setOutlineThickness(2);
-                */
                 Color color = highlight_use_files_color ?
                               lines[i]->getText()->getFillColor() : highlight->getFillColor();
                 color.a = highlight->getAlpha();
@@ -294,7 +291,8 @@ void Filer::setAlpha(uint8_t alpha, bool recursive) {
     for (auto &line : lines) {
         line->getText()->setAlpha(alpha);
     }
-    Shape::setAlpha(alpha, recursive);
+    //highlight->setAlpha(alpha);
+    Shape::setAlpha(alpha);
 }
 
 void Filer::setHighlightEnabled(bool enable) {

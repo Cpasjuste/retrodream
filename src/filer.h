@@ -98,7 +98,7 @@ private:
     int file_index = 0;
     int highlight_index = 0;
     bool use_highlight = true;
-    bool highlight_use_files_color = true;
+    bool highlight_use_files_color = false;
 };
 
 #endif //RETRODREAM_FILER_H

@@ -16,7 +16,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     font->loadFromFile(renderer->getIo()->getDataPath() + "/m23.ttf");
     renderer->setFont(font);
 #endif
-    renderer->getFont()->setOffset({0, 3});
+    renderer->getFont()->setOffset({0, 4});
 
     FloatRect filerRect = {8, 64, (size.x / 2) - 12, size.y - (64 + 16)};
     filerLeft = new Filer(this, filerRect, "/");
