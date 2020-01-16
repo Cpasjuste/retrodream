@@ -4,8 +4,8 @@
 
 #include "cross2d/c2d.h"
 #include "main.h"
+#include "colors.h"
 #include "filer.h"
-
 
 using namespace c2d;
 
@@ -15,8 +15,8 @@ Line::Line(const FloatRect &rect, const std::string &str, Font *font, unsigned i
     text->setOutlineColor(Color::Black);
     text->setOutlineThickness(2);
     text->setOrigin(Origin::Left);
-    text->setPosition(4, getSize().y / 2);
-    text->setSizeMax(getSize().x - ((float) fontSize + 8), 0);
+    text->setPosition(6, getSize().y / 2);
+    text->setSizeMax(getSize().x - ((float) fontSize), 0);
 
     setFillColor(Color::Transparent);
 
@@ -44,25 +44,26 @@ Text *Line::getText() {
     return text;
 }
 
-Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path) : RectangleShape(rect) {
+Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path)
+        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     retroDream = rd;
+    setPosition(rect.left, rect.top);
 
     // set default colors
     colorDir = COL_BLUE_DARK;
     colorFile = COL_BLUE;
 
     // calculate number of lines shown
-    line_height = 30;
+    line_height = 32;
     max_lines = (int) (getSize().y / line_height);
     if ((float) max_lines * line_height < getSize().y) {
         line_height = getSize().y / (float) max_lines;
     }
 
     // add selection rectangle (highlight)
-    highlight = new RectangleShape(Vector2f(getSize().x - 2, line_height));
-    highlight->setFillColor(COL_BLUE_DARK);
-    highlight->setAlpha(150);
+    highlight = new RoundedRectangleShape(Vector2f(getSize().x - 2, line_height), 10, 8);
+    highlight->setFillColor(COL_YELLOW);
     highlight->setOutlineColor(COL_BLUE_DARK);
     highlight->setOutlineThickness(2);
     add(highlight);
@@ -92,6 +93,7 @@ void Filer::updateFiles() {
             lines[i]->getText()->setFillColor(file.type == Io::Type::File ? colorFile : colorDir);
             // set highlight position and color
             if ((int) i == highlight_index) {
+                // handle highlight
                 highlight->setPosition(lines[i]->getPosition());
                 Color color = highlight_use_files_color ?
                               lines[i]->getText()->getFillColor() : highlight->getFillColor();
@@ -99,8 +101,12 @@ void Filer::updateFiles() {
                 highlight->setFillColor(color);
                 color = highlight_use_files_color ?
                         lines[i]->getText()->getFillColor() : highlight->getOutlineColor();
-                //color.a = highlight->getAlpha();
                 highlight->setOutlineColor(color);
+                // handle header title
+                retroDream->getHeader()->setString(lines[i]->getText()->getString());
+                // handle preview image
+                std::string p = file.path + "/preview.png";
+                retroDream->getPreview()->load(p);
             }
         }
     }
@@ -230,7 +236,7 @@ void Filer::setSelection(int new_index) {
 
     if (new_index < max_lines / 2) {
         file_index = 0;
-        highlight_index = 0;
+        highlight_index = new_index < 0 ? 0 : new_index;
     } else if (new_index > (int) files.size() - max_lines / 2) {
         highlight_index = max_lines / 2;
         file_index = (int) files.size() - 1 - highlight_index;
@@ -290,8 +296,14 @@ void Filer::setTextOutlineThickness(float thickness) {
 void Filer::setAlpha(uint8_t alpha, bool recursive) {
     for (auto &line : lines) {
         line->getText()->setAlpha(alpha);
+        line->getText()->setOutlineThickness(alpha < 255 ? 1 : 2);
     }
-    //highlight->setAlpha(alpha);
+    highlight->setAlpha(alpha < 150 ? alpha : 150);
+    if (alpha > 150) {
+        Color c = highlight->getOutlineColor();
+        c.a = 255;
+        highlight->setOutlineColor(c);
+    }
     Shape::setAlpha(alpha);
 }
 

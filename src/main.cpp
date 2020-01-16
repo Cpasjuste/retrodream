@@ -4,6 +4,7 @@
 
 #include "cross2d/c2d.h"
 #include "main.h"
+#include "colors.h"
 #include "utility.h"
 
 using namespace c2d;
@@ -18,19 +19,38 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
 #endif
     renderer->getFont()->setOffset({0, 4});
 
-    FloatRect filerRect = {8, 64, (size.x / 2) - 12, size.y - (64 + 16)};
-    filerLeft = new Filer(this, filerRect, "/");
+    header = new Header({size.x - 16, 32}, 10, 8);
+    header->setPosition(8, 8);
+    header->setFillColor(COL_BLUE_DARK);
+    header->setOutlineColor(Color::White);
+    header->setOutlineThickness(2);
+    header->getText()->setFillColor(COL_BLUE_GRAY);
+    header->getText()->setOutlineColor(Color::Black);
+    header->getText()->setOutlineThickness(2);
+    add(header);
+
+    float previewSize = (size.x / 2) - 20;
+    preview = new Preview({previewSize, previewSize}, 10, 8);
+    preview->setPosition(previewSize + 30, 48);
+    preview->setFillColor(COL_BLUE_DARK);
+    preview->setOutlineColor(Color::White);
+    preview->setOutlineThickness(2);
+    add(preview);
+
+    FloatRect filerRect = {8, 48, (size.x / 2) - 10, size.y - 96};
+    filerLeft = new Filer(this, filerRect, "/home/cpasjuste/dev/dreamcast/games");
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(Color::White);
     filerLeft->setOutlineThickness(2);
     add(filerLeft);
 
-    filerRect = {(size.x / 2) + 4, 64, (size.x / 2) - 12, size.y - (64 + 16)};
-    filerRight = new Filer(this, filerRect, "/");
+    filerRect = {(size.x / 2) + 4, 64, (size.x / 2) - 10, size.y - (64 + 16)};
+    filerRight = new Filer(this, filerRect, "/home/cpasjuste/dev/dreamcast/games");
     filerRight->setFillColor(COL_BLUE_GRAY);
     filerRight->setOutlineColor(Color::White);
     filerRight->setOutlineThickness(2);
     filerRight->setAlpha(100);
+    filerRight->setVisibility(Visibility::Hidden);
     add(filerRight);
 
     filer = filerLeft;
@@ -61,17 +81,21 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Fire2) {
         filer->exit();
     } else if (keys & Input::Key::Fire5) {
+        /*
         if (filer == filerLeft) {
             filer->setAlpha(100);
             filer = filerRight;
             filer->setAlpha(255);
         }
+        */
     } else if (keys & Input::Key::Fire6) {
+        /*
         if (filer == filerRight) {
             filer->setAlpha(100);
             filer = filerLeft;
             filer->setAlpha(255);
         }
+        */
     }
 
     if (keys & EV_QUIT) {
@@ -103,6 +127,14 @@ void RetroDream::onDraw(Transform &transform, bool draw) {
 
 c2d::Renderer *RetroDream::getRender() {
     return renderer;
+}
+
+Header *RetroDream::getHeader() {
+    return header;
+}
+
+Preview *RetroDream::getPreview() {
+    return preview;
 }
 
 RetroDream::~RetroDream() {

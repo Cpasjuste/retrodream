@@ -32,7 +32,7 @@ private:
     c2d::Text *text = nullptr;
 };
 
-class Filer : public c2d::RectangleShape {
+class Filer : public c2d::RoundedRectangleShape {
 
 public:
 
@@ -92,7 +92,7 @@ private:
     std::vector<Line *> lines;
     std::vector<int> item_index_prev;
     RetroDream *retroDream = nullptr;
-    RectangleShape *highlight = nullptr;
+    RoundedRectangleShape *highlight = nullptr;
     float line_height;
     int max_lines;
     int file_index = 0;
