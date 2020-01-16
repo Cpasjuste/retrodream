@@ -106,7 +106,11 @@ void Filer::updateFiles() {
                 retroDream->getHeader()->setString(lines[i]->getText()->getString());
                 // handle preview image
                 std::string p = file.path + "/preview.png";
-                retroDream->getPreview()->load(p);
+                if (retroDream->getRender()->getIo()->exist(p)) {
+                    retroDream->getPreview()->load(p);
+                } else {
+                    retroDream->getPreview()->load();
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ public:
 
     Preview(const c2d::Vector2f &size, float radius, unsigned int cornerPointCount);
 
-    void load(const std::string &path);
+    void load(const std::string &path = "");
 
 private:
 

@@ -18,6 +18,10 @@ void Preview::load(const std::string &path) {
         texture = nullptr;
     }
 
+    if (path.empty()) {
+        return;
+    }
+
     texture = new C2DTexture(path);
     if (!texture->available) {
         delete (texture);
