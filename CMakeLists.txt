@@ -9,6 +9,8 @@ add_subdirectory(libcross2d)
 #############
 project(retrodream)
 
+enable_language(ASM)
+
 set(PROJECT_AUTHOR "Cpasjuste")
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "0")
@@ -16,11 +18,12 @@ set(VERSION_MINOR "0")
 #############
 # code
 #############
-file(GLOB SOURCES src/*.cpp)
-set(INCLUDES src)
+file(GLOB_RECURSE SOURCES src/*)
+set(INCLUDES src src/ds/include)
 set(CUSTOM_CFLAGS
         -DVERSION_MAJOR="${VERSION_MAJOR}"
-        -DVERSION_MINOR="${VERSION_MINOR}")
+        -DVERSION_MINOR="${VERSION_MINOR}"
+        -D__RETRODREAM__ -D_NO_VIDEO_H)
 set(CUSTOM_LDFLAGS)
 
 #############
