@@ -6,11 +6,12 @@
 #include "main.h"
 #include "colors.h"
 #include "utility.h"
+#include "isoloader.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
 #include "ds/include/fs.h"
-#include "ds/include/module.h"
+#include "ds/include/isoldr.h"
 }
 #endif
 
@@ -51,6 +52,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     filerLeft->setOutlineThickness(2);
     add(filerLeft);
 
+    /*
     filerRect = {(size.x / 2) + 4, 64, (size.x / 2) - 10, size.y - (64 + 16)};
     filerRight = new Filer(this, filerRect, "/");
     filerRight->setFillColor(COL_BLUE_GRAY);
@@ -59,6 +61,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     filerRight->setAlpha(100);
     filerRight->setVisibility(Visibility::Hidden);
     add(filerRight);
+    */
 
     filer = filerLeft;
 }
@@ -151,8 +154,8 @@ RetroDream::~RetroDream() {
 int main() {
 
 #ifdef __DREAMCAST__
-    //InitSDCard();
-    //InitIDE();
+    InitSDCard();
+    InitIDE();
 #endif
 
     auto *render = new C2DRenderer({640, 480});
@@ -165,21 +168,24 @@ int main() {
     retroDream->setPosition(4, 4);
     render->add(retroDream);
 
-#ifdef __DREAMCAST__
-    /*
-    std::string path = render->getIo()->getRomFsPath() + "modules/minilzo.klf";
-    klibrary_t *mdl = OpenModule(path.c_str());
-    if (mdl != nullptr) {
-        printf("DS_OK: Opened module \"%s\"\n", mdl->lib_get_name());
-    } else {
-        printf("DS_NOK: Could not open module...\n");
+    //std::string path = render->getIo()->getRomFsPath() + "modules/minilzo.klf";
+    //load_module(path.c_str());
+#ifdef __EMBEDDED_MODULE_DEBUG__
+    fs_iso_init();
+    uint32 addr = ISOLDR_DEFAULT_ADDR_LOW;
+    isoldr_info_t *isoldr = isoldr_get_info("/rd/retrodream.cdi", 0);
+    if (isoldr == nullptr) {
+        printf("NOK: isoldr == nullptr\n");
     }
-    */
 #endif
 
     while (!retroDream->quit) {
         render->flip();
     }
+
+#ifdef __EMBEDDED_MODULE_DEBUG__
+    fs_iso_shutdown();
+#endif
 
     delete (render);
 

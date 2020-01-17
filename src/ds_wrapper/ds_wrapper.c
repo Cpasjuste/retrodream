@@ -57,3 +57,8 @@ void RemoveCmd(Cmd_t *cmd) {}
 Cmd_t *GetCmdByName(const char *name) {
     return NULL;
 }
+
+#ifdef __EMBEDDED_MODULE_DEBUG__
+export_sym_t ds_isofs_symtab[] = {};
+export_sym_t ds_isoldr_symtab[] = {};
+#endif

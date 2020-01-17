@@ -23,7 +23,7 @@ set(INCLUDES src)
 set(CFLAGS
         -DVERSION_MAJOR="${VERSION_MAJOR}"
         -DVERSION_MINOR="${VERSION_MINOR}"
-        -D__RETRODREAM__ -D_NO_VIDEO_H)
+        -D__RETRODREAM__ -D_NO_VIDEO_H -DMODULE_DEBUG)
 set(LDFLAGS)
 
 if (PLATFORM_DREAMCAST)
@@ -41,7 +41,8 @@ if (PLATFORM_DREAMCAST)
     list(APPEND SOURCES
             src/ds_wrapper/ds_wrapper.c
             src/ds_wrapper/exports.c
-            src/ds_wrapper/exports_gcc.c)
+            src/ds_wrapper/exports_gcc.c
+            )
     # ds fs
     list(APPEND SOURCES
             src/ds/src/drivers/rtc.c
@@ -63,9 +64,48 @@ if (PLATFORM_DREAMCAST)
             src/ds/src/irq/setjmp.s
             src/ds/src/module.c
             src/ds/src/utils.c
+            # isofs
+            src/ds/lib/libcfg/src/cfg+.c
+            src/ds/lib/libcfg/src/parse.c
+            src/ds/lib/libcfg/src/props.c
+            src/ds/lib/libcfg/src/cmdline.c
+            src/ds/lib/libcfg/src/cfgfile.c
+            src/ds/lib/libcfg/src/shared.c
+            src/ds/lib/libcfg/src/platon/str/strplus.c
+            src/ds/lib/libcfg/src/platon/str/strdyn.c
+            src/ds/lib/libcfg/src/platon/str/strctype.c
+            src/ds/lib/libcfg/src/platon/str/dynfgets.c
             )
+    list(APPEND CFLAGS
+            # isofs (libcfg)
+            -DHAVE_LIMITS_H -DHAVE_FLOAT_H -DHAVE_STRING_H -DHAVE_CTYPE_H -DHAVE_MATH_H
+            )
+    # ds embedded modules (debug) - START
+    list(APPEND SOURCES
+            # minilzo
+            src/ds/modules/minilzo/minilzo.c
+            # isofs
+            src/ds/modules/isofs/cdi.c
+            src/ds/modules/isofs/ciso.c
+            src/ds/modules/isofs/fs_iso9660.c
+            src/ds/modules/isofs/gdi.c
+            src/ds/modules/isofs/map2dev.c
+            #src/ds/modules/isofs/module.c
+            src/ds_wrapper/isofs_module.c
+            # isoldr
+            src/ds/modules/isoldr/exec.c
+            src/ds/modules/isoldr/execasm.s
+            src/ds/modules/isoldr/module.c
+            )
+    list(APPEND CFLAGS
+            -D__EMBEDDED_MODULE_DEBUG__
+            # isofs
+            -DVER_MAJOR=0 -DVER_MINOR=0 -DVER_MICRO=0 -DVER_BUILD=0
+            )
+    # ds embedded modules (debug) - END
     list(APPEND INCLUDES
             src/ds/include
+            src/ds/include/minilzo
             src/ds/include/fatfs
             )
     list(APPEND LDFLAGS kosutils)
