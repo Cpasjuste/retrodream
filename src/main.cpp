@@ -8,7 +8,9 @@
 #include "utility.h"
 
 #ifdef __DREAMCAST__
+extern "C" {
 #include "ds/include/fs.h"
+}
 #endif
 
 using namespace c2d;
