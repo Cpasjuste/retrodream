@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+#set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # add libcross2d library
 add_subdirectory(libcross2d)
@@ -29,11 +29,11 @@ set(LDFLAGS)
 if (PLATFORM_DREAMCAST)
     # build ds exports
     add_custom_target(
-            ${PROJECT_NAME}.deps ALL
-            DEPENDS dummy
+            ${PROJECT_NAME}.exports ALL
+            DEPENDS dummy_exports
     )
     add_custom_command(OUTPUT
-            dummy ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports.c ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports_gcc.c
+            dummy_exports ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports.c ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports_gcc.c
             COMMAND ${KOS_BASE}/utils/genexports/genexports.sh ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports.txt ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports.c ds_symtab
             COMMAND ${KOS_BASE}/utils/genexports/genexports.sh ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports_gcc.txt ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports_gcc.c gcc_symtab
             )

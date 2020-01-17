@@ -10,6 +10,7 @@
 #ifdef __DREAMCAST__
 extern "C" {
 #include "ds/include/fs.h"
+#include "ds/include/module.h"
 }
 #endif
 
@@ -44,14 +45,14 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     add(preview);
 
     FloatRect filerRect = {8, 48, (size.x / 2) - 10, size.y - 96};
-    filerLeft = new Filer(this, filerRect, "/home/cpasjuste/dev/dreamcast/games");
+    filerLeft = new Filer(this, filerRect, "/");
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(Color::White);
     filerLeft->setOutlineThickness(2);
     add(filerLeft);
 
     filerRect = {(size.x / 2) + 4, 64, (size.x / 2) - 10, size.y - (64 + 16)};
-    filerRight = new Filer(this, filerRect, "/home/cpasjuste/dev/dreamcast/games");
+    filerRight = new Filer(this, filerRect, "/");
     filerRight->setFillColor(COL_BLUE_GRAY);
     filerRight->setOutlineColor(Color::White);
     filerRight->setOutlineThickness(2);
@@ -150,7 +151,7 @@ RetroDream::~RetroDream() {
 int main() {
 
 #ifdef __DREAMCAST__
-    InitSDCard();
+    //InitSDCard();
     //InitIDE();
 #endif
 
@@ -163,6 +164,18 @@ int main() {
     retroDream->setOutlineThickness(4);
     retroDream->setPosition(4, 4);
     render->add(retroDream);
+
+#ifdef __DREAMCAST__
+    /*
+    std::string path = render->getIo()->getRomFsPath() + "modules/minilzo.klf";
+    klibrary_t *mdl = OpenModule(path.c_str());
+    if (mdl != nullptr) {
+        printf("DS_OK: Opened module \"%s\"\n", mdl->lib_get_name());
+    } else {
+        printf("DS_NOK: Could not open module...\n");
+    }
+    */
+#endif
 
     while (!retroDream->quit) {
         render->flip();
