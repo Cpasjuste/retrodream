@@ -18,13 +18,35 @@ set(VERSION_MINOR "0")
 #############
 # code
 #############
-file(GLOB_RECURSE SOURCES src/*)
-set(INCLUDES src src/ds/include)
+file(GLOB SOURCES src/*)
+set(INCLUDES src)
 set(CUSTOM_CFLAGS
         -DVERSION_MAJOR="${VERSION_MAJOR}"
         -DVERSION_MINOR="${VERSION_MINOR}"
         -D__RETRODREAM__ -D_NO_VIDEO_H)
 set(CUSTOM_LDFLAGS)
+
+if (PLATFORM_DREAMCAST)
+    list(APPEND SOURCES
+            src/ds/src/drivers/rtc.c
+            src/ds/src/drivers/spi.c
+            src/ds/src/drivers/sd.c
+            src/ds/src/fs/fs.c
+            src/ds/src/fs/fat/dc.c
+            src/ds/src/fs/fat/ff.c
+            src/ds/src/fs/fat/utils.c
+            src/ds/src/fs/fat/option/ccsbcs.c
+            src/ds/src/fs/fat/option/syscall.c
+            src/ds/src/irq/exceptions.c
+            src/ds/src/irq/setjmp.s
+            src/ds/src/utils/debug_console.c
+            src/ds/src/utils/memcpy.S
+            src/ds/src/utils/memmove.S
+            src/ds/src/utils/memset.S
+            src/ds/src/module.c
+            )
+    list(APPEND INCLUDES src/ds/include src/ds/include/fatfs)
+endif ()
 
 #############
 # executable

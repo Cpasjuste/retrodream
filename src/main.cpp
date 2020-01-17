@@ -2,11 +2,14 @@
 // Created by cpasjuste on 15/01/2020.
 //
 
-#include <ds/include/fs.h>
 #include "cross2d/c2d.h"
 #include "main.h"
 #include "colors.h"
 #include "utility.h"
+
+#ifdef __DREAMCAST__
+#include "ds/include/fs.h"
+#endif
 
 using namespace c2d;
 
@@ -144,8 +147,10 @@ RetroDream::~RetroDream() {
 
 int main() {
 
+#ifdef __DREAMCAST__
     InitSDCard();
     //InitIDE();
+#endif
 
     auto *render = new C2DRenderer({640, 480});
     render->setClearColor(Color::Black);
