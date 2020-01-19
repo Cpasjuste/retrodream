@@ -9,6 +9,8 @@
 extern "C" {
 #endif
 
+int run_iso(const char *path);
+
 int load_module(const char *path);
 
 #ifdef __cplusplus

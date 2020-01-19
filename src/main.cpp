@@ -63,6 +63,13 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     add(filerRight);
     */
 
+    debugMessage = new Text("DEBUG: ", 16);
+    debugMessage->setPosition(16, 440);
+    debugMessage->setFillColor(COL_RED);
+    debugMessage->setOutlineColor(Color::Black);
+    debugMessage->setOutlineThickness(1);
+    add(debugMessage);
+
     filer = filerLeft;
 }
 
@@ -86,6 +93,11 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
             if (Utility::endsWith(file.name, ".elf", false)
                 || Utility::endsWith(file.name, ".bin", false)) {
                 RetroUtility::exec(file.path);
+            }
+            if (Utility::endsWith(file.name, ".iso", false)
+                || Utility::endsWith(file.name, ".cdi", false)
+                || Utility::endsWith(file.name, ".gdi", false)) {
+                run_iso(file.path.c_str());
             }
         }
     } else if (keys & Input::Key::Fire2) {
@@ -154,8 +166,13 @@ RetroDream::~RetroDream() {
 int main() {
 
 #ifdef __DREAMCAST__
+    //dbgio_init();
+    //dbgio_dev_select("scif");
     InitSDCard();
     InitIDE();
+    //dbgio_dev_select("scif");
+    //dbgio_printf("Hello World\n");
+    //dbgio_flush();
 #endif
 
     auto *render = new C2DRenderer({640, 480});
@@ -168,24 +185,9 @@ int main() {
     retroDream->setPosition(4, 4);
     render->add(retroDream);
 
-    //std::string path = render->getIo()->getRomFsPath() + "modules/minilzo.klf";
-    //load_module(path.c_str());
-#ifdef __EMBEDDED_MODULE_DEBUG__
-    fs_iso_init();
-    uint32 addr = ISOLDR_DEFAULT_ADDR_LOW;
-    isoldr_info_t *isoldr = isoldr_get_info("/rd/retrodream.cdi", 0);
-    if (isoldr == nullptr) {
-        printf("NOK: isoldr == nullptr\n");
-    }
-#endif
-
     while (!retroDream->quit) {
         render->flip();
     }
-
-#ifdef __EMBEDDED_MODULE_DEBUG__
-    fs_iso_shutdown();
-#endif
 
     delete (render);
 

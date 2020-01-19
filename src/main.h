@@ -38,6 +38,7 @@ private:
     Filer *filerRight = nullptr;
     Header *header = nullptr;
     Preview *preview = nullptr;
+    c2d::Text *debugMessage = nullptr;
 };
 
 #define INPUT_DELAY 200
