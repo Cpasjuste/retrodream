@@ -15,9 +15,15 @@ public:
 
     void load(const std::string &path = "");
 
+    void unload();
+
+    bool isLoaded();
+
 private:
 
+    c2d::Rectangle *textureHolder = nullptr;
     c2d::Texture *texture = nullptr;
+    bool loaded = false;
 
 };
 

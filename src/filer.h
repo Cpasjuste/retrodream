@@ -44,14 +44,12 @@ public:
         std::string isoPath;
         std::string preview;
         std::string preset;
-        bool isGame;
+        bool isGame = false;
     };
 
     Filer(RetroDream *retroDream, const c2d::FloatRect &rect, const std::string &path);
 
     bool getDir(const std::string &path);
-
-    std::string getPath();
 
     RetroFile getSelection();
 
@@ -69,21 +67,7 @@ public:
 
     void setSize(float width, float height) override;
 
-    void setTextColor(const c2d::Color &color);
-
-    void setTextOutlineColor(const c2d::Color &color);
-
-    void setTextOutlineThickness(float thickness);
-
-    void setHighlightEnabled(bool enable);
-
-    void setHighlightUseFileColor(bool enable);
-
     void setAlpha(uint8_t alpha, bool recursive = false) override;
-
-    RectangleShape *getHighlight();
-
-    std::vector<RetroFile> getFiles();
 
     int getMaxLines();
 
@@ -96,6 +80,8 @@ private:
 
     void updateFiles();
 
+    void onUpdate() override;
+
     std::string path;
     std::vector<RetroFile> files;
     std::vector<Line *> lines;
@@ -103,6 +89,8 @@ private:
     RetroDream *retroDream = nullptr;
     c2d::Io *io = nullptr;
     RoundedRectangleShape *highlight = nullptr;
+    c2d::C2DClock previewClock;
+    int previewLoadDelay = 400;
     float line_height;
     int max_lines;
     int file_index = 0;

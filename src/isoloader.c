@@ -2,15 +2,18 @@
 // Created by cpasjuste on 17/01/2020.
 //
 
-#ifdef __DREAMCAST__
+#include <stdio.h>
 
+#ifdef __DREAMCAST__
 #include <kos.h>
 #include <ds/include/isofs/isofs.h>
 #include <ds/include/isoldr.h>
 #include "ds/include/module.h"
+#endif
 
 int run_iso(const char *path) {
 
+#ifdef __DREAMCAST__
     //std::string path = render->getIo()->getRomFsPath() + "modules/minilzo.klf";
     //load_module(path.c_str());
 
@@ -28,13 +31,18 @@ int run_iso(const char *path) {
     isoldr_exec(isoldr, addr);
     // NOK
     free(isoldr);
+    return 0;
 
 #endif
+#else
+    printf("run_iso(%s): not supported on linux\n", path);
+    return -1;
+#endif
 
-    return 0;
 }
 
 int load_module(const char *path) {
+#ifdef __DREAMCAST__
     klibrary_t *mdl = OpenModule(path);
     if (mdl != NULL) {
         printf("DS_OK: Opened module \"%s\"\n", mdl->lib_get_name());
@@ -43,9 +51,10 @@ int load_module(const char *path) {
         printf("DS_NOK: Could not open module...\n");
         return -1;
     }
-}
-
 #endif
+    printf("load_module(%s): not supported on linux\n", path);
+    return -1;
+}
 
 #ifdef __EMBEDDED_MODULE_DEBUG__
 //fs_iso_shutdown();

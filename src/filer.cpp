@@ -106,16 +106,6 @@ void Filer::updateFiles() {
                 highlight->setOutlineColor(color);
                 // handle header title
                 retroDream->getHeader()->setString(lines[i]->getText()->getString());
-                // TODO: handle this with a timer
-                // handle preview image
-                /*
-                std::string p = file.data.path + "/preview.png";
-                if (io->exist(p)) {
-                    retroDream->getPreview()->load(p);
-                } else {
-                    retroDream->getPreview()->load();
-                }
-                */
             }
         }
     }
@@ -129,6 +119,8 @@ void Filer::updateFiles() {
 
 bool Filer::getDir(const std::string &p) {
 
+    printf("getDir(%s):\n", p.c_str());
+
     files.clear();
     path = p;
     if (path.size() > 1 && Utility::endsWith(path, "/")) {
@@ -136,7 +128,7 @@ bool Filer::getDir(const std::string &p) {
     }
 
     std::vector<Io::File> dirList = io->getDirList(path, true);
-    if (dirList.empty() || dirList.at(0).name != "..") {
+    if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
         Io::File file("..", "..", Io::Type::Directory, 0, colorDir);
         dirList.insert(dirList.begin(), file);
     }
@@ -145,17 +137,27 @@ bool Filer::getDir(const std::string &p) {
         RetroFile file;
         file.data = fileData;
 
-        if (fileData.type == Io::Type::File && RetroUtility::isGame(file.data.name)) {
-            file.isGame = true;
-            file.isoPath = file.data.path;
+        if (fileData.type == Io::Type::File) {
+            if (RetroUtility::isGame(file.data.name)) {
+                printf("\tISO\t%s\n", file.data.name.c_str());
+                file.isGame = true;
+                file.isoPath = file.data.path;
+            } else {
+                printf("\tFIL\t%s\n", file.data.name.c_str());
+            }
         } else if (fileData.type == Io::Type::Directory) {
+            // lxdream crash
+            if (file.data.name == "pc") {
+                continue;
+            }
             // search sub directory for a game (.iso, .cdi, .gdi)
             std::vector<Io::File> subFiles = io->getDirList(fileData.path);
             auto gameFile = std::find_if(subFiles.begin(), subFiles.end(), [](const Io::File &f) {
-                return RetroUtility::isGame(f.name);
+                return f.type == Io::Type::File && RetroUtility::isGame(f.name);
             });
             // directory contains a game
             if (gameFile != subFiles.end()) {
+                printf("\tISO\t%s\n", file.data.name.c_str());
                 file.isGame = true;
                 file.isoPath = gameFile->path;
                 // search for a preview image in the game sub directory
@@ -167,12 +169,23 @@ bool Filer::getDir(const std::string &p) {
                     file.preview = previewFile->path;
                 } else {
                     // DreamShell compatibility
-                    if (io->exist("/ide/DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
-                        file.preview = "/ide/DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
-                    } else if (io->exist("/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
-                        file.preview = "/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
+#ifdef __DREAMCAST__
+                    std::string dev = "/ide/";
+#else
+                    std::string dev = "/media/cpasjuste/SSD/dreamcast/";
+#endif
+                    if (io->exist(dev + "DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
+                        file.preview = dev + "DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
+                    } else {
+#ifdef __DREAMCAST__
+                        if (io->exist("/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
+                            file.preview = "/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
+                        }
+#endif
                     }
                 }
+            } else {
+                printf("\tDIR\t%s\n", file.data.name.c_str());
             }
         }
 
@@ -183,10 +196,6 @@ bool Filer::getDir(const std::string &p) {
     setSelection(0);
 
     return true;
-}
-
-std::string Filer::getPath() {
-    return path;
 }
 
 void Filer::enter(int index) {
@@ -308,33 +317,11 @@ void Filer::setSize(float width, float height) {
     }
 }
 
-std::vector<Filer::RetroFile> Filer::getFiles() {
-    return files;
-}
-
 Filer::RetroFile Filer::getSelection() {
     if (!files.empty() && files.size() > (size_t) file_index + highlight_index) {
         return files[file_index + highlight_index];
     }
     return Filer::RetroFile();
-}
-
-void Filer::setTextColor(const Color &color) {
-    for (auto &line : lines) {
-        line->getText()->setFillColor(color);
-    }
-}
-
-void Filer::setTextOutlineColor(const Color &color) {
-    for (auto &line : lines) {
-        line->getText()->setOutlineColor(color);
-    }
-}
-
-void Filer::setTextOutlineThickness(float thickness) {
-    for (auto &line : lines) {
-        line->getText()->setOutlineThickness(thickness);
-    }
 }
 
 void Filer::setAlpha(uint8_t alpha, bool recursive) {
@@ -351,17 +338,6 @@ void Filer::setAlpha(uint8_t alpha, bool recursive) {
     Shape::setAlpha(alpha);
 }
 
-void Filer::setHighlightEnabled(bool enable) {
-    use_highlight = enable;
-    highlight->setVisibility(enable ? Visibility::Visible
-                                    : Visibility::Hidden);
-}
-
-void Filer::setHighlightUseFileColor(bool enable) {
-    highlight_use_files_color = enable;
-    setSelection(file_index);
-}
-
 int Filer::getMaxLines() {
     return max_lines;
 }
@@ -370,6 +346,23 @@ int Filer::getIndex() {
     return file_index + highlight_index;
 }
 
-RectangleShape *Filer::getHighlight() {
-    return highlight;
+void Filer::onUpdate() {
+
+    if (!isVisible()) {
+        return;
+    }
+
+    unsigned int keys = retroDream->getRender()->getInput()->getKeys();
+
+    if (keys > 0 && keys != Input::Delay && keys != Input::Key::Fire1) {
+        previewClock.restart();
+        retroDream->getPreview()->unload();
+    } else if (keys == 0) {
+        if (getSelection().isGame && !getSelection().preview.empty() && !retroDream->getPreview()->isLoaded()
+            && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
+            retroDream->getPreview()->load(getSelection().preview);
+        }
+    }
+
+    C2DObject::onUpdate();
 }

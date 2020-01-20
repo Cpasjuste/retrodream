@@ -6,33 +6,39 @@
 #include "main.h"
 #include "colors.h"
 #include "utility.h"
+#include "isoloader.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
 #include "ds/include/fs.h"
 #include "ds/include/isoldr.h"
 }
-#include "isoloader.h"
 #endif
 
 using namespace c2d;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleShape(size) {
 
-    renderer = r;
+    render = r;
+
 #ifdef __PLATFORM_LINUX__
     Font *font = new Font();
     font->loadFromFile(renderer->getIo()->getDataPath() + "/m23.ttf");
     renderer->setFont(font);
 #endif
-    renderer->getFont()->setOffset({0, 4});
+    render->getFont()->setOffset({0, 4});
+
+    setFillColor(COL_BLUE);
+    setOutlineColor(COL_BLUE_DARK);
+    setOutlineThickness(4);
+    setPosition(4, 4);
 
     header = new Header({size.x - 16, 32}, 10, 8);
     header->setPosition(8, 8);
     header->setFillColor(COL_BLUE_DARK);
     header->setOutlineColor(Color::White);
     header->setOutlineThickness(2);
-    header->getText()->setFillColor(COL_BLUE_GRAY);
+    header->getText()->setFillColor(COL_YELLOW);
     header->getText()->setOutlineColor(Color::Black);
     header->getText()->setOutlineThickness(2);
     add(header);
@@ -45,8 +51,13 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     preview->setOutlineThickness(2);
     add(preview);
 
+#ifdef __DREAMCAST__
+    std::string home = "/";
+#else
+    std::string home = "/media/cpasjuste/SSD/dreamcast/";
+#endif
     FloatRect filerRect = {8, 48, (size.x / 2) - 10, size.y - 96};
-    filerLeft = new Filer(this, filerRect, "/");
+    filerLeft = new Filer(this, filerRect, home);
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(Color::White);
     filerLeft->setOutlineThickness(2);
@@ -63,6 +74,8 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     add(filerRight);
     */
 
+    filer = filerLeft;
+
     debugMessage = new Text("DEBUG: ", 16);
     debugMessage->setPosition(16, 440);
     debugMessage->setFillColor(COL_RED);
@@ -70,7 +83,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     debugMessage->setOutlineThickness(1);
     add(debugMessage);
 
-    filer = filerLeft;
+    render->getInput()->setRepeatDelay(INPUT_DELAY);
+    timer.restart();
+
+    printf("dataPath: %s\n", render->getIo()->getDataPath().c_str());
 }
 
 bool RetroDream::onInput(c2d::Input::Player *players) {
@@ -86,16 +102,13 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Left) {
         filer->setSelection(filer->getIndex() - filer->getMaxLines());
     } else if (keys & Input::Key::Fire1) {
-        if (filer->getSelection().data.type == Io::Type::Directory) {
+        Io::Type type = filer->getSelection().data.type;
+        if (filer->getSelection().isGame) {
+            run_iso(filer->getSelection().isoPath.c_str());
+        } else if (type == Io::Type::File && RetroUtility::isElf(filer->getSelection().data.name)) {
+            RetroUtility::exec(filer->getSelection().data.path);
+        } else if (type == Io::Type::Directory) {
             filer->enter(filer->getIndex());
-        } else {
-#ifdef __DREAMCAST__
-            if (filer->getSelection().isGame) {
-                run_iso(filer->getSelection().data.path.c_str());
-            } else if (RetroUtility::isElf(filer->getSelection().data.name)) {
-                RetroUtility::exec(filer->getSelection().data.path);
-            }
-#endif
         }
     } else if (keys & Input::Key::Fire2) {
         filer->exit();
@@ -127,16 +140,21 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 void RetroDream::onDraw(Transform &transform, bool draw) {
 
     // handle key repeat delay
-    unsigned int keys = renderer->getInput()->getKeys(0);
+    unsigned int keys = render->getInput()->getKeys(0);
+
     if (keys != Input::Key::Delay) {
-        if (keys > 0 && timer.getElapsedTime().asSeconds() > 5) {
-            renderer->getInput()->setRepeatDelay(INPUT_DELAY / 12);
-        } else if (keys > 0 && timer.getElapsedTime().asSeconds() > 3) {
-            renderer->getInput()->setRepeatDelay(INPUT_DELAY / 8);
-        } else if (keys > 0 && timer.getElapsedTime().asSeconds() > 1) {
-            renderer->getInput()->setRepeatDelay(INPUT_DELAY / 4);
-        } else if (keys < 1) {
-            renderer->getInput()->setRepeatDelay(INPUT_DELAY);
+        unsigned int diff = oldKeys ^keys;
+        oldKeys = keys;
+        if (diff == 0) {
+            if (timer.getElapsedTime().asSeconds() > 5) {
+                render->getInput()->setRepeatDelay(INPUT_DELAY / 12);
+            } else if (timer.getElapsedTime().asSeconds() > 3) {
+                render->getInput()->setRepeatDelay(INPUT_DELAY / 8);
+            } else if (timer.getElapsedTime().asSeconds() > 1) {
+                render->getInput()->setRepeatDelay(INPUT_DELAY / 4);
+            }
+        } else {
+            render->getInput()->setRepeatDelay(INPUT_DELAY);
             timer.restart();
         }
     }
@@ -145,7 +163,7 @@ void RetroDream::onDraw(Transform &transform, bool draw) {
 }
 
 c2d::Renderer *RetroDream::getRender() {
-    return renderer;
+    return render;
 }
 
 Header *RetroDream::getHeader() {
@@ -160,8 +178,8 @@ Filer *RetroDream::getFiler() {
     return filer;
 }
 
-RetroDream::~RetroDream() {
-
+RetroConfig *RetroDream::getConfig() {
+    return config;
 }
 
 int main() {
@@ -180,10 +198,6 @@ int main() {
     render->setClearColor(Color::Black);
 
     auto *retroDream = new RetroDream(render, {render->getSize().x - 8, render->getSize().y - 8});
-    retroDream->setFillColor(COL_BLUE);
-    retroDream->setOutlineColor(COL_BLUE_DARK);
-    retroDream->setOutlineThickness(4);
-    retroDream->setPosition(4, 4);
     render->add(retroDream);
 
     while (!retroDream->quit) {
