@@ -21,6 +21,7 @@ public:
 private:
 
     c2d::Text *text = nullptr;
+    std::vector<std::string> messages;
 };
 
 #endif //RETRODREAM_HEADER_H

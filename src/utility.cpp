@@ -5,8 +5,9 @@
 #include "cross2d/c2d.h"
 #include "utility.h"
 
-void RetroUtility::exec(const std::string &path) {
+using namespace c2d;
 
+void RetroUtility::exec(const std::string &path) {
 #ifdef __DREAMCAST__
     file_t f;
     void *elf;
@@ -23,4 +24,15 @@ void RetroUtility::exec(const std::string &path) {
 
     arch_exec(elf, fs_total(f));
 #endif
+}
+
+bool RetroUtility::isGame(const std::string &fileName) {
+    return Utility::endsWith(fileName, ".iso", false)
+           || Utility::endsWith(fileName, ".cdi", false)
+           || Utility::endsWith(fileName, ".gdi", false);
+}
+
+bool RetroUtility::isElf(const std::string &fileName) {
+    return Utility::endsWith(fileName, ".elf", false)
+           || Utility::endsWith(fileName, ".bin", false);
 }

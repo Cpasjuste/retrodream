@@ -6,6 +6,7 @@
 #include "main.h"
 #include "colors.h"
 #include "filer.h"
+#include "utility.h"
 
 using namespace c2d;
 
@@ -48,6 +49,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
         : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     retroDream = rd;
+    io = retroDream->getRender()->getIo();
     setPosition(rect.left, rect.top);
 
     // set default colors
@@ -87,10 +89,10 @@ void Filer::updateFiles() {
             lines[i]->setVisibility(Visibility::Hidden);
         } else {
             // set file
-            Io::File file = files[file_index + i];
+            Filer::RetroFile file = files[file_index + i];
             lines[i]->setVisibility(Visibility::Visible);
-            lines[i]->setString(file.name);
-            lines[i]->getText()->setFillColor(file.type == Io::Type::File ? colorFile : colorDir);
+            lines[i]->setString(file.data.name);
+            lines[i]->getText()->setFillColor(file.data.type == Io::Type::File ? colorFile : colorDir);
             // set highlight position and color
             if ((int) i == highlight_index) {
                 // handle highlight
@@ -104,13 +106,16 @@ void Filer::updateFiles() {
                 highlight->setOutlineColor(color);
                 // handle header title
                 retroDream->getHeader()->setString(lines[i]->getText()->getString());
+                // TODO: handle this with a timer
                 // handle preview image
-                std::string p = file.path + "/preview.png";
-                if (retroDream->getRender()->getIo()->exist(p)) {
+                /*
+                std::string p = file.data.path + "/preview.png";
+                if (io->exist(p)) {
                     retroDream->getPreview()->load(p);
                 } else {
                     retroDream->getPreview()->load();
                 }
+                */
             }
         }
     }
@@ -130,10 +135,49 @@ bool Filer::getDir(const std::string &p) {
         path = Utility::removeLastSlash(path);
     }
 
-    files = retroDream->getRender()->getIo()->getDirList(path, true);
-    if (files.empty() || files.at(0).name != "..") {
+    std::vector<Io::File> dirList = io->getDirList(path, true);
+    if (dirList.empty() || dirList.at(0).name != "..") {
         Io::File file("..", "..", Io::Type::Directory, 0, colorDir);
-        files.insert(files.begin(), file);
+        dirList.insert(dirList.begin(), file);
+    }
+
+    for (auto const &fileData : dirList) {
+        RetroFile file;
+        file.data = fileData;
+
+        if (fileData.type == Io::Type::File && RetroUtility::isGame(file.data.name)) {
+            file.isGame = true;
+            file.isoPath = file.data.path;
+        } else if (fileData.type == Io::Type::Directory) {
+            // search sub directory for a game (.iso, .cdi, .gdi)
+            std::vector<Io::File> subFiles = io->getDirList(fileData.path);
+            auto gameFile = std::find_if(subFiles.begin(), subFiles.end(), [](const Io::File &f) {
+                return RetroUtility::isGame(f.name);
+            });
+            // directory contains a game
+            if (gameFile != subFiles.end()) {
+                file.isGame = true;
+                file.isoPath = gameFile->path;
+                // search for a preview image in the game sub directory
+                auto previewFile = std::find_if(subFiles.begin(), subFiles.end(), [](const Io::File &f) {
+                    return Utility::endsWith(f.name, ".jpg", false)
+                           || Utility::endsWith(f.name, ".png", false);
+                });
+                if (previewFile != subFiles.end()) {
+                    file.preview = previewFile->path;
+                } else {
+                    // DreamShell compatibility
+                    if (io->exist("/ide/DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
+                        file.preview = "/ide/DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
+                    } else if (io->exist("/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
+                        file.preview = "/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
+                    }
+                }
+            }
+        }
+
+        // TODO: build preset path (isoloader.c)
+        files.emplace_back(file);
     }
 
     setSelection(0);
@@ -147,18 +191,18 @@ std::string Filer::getPath() {
 
 void Filer::enter(int index) {
 
-    Io::File file = getSelection();
+    RetroFile file = getSelection();
     bool success;
 
-    if (file.name == "..") {
+    if (file.data.name == "..") {
         exit();
         return;
     }
 
     if (path == "/") {
-        success = getDir(path + file.name);
+        success = getDir(path + file.data.name);
     } else {
-        success = getDir(path + "/" + file.name);
+        success = getDir(path + "/" + file.data.name);
     }
     if (success) {
         item_index_prev.push_back(index);
@@ -192,10 +236,6 @@ void Filer::exit() {
         }
         setSelection(file_index);
     }
-}
-
-void Filer::clearHistory() {
-    item_index_prev.clear();
 }
 
 void Filer::up() {
@@ -268,15 +308,15 @@ void Filer::setSize(float width, float height) {
     }
 }
 
-std::vector<Io::File> Filer::getFiles() {
+std::vector<Filer::RetroFile> Filer::getFiles() {
     return files;
 }
 
-Io::File Filer::getSelection() {
+Filer::RetroFile Filer::getSelection() {
     if (!files.empty() && files.size() > (size_t) file_index + highlight_index) {
         return files[file_index + highlight_index];
     }
-    return Io::File();
+    return Filer::RetroFile();
 }
 
 void Filer::setTextColor(const Color &color) {

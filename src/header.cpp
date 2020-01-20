@@ -3,7 +3,6 @@
 //
 
 #include "header.h"
-#include "colors.h"
 
 using namespace c2d;
 

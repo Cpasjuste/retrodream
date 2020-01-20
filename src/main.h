@@ -23,6 +23,8 @@ public:
 
     Preview *getPreview();
 
+    Filer *getFiler();
+
     bool quit = false;
 
 private:

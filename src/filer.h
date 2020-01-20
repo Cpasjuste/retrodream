@@ -36,13 +36,24 @@ class Filer : public c2d::RoundedRectangleShape {
 
 public:
 
+    class RetroFile {
+    public:
+        RetroFile() = default;
+
+        c2d::Io::File data;
+        std::string isoPath;
+        std::string preview;
+        std::string preset;
+        bool isGame;
+    };
+
     Filer(RetroDream *retroDream, const c2d::FloatRect &rect, const std::string &path);
 
     bool getDir(const std::string &path);
 
     std::string getPath();
 
-    c2d::Io::File getSelection();
+    RetroFile getSelection();
 
     void setSelection(int index);
 
@@ -72,7 +83,7 @@ public:
 
     RectangleShape *getHighlight();
 
-    std::vector<c2d::Io::File> getFiles();
+    std::vector<RetroFile> getFiles();
 
     int getMaxLines();
 
@@ -85,13 +96,12 @@ private:
 
     void updateFiles();
 
-    void clearHistory();
-
     std::string path;
-    std::vector<c2d::Io::File> files;
+    std::vector<RetroFile> files;
     std::vector<Line *> lines;
     std::vector<int> item_index_prev;
     RetroDream *retroDream = nullptr;
+    c2d::Io *io = nullptr;
     RoundedRectangleShape *highlight = nullptr;
     float line_height;
     int max_lines;

@@ -11,6 +11,10 @@ class RetroUtility {
 
 public:
 
+    static bool isGame(const std::string &fileName);
+
+    static bool isElf(const std::string &fileName);
+
     static void exec(const std::string &path);
 };
 

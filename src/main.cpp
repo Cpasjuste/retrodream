@@ -6,13 +6,13 @@
 #include "main.h"
 #include "colors.h"
 #include "utility.h"
-#include "isoloader.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
 #include "ds/include/fs.h"
 #include "ds/include/isoldr.h"
 }
+#include "isoloader.h"
 #endif
 
 using namespace c2d;
@@ -86,19 +86,16 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Left) {
         filer->setSelection(filer->getIndex() - filer->getMaxLines());
     } else if (keys & Input::Key::Fire1) {
-        if (filer->getSelection().type == Io::Type::Directory) {
+        if (filer->getSelection().data.type == Io::Type::Directory) {
             filer->enter(filer->getIndex());
         } else {
-            Io::File file = filer->getSelection();
-            if (Utility::endsWith(file.name, ".elf", false)
-                || Utility::endsWith(file.name, ".bin", false)) {
-                RetroUtility::exec(file.path);
+#ifdef __DREAMCAST__
+            if (filer->getSelection().isGame) {
+                run_iso(filer->getSelection().data.path.c_str());
+            } else if (RetroUtility::isElf(filer->getSelection().data.name)) {
+                RetroUtility::exec(filer->getSelection().data.path);
             }
-            if (Utility::endsWith(file.name, ".iso", false)
-                || Utility::endsWith(file.name, ".cdi", false)
-                || Utility::endsWith(file.name, ".gdi", false)) {
-                run_iso(file.path.c_str());
-            }
+#endif
         }
     } else if (keys & Input::Key::Fire2) {
         filer->exit();
@@ -157,6 +154,10 @@ Header *RetroDream::getHeader() {
 
 Preview *RetroDream::getPreview() {
     return preview;
+}
+
+Filer *RetroDream::getFiler() {
+    return filer;
 }
 
 RetroDream::~RetroDream() {
