@@ -21,6 +21,14 @@ public:
 
     void setLastPath(const std::string &path);
 
+    c2d::FloatRect getScreenSize();
+
+    void setScreenSize(const c2d::FloatRect &rect);
+
+    int getInputDelay();
+
+    void setInputDelay(int ms);
+
 private:
     RetroIo *io = nullptr;
 };

@@ -16,6 +16,8 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
     Group main("main");
     main.addOption({"data_path", io->getDataPath()});
     main.addOption({"filer_last_path", io->getHomePath()});
+    main.addOption({"screen_size", FloatRect{0, 0, 640, 480}});
+    main.addOption({"input_delay", 200});
     addGroup(main);
 
     // load the configuration from file, overwriting default values
@@ -62,4 +64,24 @@ void RetroConfig::setLastPath(const std::string &path) {
         getGroup("main")->getOption("filer_last_path")->setString(path);
         save();
     }
+}
+
+c2d::FloatRect RetroConfig::getScreenSize() {
+    FloatRect rect = getGroup("main")->getOption("screen_size")->getFloatRect();
+    return rect;
+}
+
+void RetroConfig::setScreenSize(const c2d::FloatRect &rect) {
+    getGroup("main")->getOption("screen_size")->setFloatRect(rect);
+    save();
+}
+
+int RetroConfig::getInputDelay() {
+    int delay = getGroup("main")->getOption("input_delay")->getInteger();
+    return delay;
+}
+
+void RetroConfig::setInputDelay(int ms) {
+    getGroup("main")->getOption("input_delay")->setInteger(ms);
+    save();
 }

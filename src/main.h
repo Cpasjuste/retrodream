@@ -8,6 +8,7 @@
 #include "filer.h"
 #include "header.h"
 #include "preview.h"
+#include "optionmenu.h"
 #include "cfg.h"
 
 class RetroDream : public c2d::RectangleShape {
@@ -41,10 +42,9 @@ private:
     Filer *filerRight = nullptr;
     Header *header = nullptr;
     Preview *preview = nullptr;
+    OptionMenu *optionMenu = nullptr;
     c2d::Text *debugMessage = nullptr;
     unsigned int oldKeys;
 };
-
-#define INPUT_DELAY 200
 
 #endif //RETRODREAM_MAIN_H

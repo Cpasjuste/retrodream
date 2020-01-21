@@ -13,9 +13,9 @@ public:
 
     std::string getDataPath() override;
 
-    std::string getConfigPath();
-
     void setDataPath(const std::string &path);
+
+    std::string getConfigPath();
 
 private:
 

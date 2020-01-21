@@ -127,7 +127,7 @@ bool Filer::getDir(const std::string &p) {
 
     files.clear();
     path = p;
-    if (Utility::endsWith(path, "/")) {
+    if (path.size() > 1 && Utility::endsWith(path, "/")) {
         path = Utility::removeLastSlash(path);
     }
 

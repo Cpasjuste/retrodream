@@ -81,7 +81,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     debugMessage->setOutlineThickness(1);
     add(debugMessage);
 
-    render->getInput()->setRepeatDelay(INPUT_DELAY);
+    render->getInput()->setRepeatDelay(retroConfig->getInputDelay());
     timer.restart();
 }
 
@@ -139,18 +139,18 @@ void RetroDream::onDraw(Transform &transform, bool draw) {
     unsigned int keys = render->getInput()->getKeys(0);
 
     if (keys != Input::Key::Delay) {
-        unsigned int diff = oldKeys ^keys;
+        bool changed = (oldKeys ^ keys) != 0;
         oldKeys = keys;
-        if (diff == 0) {
+        if (!changed) {
             if (timer.getElapsedTime().asSeconds() > 5) {
-                render->getInput()->setRepeatDelay(INPUT_DELAY / 12);
+                render->getInput()->setRepeatDelay(retroConfig->getInputDelay() / 12);
             } else if (timer.getElapsedTime().asSeconds() > 3) {
-                render->getInput()->setRepeatDelay(INPUT_DELAY / 8);
+                render->getInput()->setRepeatDelay(retroConfig->getInputDelay() / 8);
             } else if (timer.getElapsedTime().asSeconds() > 1) {
-                render->getInput()->setRepeatDelay(INPUT_DELAY / 4);
+                render->getInput()->setRepeatDelay(retroConfig->getInputDelay() / 4);
             }
         } else {
-            render->getInput()->setRepeatDelay(INPUT_DELAY);
+            render->getInput()->setRepeatDelay(retroConfig->getInputDelay());
             timer.restart();
         }
     }
@@ -178,13 +178,14 @@ RetroConfig *RetroDream::getConfig() {
     return retroConfig;
 }
 
-int main() {
+int main(int argc, char **argv) {
 
+    printf("%s\n", argv[0]);
 #ifdef __DREAMCAST__
     //dbgio_init();
     //dbgio_dev_select("scif");
-    InitSDCard();
-    InitIDE();
+    //InitSDCard();
+    //InitIDE();
     //dbgio_dev_select("scif");
     //dbgio_printf("Hello World\n");
     //dbgio_flush();
@@ -195,7 +196,8 @@ int main() {
     printf("data_path: %s\n", retroConfig->getDataPath().c_str());
     printf("last_path: %s\n", retroConfig->getLastPath().c_str());
 
-    auto *render = new C2DRenderer({640, 480});
+    auto *render = new C2DRenderer({retroConfig->getScreenSize().width, retroConfig->getScreenSize().height});
+    render->setPosition(retroConfig->getScreenSize().left, retroConfig->getScreenSize().top);
     render->setIo(retroIo);
 
     auto *retroDream = new RetroDream(render, {render->getSize().x - 8, render->getSize().y - 8});
