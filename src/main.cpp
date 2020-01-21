@@ -7,6 +7,7 @@
 #include "colors.h"
 #include "utility.h"
 #include "isoloader.h"
+#include "retroio.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
@@ -17,14 +18,16 @@ extern "C" {
 
 using namespace c2d;
 
+RetroConfig *retroConfig;
+
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleShape(size) {
 
     render = r;
 
 #ifdef __PLATFORM_LINUX__
     Font *font = new Font();
-    font->loadFromFile(renderer->getIo()->getDataPath() + "/m23.ttf");
-    renderer->setFont(font);
+    font->loadFromFile(render->getIo()->getDataPath() + "/m23.ttf");
+    render->setFont(font);
 #endif
     render->getFont()->setOffset({0, 4});
 
@@ -51,13 +54,8 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     preview->setOutlineThickness(2);
     add(preview);
 
-#ifdef __DREAMCAST__
-    std::string home = "/";
-#else
-    std::string home = "/media/cpasjuste/SSD/dreamcast/";
-#endif
     FloatRect filerRect = {8, 48, (size.x / 2) - 10, size.y - 96};
-    filerLeft = new Filer(this, filerRect, home);
+    filerLeft = new Filer(this, filerRect, retroConfig->getLastPath());
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(Color::White);
     filerLeft->setOutlineThickness(2);
@@ -85,8 +83,6 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
 
     render->getInput()->setRepeatDelay(INPUT_DELAY);
     timer.restart();
-
-    printf("dataPath: %s\n", render->getIo()->getDataPath().c_str());
 }
 
 bool RetroDream::onInput(c2d::Input::Player *players) {
@@ -179,7 +175,7 @@ Filer *RetroDream::getFiler() {
 }
 
 RetroConfig *RetroDream::getConfig() {
-    return config;
+    return retroConfig;
 }
 
 int main() {
@@ -194,8 +190,13 @@ int main() {
     //dbgio_flush();
 #endif
 
+    auto retroIo = new RetroIo();
+    retroConfig = new RetroConfig(retroIo);
+    printf("data_path: %s\n", retroConfig->getDataPath().c_str());
+    printf("last_path: %s\n", retroConfig->getLastPath().c_str());
+
     auto *render = new C2DRenderer({640, 480});
-    render->setClearColor(Color::Black);
+    render->setIo(retroIo);
 
     auto *retroDream = new RetroDream(render, {render->getSize().x - 8, render->getSize().y - 8});
     render->add(retroDream);

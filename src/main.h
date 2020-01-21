@@ -22,9 +22,9 @@ public:
 
     Preview *getPreview();
 
-    RetroConfig *getConfig();
-
     Filer *getFiler();
+
+    RetroConfig *getConfig();
 
     bool quit = false;
 
@@ -42,7 +42,6 @@ private:
     Header *header = nullptr;
     Preview *preview = nullptr;
     c2d::Text *debugMessage = nullptr;
-    RetroConfig *config;
     unsigned int oldKeys;
 };
 

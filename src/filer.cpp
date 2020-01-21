@@ -121,11 +121,17 @@ bool Filer::getDir(const std::string &p) {
 
     printf("getDir(%s):\n", p.c_str());
 
+    if (p.empty()) {
+        return false;
+    }
+
     files.clear();
     path = p;
-    if (path.size() > 1 && Utility::endsWith(path, "/")) {
+    if (Utility::endsWith(path, "/")) {
         path = Utility::removeLastSlash(path);
     }
+
+    retroDream->getConfig()->setLastPath(path);
 
     std::vector<Io::File> dirList = io->getDirList(path, true);
     if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
@@ -139,11 +145,11 @@ bool Filer::getDir(const std::string &p) {
 
         if (fileData.type == Io::Type::File) {
             if (RetroUtility::isGame(file.data.name)) {
-                printf("\tISO\t%s\n", file.data.name.c_str());
+                printf("\tI\t%s\n", file.data.name.c_str());
                 file.isGame = true;
                 file.isoPath = file.data.path;
             } else {
-                printf("\tFIL\t%s\n", file.data.name.c_str());
+                printf("\tF\t%s\n", file.data.name.c_str());
             }
         } else if (fileData.type == Io::Type::Directory) {
             // lxdream crash
@@ -157,7 +163,7 @@ bool Filer::getDir(const std::string &p) {
             });
             // directory contains a game
             if (gameFile != subFiles.end()) {
-                printf("\tISO\t%s\n", file.data.name.c_str());
+                printf("\tI\t%s\n", file.data.name.c_str());
                 file.isGame = true;
                 file.isoPath = gameFile->path;
                 // search for a preview image in the game sub directory
@@ -185,7 +191,7 @@ bool Filer::getDir(const std::string &p) {
                     }
                 }
             } else {
-                printf("\tDIR\t%s\n", file.data.name.c_str());
+                printf("\tD\t%s\n", file.data.name.c_str());
             }
         }
 
