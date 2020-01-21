@@ -180,15 +180,11 @@ RetroConfig *RetroDream::getConfig() {
 
 int main(int argc, char **argv) {
 
-    printf("%s\n", argv[0]);
+    dbgio_dev_select("scif");
+
 #ifdef __DREAMCAST__
-    //dbgio_init();
-    //dbgio_dev_select("scif");
     //InitSDCard();
-    //InitIDE();
-    //dbgio_dev_select("scif");
-    //dbgio_printf("Hello World\n");
-    //dbgio_flush();
+    InitIDE();
 #endif
 
     auto retroIo = new RetroIo();
