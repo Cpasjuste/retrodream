@@ -11,7 +11,7 @@ class Preview : public c2d::RoundedRectangleShape {
 
 public:
 
-    Preview(const c2d::Vector2f &size, float radius, unsigned int cornerPointCount);
+    Preview(const c2d::Vector2f &size);
 
     void load(const std::string &path = "");
 

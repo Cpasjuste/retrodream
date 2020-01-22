@@ -7,8 +7,8 @@
 
 using namespace c2d;
 
-Preview::Preview(const Vector2f &size, float radius, unsigned int cornerPointCount)
-        : RoundedRectangleShape(size, radius, cornerPointCount) {
+Preview::Preview(const Vector2f &size)
+        : RoundedRectangleShape(size, 10, 8) {
 
     textureHolder = new Rectangle({getSize().x / 2, getSize().y / 2,
                                    getSize().x - 16, getSize().y - 16});

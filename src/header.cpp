@@ -11,8 +11,8 @@ void Header::setString(const std::string &str) {
     text->setString(str);
 }
 
-Header::Header(const c2d::FloatRect &rect, float radius, unsigned int cornerPointCount)
-        : RoundedRectangleShape({rect.width, rect.height}, radius, cornerPointCount) {
+Header::Header(const c2d::FloatRect &rect)
+        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     setPosition(rect.left, rect.top);
     float charSize = rect.height - 5;

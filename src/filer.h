@@ -89,7 +89,7 @@ private:
     c2d::Io *io = nullptr;
     RoundedRectangleShape *highlight = nullptr;
     c2d::C2DClock previewClock;
-    int previewLoadDelay = 400;
+    int previewLoadDelay = 300;
     float line_height;
     int max_lines;
     int file_index = 0;

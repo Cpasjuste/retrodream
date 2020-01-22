@@ -73,7 +73,8 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
         FloatRect r = {1, (line_height * (float) i) + 1, getSize().x - 2, line_height - 2};
-        auto line = new Line(r, "", retroDream->getRender()->getFont(), (unsigned int) (line_height - (line_height / 10)));
+        auto line = new Line(r, "", retroDream->getRender()->getFont(),
+                             (unsigned int) (line_height - (line_height / 10)));
         lines.push_back(line);
         add(line);
     }
@@ -366,7 +367,9 @@ void Filer::onUpdate() {
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
 
-    if (keys > 0 && keys != Input::Delay && keys != Input::Key::Fire1) {
+    if (keys > 0 && keys != Input::Delay &&
+        ((keys == Input::Key::Up) || (keys == Input::Key::Down)
+         || (keys == Input::Key::Left) || (keys == Input::Key::Right) || (keys == Input::Key::Fire2))) {
         previewClock.restart();
         retroDream->getPreview()->unload();
     } else if (keys == 0) {

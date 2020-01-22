@@ -5,25 +5,34 @@
 #ifndef RETRODREAM_MAIN_H
 #define RETRODREAM_MAIN_H
 
+#include "cfg.h"
 #include "filer.h"
 #include "header.h"
 #include "preview.h"
 #include "optionmenu.h"
-#include "cfg.h"
+#include "filemenu.h"
 
 class RetroDream : public c2d::RectangleShape {
 
 public:
 
-    explicit RetroDream(c2d::Renderer *renderer, const c2d::Vector2f &size);
+    explicit RetroDream(c2d::Renderer *renderer, const c2d::Vector2f &size, float outlineThickness);
 
-    c2d::Renderer *getRender();
+    c2d::Renderer *getRender() {
+        return render;
+    }
 
-    Header *getHeader();
+    Header *getHeader() {
+        return header;
+    }
 
-    Preview *getPreview();
+    Preview *getPreview() {
+        return preview;
+    }
 
-    Filer *getFiler();
+    Filer *getFiler() {
+        return filer;
+    }
 
     RetroConfig *getConfig();
 
@@ -43,6 +52,8 @@ private:
     Header *header = nullptr;
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;
+    FileMenu *fileMenu = nullptr;
+    c2d::RectangleShape *blurLayer = nullptr;
     c2d::Text *debugMessage = nullptr;
     unsigned int oldKeys;
 };
