@@ -67,18 +67,17 @@ public:
 
     void setSize(float width, float height) override;
 
+    void setColor(const c2d::Color &dirColor, const c2d::Color &fileColor);
+
     void setAlpha(uint8_t alpha, bool recursive = false) override;
 
     int getMaxLines();
 
     int getIndex();
 
-    c2d::Color colorDir;
-    c2d::Color colorFile;
-
 private:
 
-    void updateFiles();
+    void updateLines();
 
     void onUpdate() override;
 
@@ -97,6 +96,8 @@ private:
     int highlight_index = 0;
     bool use_highlight = true;
     bool highlight_use_files_color = false;
+    c2d::Color colorDir;
+    c2d::Color colorFile;
 };
 
 #endif //RETRODREAM_FILER_H

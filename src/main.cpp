@@ -26,17 +26,21 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
 
 #ifdef __PLATFORM_LINUX__
     Font *font = new Font();
-    font->loadFromFile(render->getIo()->getDataPath() + "/m23.ttf");
+    font->loadFromFile(render->getIo()->getDataPath() + "/magnum.ttf");
     render->setFont(font);
 #endif
-    render->getFont()->setOffset({0, 4});
+    render->getFont()->setFilter(Texture::Filter::Point);
+    render->getFont()->setOffset({0, -2});
 
     setFillColor(COL_BLUE);
     setOutlineColor(COL_BLUE_DARK);
-    setOutlineThickness(4);
-    setPosition(4, 4);
 
-    header = new Header({size.x - 16, 32}, 10, 8);
+    /// header text
+    FloatRect headerRect = {
+            PERCENT(size.x, 1.5f), PERCENT(size.y, 1.5f),
+            PERCENT(size.x, 97), PERCENT(size.y, 6.5f)
+    };
+    header = new Header(headerRect, 10, 8);
     header->setPosition(8, 8);
     header->setFillColor(COL_BLUE_DARK);
     header->setOutlineColor(Color::White);
@@ -46,6 +50,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     header->getText()->setOutlineThickness(2);
     add(header);
 
+    /// preview box
     float previewSize = (size.x / 2) - 20;
     preview = new Preview({previewSize, previewSize}, 10, 8);
     preview->setPosition(previewSize + 30, 48);
@@ -59,6 +64,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size) : RectangleS
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(Color::White);
     filerLeft->setOutlineThickness(2);
+    filerLeft->setColor(COL_BLUE_DARK, COL_BLUE);
     add(filerLeft);
 
     /*
@@ -180,23 +186,35 @@ RetroConfig *RetroDream::getConfig() {
 
 int main(int argc, char **argv) {
 
-    dbgio_dev_select("scif");
-
 #ifdef __DREAMCAST__
-    //InitSDCard();
+#ifdef NDEBUG
+    InitSDCard();
+#else
+    dbgio_dev_select("scif");
+#endif
     InitIDE();
 #endif
 
+    /// config
     auto retroIo = new RetroIo();
     retroConfig = new RetroConfig(retroIo);
     printf("data_path: %s\n", retroConfig->getDataPath().c_str());
     printf("last_path: %s\n", retroConfig->getLastPath().c_str());
 
-    auto *render = new C2DRenderer({retroConfig->getScreenSize().width, retroConfig->getScreenSize().height});
-    render->setPosition(retroConfig->getScreenSize().left, retroConfig->getScreenSize().top);
+    /// render
+    auto *render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     render->setIo(retroIo);
 
-    auto *retroDream = new RetroDream(render, {render->getSize().x - 8, render->getSize().y - 8});
+    /// main rect
+    float outline = 4;
+    FloatRect rect = {retroConfig->getScreenSize().left + outline,
+                      retroConfig->getScreenSize().top + outline,
+                      retroConfig->getScreenSize().width - outline * 2,
+                      retroConfig->getScreenSize().height - outline * 2};
+    auto *retroDream = new RetroDream(render, {rect.width, rect.height});
+    retroDream->setPosition(rect.left, rect.top);
+    retroDream->setOutlineThickness(outline);
+
     render->add(retroDream);
 
     while (!retroDream->quit) {

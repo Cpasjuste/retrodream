@@ -16,6 +16,10 @@ public:
     static bool isElf(const std::string &fileName);
 
     static void exec(const std::string &path);
+
+    static float percentSize(float size, float percent);
 };
+
+#define PERCENT(x1, x2) RetroUtility::percentSize(x1, x2)
 
 #endif //RETRODREAM_UTILITY_H

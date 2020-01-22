@@ -3,6 +3,7 @@
 //
 
 #include "header.h"
+#include "utility.h"
 
 using namespace c2d;
 
@@ -10,14 +11,15 @@ void Header::setString(const std::string &str) {
     text->setString(str);
 }
 
-Header::Header(const Vector2f &size, float radius, unsigned int cornerPointCount)
-        : RoundedRectangleShape(size, radius, cornerPointCount) {
+Header::Header(const c2d::FloatRect &rect, float radius, unsigned int cornerPointCount)
+        : RoundedRectangleShape({rect.width, rect.height}, radius, cornerPointCount) {
 
-    float charSize = size.y - 10;
+    setPosition(rect.left, rect.top);
+    float charSize = rect.height - 5;
     text = new Text("RetroDream", (unsigned int) charSize);
     text->setOrigin(Origin::Left);
-    text->setPosition(10, (size.y / 2) - 1);
-    text->setSizeMax(size.x - charSize - 10, 0);
+    text->setPosition(PERCENT(rect.width, 2), (rect.height / 2) - 1);
+    text->setSizeMax(rect.width - charSize - 10, 0);
     add(text);
 }
 

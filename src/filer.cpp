@@ -57,7 +57,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     colorFile = COL_BLUE;
 
     // calculate number of lines shown
-    line_height = 32;
+    line_height = getSize().y / 13; // 13 lines
     max_lines = (int) (getSize().y / line_height);
     if ((float) max_lines * line_height < getSize().y) {
         line_height = getSize().y / (float) max_lines;
@@ -73,7 +73,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
         FloatRect r = {1, (line_height * (float) i) + 1, getSize().x - 2, line_height - 2};
-        auto line = new Line(r, "", retroDream->getRender()->getFont(), (unsigned int) 20);
+        auto line = new Line(r, "", retroDream->getRender()->getFont(), (unsigned int) (line_height - (line_height / 10)));
         lines.push_back(line);
         add(line);
     }
@@ -81,7 +81,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     getDir(path);
 };
 
-void Filer::updateFiles() {
+void Filer::updateLines() {
 
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
 
@@ -270,7 +270,7 @@ void Filer::up() {
         }
     }
 
-    updateFiles();
+    updateLines();
 }
 
 void Filer::down() {
@@ -288,7 +288,7 @@ void Filer::down() {
         }
     }
 
-    updateFiles();
+    updateLines();
 }
 
 void Filer::setSelection(int new_index) {
@@ -308,7 +308,7 @@ void Filer::setSelection(int new_index) {
         file_index = new_index - highlight_index;
     }
 
-    updateFiles();
+    updateLines();
 }
 
 void Filer::setSize(const Vector2f &size) {
@@ -328,6 +328,12 @@ Filer::RetroFile Filer::getSelection() {
         return files[file_index + highlight_index];
     }
     return Filer::RetroFile();
+}
+
+void Filer::setColor(const Color &dirColor, const Color &fileColor) {
+    colorDir = dirColor;
+    colorFile = fileColor;
+    updateLines();
 }
 
 void Filer::setAlpha(uint8_t alpha, bool recursive) {
@@ -372,3 +378,4 @@ void Filer::onUpdate() {
 
     C2DObject::onUpdate();
 }
+

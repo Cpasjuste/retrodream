@@ -12,7 +12,7 @@ class Header : public c2d::RoundedRectangleShape {
 
 public:
 
-    Header(const c2d::Vector2f &size, float radius, unsigned int cornerPointCount);
+    Header(const c2d::FloatRect &rect, float radius, unsigned int cornerPointCount);
 
     c2d::Text *getText();
 

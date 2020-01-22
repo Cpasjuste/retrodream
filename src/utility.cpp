@@ -36,3 +36,7 @@ bool RetroUtility::isElf(const std::string &fileName) {
     return Utility::endsWith(fileName, ".elf", false)
            || Utility::endsWith(fileName, ".bin", false);
 }
+
+float RetroUtility::percentSize(float size, float percent) {
+    return (percent * size) / 100;
+}
