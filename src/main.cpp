@@ -199,8 +199,6 @@ int main() {
 #ifdef __DREAMCAST__
 #ifdef NDEBUG
     InitSDCard();
-#else
-    dbgio_dev_select("scif");
 #endif
     InitIDE();
 #endif
@@ -214,6 +212,15 @@ int main() {
     /// render
     auto *render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     render->setIo(retroIo);
+
+#if defined(__DREAMCAST__) && !defined(NDEBUG)
+    // dc-load "recovery"
+    // flip renderer to update inputs
+    render->flip();
+    if (render->getInput()->getKeys() & Input::Key::Start) {
+        RetroUtility::exec("/rd/dcload-serial.bin");
+    }
+#endif
 
     /// main rect
     float outline = 6;

@@ -100,9 +100,10 @@ if (PLATFORM_DREAMCAST)
     list(APPEND CFLAGS
             -D__EMBEDDED_MODULE_DEBUG__
             # isofs
-            -DVER_MAJOR=0 -DVER_MINOR=0 -DVER_MICRO=0 -DVER_BUILD=0
+            -DVER_MAJOR=0 -DVER_MINOR=6 -DVER_MICRO=7 -DVER_BUILD=0
             )
     # ds embedded modules (debug) - END
+
     list(APPEND INCLUDES
             src/ds/include
             src/ds/include/minilzo
@@ -118,6 +119,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDES})
 target_compile_options(${PROJECT_NAME} PRIVATE ${CFLAGS})
 target_link_libraries(${PROJECT_NAME} cross2d ${LDFLAGS})
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -s)
 
 #############
 # targets
