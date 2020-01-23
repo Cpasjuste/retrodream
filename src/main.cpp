@@ -201,6 +201,9 @@ int main() {
     InitSDCard();
 #endif
     InitIDE();
+#ifdef __EMBEDDED_MODULE_DEBUG__
+    fs_iso_init();
+#endif
 #endif
 
     /// config
@@ -237,6 +240,10 @@ int main() {
     }
 
     delete (render);
+
+#if defined(__DREAMCAST__) && defined (__EMBEDDED_MODULE_DEBUG__)
+    fs_iso_shutdown();
+#endif
 
     return 0;
 }
