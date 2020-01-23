@@ -43,6 +43,7 @@ float RetroUtility::percentSize(float size, float percent) {
 
 std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
 
+#ifdef __DREAMCAST__
     if (io->exist("/sd/RD/" + path)) {
         return "/sd/RD/" + path;
     } else if (io->exist("/ide/RD/" + path)) {
@@ -56,4 +57,7 @@ std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
     }
 
     return "";
+#else
+    return io->getDataPath() + "/RD/" + path;
+#endif
 }

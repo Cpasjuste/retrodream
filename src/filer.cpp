@@ -176,20 +176,7 @@ bool Filer::getDir(const std::string &p) {
                     file.preview = previewFile->path;
                 } else {
                     // DreamShell compatibility
-#ifdef __DREAMCAST__
-                    std::string dev = "/ide/";
-#else
-                    std::string dev = "/media/cpasjuste/SSD/dreamcast/";
-#endif
-                    if (io->exist(dev + "DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
-                        file.preview = dev + "DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
-                    } else {
-#ifdef __DREAMCAST__
-                        if (io->exist("/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg")) {
-                            file.preview = "/sd/DS/apps/iso_loader/covers/" + file.data.name + ".jpg";
-                        }
-#endif
-                    }
+                    file.preview = RetroUtility::findPath(io, "apps/iso_loader/covers/" + file.data.name + ".jpg");
                 }
             } else {
                 //printf("\tD\t%s\n", file.data.name.c_str());
