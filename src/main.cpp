@@ -139,7 +139,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Fire1) {
         Io::Type type = filer->getSelection().data.type;
         if (filer->getSelection().isGame) {
-            run_iso(filer->getSelection().isoPath.c_str());
+            IsoLoader::run(render->getIo(), filer->getSelection().isoPath);
         } else if (type == Io::Type::File && RetroUtility::isElf(filer->getSelection().data.name)) {
             RetroUtility::exec(filer->getSelection().data.path);
         } else if (type == Io::Type::Directory) {
@@ -230,7 +230,6 @@ int main() {
                       retroConfig->getScreenSize().height - outline * 2};
     auto *retroDream = new RetroDream(render, {rect.width, rect.height}, outline);
     retroDream->setPosition(rect.left, rect.top);
-
     render->add(retroDream);
 
     while (!retroDream->quit) {

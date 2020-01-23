@@ -40,3 +40,20 @@ bool RetroUtility::isElf(const std::string &fileName) {
 float RetroUtility::percentSize(float size, float percent) {
     return (percent * size) / 100;
 }
+
+std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
+
+    if (io->exist("/sd/RD/" + path)) {
+        return "/sd/RD/" + path;
+    } else if (io->exist("/ide/RD/" + path)) {
+        return "/ide/RD/" + path;
+    } else if (io->exist("/sd/DS/" + path)) {
+        return "/sd/DS/" + path;
+    } else if (io->exist("/ide/DS/" + path)) {
+        return "/ide/DS/" + path;
+    } else if (io->exist("/rd/" + path)) {
+        return "/rd/" + path;
+    }
+
+    return "";
+}
