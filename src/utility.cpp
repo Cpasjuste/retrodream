@@ -27,9 +27,10 @@ void RetroUtility::exec(const std::string &path) {
 }
 
 bool RetroUtility::isGame(const std::string &fileName) {
-    return Utility::endsWith(fileName, ".iso", false)
-           || Utility::endsWith(fileName, ".cdi", false)
-           || Utility::endsWith(fileName, ".gdi", false);
+    return !Utility::startWith(fileName, "track") &&
+           (Utility::endsWith(fileName, ".iso", false)
+            || Utility::endsWith(fileName, ".cdi", false)
+            || Utility::endsWith(fileName, ".gdi", false));
 }
 
 bool RetroUtility::isElf(const std::string &fileName) {

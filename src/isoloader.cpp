@@ -43,11 +43,15 @@ int IsoLoader::run(Io *io, const std::string &path) {
 
     // find loader path
     if (cfg.device == std::string("auto")) {
-        setenv("PATH",
-               RetroUtility::findPath(io, "firmware/isoldr/ide.bin").c_str(), 1);
+        std::string p = RetroUtility::findPath(io, "/firmware/isoldr/ide.bin");
+        if (p.size() > 3) {
+            setenv("PATH", Utility::remove(p, "/firmware/isoldr/ide.bin").c_str(), 1);
+        }
     } else {
-        setenv("PATH",
-               RetroUtility::findPath(io, "firmware/isoldr/" + cfg.device + ".bin").c_str(), 1);
+        std::string p = RetroUtility::findPath(io, "/firmware/isoldr/" + cfg.device + ".bin");
+        if (p.size() > 3) {
+            setenv("PATH", Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin").c_str(), 1);
+        }
     }
 
     isoldr_exec(isoLdr, strtoul(cfg.memory.c_str(), nullptr, 16));
@@ -110,7 +114,7 @@ IsoLoader::Config IsoLoader::loadConfig(Io *io, const std::string &isoPath) {
     }
 
     printf("== IsoLoader::loadConfig ==\ntitle = %s\ndevice = %s\ndma = %d\nasync = %d\n"
-           "cdda = %d\nfastboot = %d\ntype = %d\nmode = %d\nmemory = %s\n== IsoLoader::loadConfig ==\n",
+           "cdda = %d\nfastboot = %d\ntype = %d\nmode = %d\nmemory = %s\n\n",
            config.title.c_str(), config.device.c_str(), config.dma, config.async,
            config.cdda, config.fastboot, config.type, config.mode, config.memory.c_str());
 
@@ -165,7 +169,14 @@ void IsoLoader::getConfigInfo(Config *config, const std::string &isoPath) {
     if (pos != std::string::npos) {
         dev = isoPath.substr(0, pos);
     }
-    config->path = dev + "DS/apps/iso_loader/presets/" + dev + "_" + std::string(md5, md5 + 16) + ".cfg";
+
+    // TODO: do this better
+    char _md5[64];
+    snprintf(_md5, 64, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+             md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
+             md5[9], md5[10], md5[11], md5[12], md5[13], md5[14], md5[15]);
+
+    config->path = dev + "/DS/apps/iso_loader/presets" + dev + "_" + _md5 + ".cfg";
 #else
     config->title = "test";
     config->path = c2d_renderer->getIo()->getDataPath() + "RD/test.cfg";
