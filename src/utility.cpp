@@ -59,6 +59,6 @@ std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
 
     return "";
 #else
-    return io->getDataPath() + "/RD/" + path;
+    return io->getHomePath() + "DS/" + path;
 #endif
 }

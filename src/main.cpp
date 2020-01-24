@@ -63,7 +63,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     /// filers
     FloatRect filerRect = {8, 48, (size.x / 2) - 10, size.y - 96};
-    filerLeft = new Filer(this, filerRect, retroConfig->getLastPath());
+    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::LastPath));
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(Color::White);
     filerLeft->setOutlineThickness(2);
@@ -113,14 +113,14 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     fileMenu->setOutlineThickness(6);
     add(fileMenu);
 
-    debugMessage = new Text("DEBUG: ", 16);
-    debugMessage->setPosition(16, 440);
-    debugMessage->setFillColor(COL_RED);
-    debugMessage->setOutlineColor(Color::Black);
-    debugMessage->setOutlineThickness(1);
-    add(debugMessage);
+    statusBox = new StatusBox(this, {4, getSize().y - 4,
+                                     getSize().x - 16, 36});
+    statusBox->setOrigin(Origin::BottomLeft);
+    statusBox->setLayer(10);
+    add(statusBox);
 
-    render->getInput()->setRepeatDelay(retroConfig->getInputDelay());
+    inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
+    render->getInput()->setRepeatDelay(inputDelay);
     timer.restart();
 }
 
@@ -150,12 +150,14 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Fire3) {
         fileMenu->setVisibility(fileMenu->isVisible() ?
                                 Visibility::Hidden : Visibility::Visible, true);
-        blurLayer->setVisibility(fileMenu->getVisibility(), true);
+        // dc: alpha = nok
+        //blurLayer->setVisibility(fileMenu->getVisibility(), true);
     } else if (keys & Input::Key::Fire4) {
     } else if (keys & Input::Key::Start) {
         optionMenu->setVisibility(optionMenu->isVisible() ?
                                   Visibility::Hidden : Visibility::Visible, true);
-        blurLayer->setVisibility(optionMenu->getVisibility(), true);
+        // dc: alpha = nok
+        //blurLayer->setVisibility(optionMenu->getVisibility(), true);
     }
 
     if (keys & EV_QUIT) {
@@ -175,14 +177,14 @@ void RetroDream::onDraw(Transform &transform, bool draw) {
         oldKeys = keys;
         if (!changed) {
             if (timer.getElapsedTime().asSeconds() > 5) {
-                render->getInput()->setRepeatDelay(retroConfig->getInputDelay() / 12);
+                render->getInput()->setRepeatDelay(inputDelay / 12);
             } else if (timer.getElapsedTime().asSeconds() > 3) {
-                render->getInput()->setRepeatDelay(retroConfig->getInputDelay() / 8);
+                render->getInput()->setRepeatDelay(inputDelay / 8);
             } else if (timer.getElapsedTime().asSeconds() > 1) {
-                render->getInput()->setRepeatDelay(retroConfig->getInputDelay() / 4);
+                render->getInput()->setRepeatDelay(inputDelay / 4);
             }
         } else {
-            render->getInput()->setRepeatDelay(retroConfig->getInputDelay());
+            render->getInput()->setRepeatDelay(inputDelay);
             timer.restart();
         }
     }
@@ -209,8 +211,8 @@ int main() {
     /// config
     auto retroIo = new RetroIo();
     retroConfig = new RetroConfig(retroIo);
-    printf("data_path: %s\n", retroConfig->getDataPath().c_str());
-    printf("last_path: %s\n", retroConfig->getLastPath().c_str());
+    printf("data_path: %s\n", retroConfig->get(RetroConfig::DataPath).c_str());
+    printf("last_path: %s\n", retroConfig->get(RetroConfig::LastPath).c_str());
 
     /// render
     auto *render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
@@ -226,11 +228,10 @@ int main() {
 #endif
 
     /// main rect
+    FloatRect screenSize = retroConfig->getRect(RetroConfig::ScreenSize);
     float outline = 6;
-    FloatRect rect = {retroConfig->getScreenSize().left + outline,
-                      retroConfig->getScreenSize().top + outline,
-                      retroConfig->getScreenSize().width - outline * 2,
-                      retroConfig->getScreenSize().height - outline * 2};
+    FloatRect rect = {screenSize.left + outline, screenSize.top + outline,
+                      screenSize.width - outline * 2, screenSize.height - outline * 2};
     auto *retroDream = new RetroDream(render, {rect.width, rect.height}, outline);
     retroDream->setPosition(rect.left, rect.top);
     render->add(retroDream);

@@ -47,6 +47,11 @@ public:
         bool isGame = false;
     };
 
+    enum FilerMode {
+        Browse = 0,
+        Game
+    };
+
     Filer(RetroDream *retroDream, const c2d::FloatRect &rect, const std::string &path);
 
     bool getDir(const std::string &path);

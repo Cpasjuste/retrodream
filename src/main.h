@@ -11,6 +11,7 @@
 #include "preview.h"
 #include "optionmenu.h"
 #include "filemenu.h"
+#include "statusbox.h"
 
 class RetroDream : public c2d::RectangleShape {
 
@@ -34,6 +35,10 @@ public:
         return filer;
     }
 
+    StatusBox *getStatusBox() {
+        return statusBox;
+    }
+
     RetroConfig *getConfig();
 
     bool quit = false;
@@ -53,8 +58,9 @@ private:
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;
     FileMenu *fileMenu = nullptr;
+    StatusBox *statusBox = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
-    c2d::Text *debugMessage = nullptr;
+    int inputDelay;
     unsigned int oldKeys;
 };
 

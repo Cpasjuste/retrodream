@@ -118,9 +118,10 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDES})
 target_compile_options(${PROJECT_NAME} PRIVATE ${CFLAGS})
 target_link_libraries(${PROJECT_NAME} cross2d ${LDFLAGS})
-# for dcload-serial binary size
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -s)
-
+if (PLATFORM_DREAMCAST)
+    # for dcload-serial binary size
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -s)
+endif ()
 #############
 # targets
 #############

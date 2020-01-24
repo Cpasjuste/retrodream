@@ -13,21 +13,29 @@ class RetroIo;
 class RetroConfig : public c2d::config::Config {
 
 public:
+
+    enum OptionId {
+        DataPath = 0,
+        LastPath = 1,
+        DsPath = 2,
+        ScreenSize = 3,
+        InputDelay = 4
+    };
+
     explicit RetroConfig(c2d::Io *io);
 
-    std::string getDataPath();
+    std::string get(const OptionId &id);
 
-    std::string getLastPath();
+    void set(const OptionId &id, const std::string &value);
 
-    void setLastPath(const std::string &path);
+    int getInt(const OptionId &id);
 
-    c2d::FloatRect getScreenSize();
+    void setInt(const OptionId &id, int value);
 
-    void setScreenSize(const c2d::FloatRect &rect);
+    c2d::FloatRect getRect(const OptionId &id);
 
-    int getInputDelay();
+    void setRect(const OptionId &id, const c2d::FloatRect &rect);
 
-    void setInputDelay(int ms);
 
 private:
     RetroIo *io = nullptr;

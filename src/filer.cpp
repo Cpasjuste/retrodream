@@ -121,6 +121,9 @@ void Filer::updateLines() {
 bool Filer::getDir(const std::string &p) {
 
     printf("getDir(%s):\n", p.c_str());
+    if (retroDream->getStatusBox() != nullptr) {
+        retroDream->getStatusBox()->show("Please Wait", "Loading: " + p, false, true);
+    }
 
     if (p.empty()) {
         return false;
@@ -131,8 +134,7 @@ bool Filer::getDir(const std::string &p) {
     if (path.size() > 1 && Utility::endsWith(path, "/")) {
         path = Utility::removeLastSlash(path);
     }
-
-    retroDream->getConfig()->setLastPath(path);
+    retroDream->getConfig()->set(RetroConfig::LastPath, path);
 
     std::vector<Io::File> dirList = io->getDirList(path, true);
     if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
@@ -143,43 +145,25 @@ bool Filer::getDir(const std::string &p) {
     for (auto const &fileData : dirList) {
         RetroFile file;
         file.data = fileData;
-
         if (fileData.type == Io::Type::File) {
             if (RetroUtility::isGame(file.data.name)) {
-                //printf("\tI\t%s\n", file.data.name.c_str());
                 file.isGame = true;
                 file.isoPath = file.data.path;
-            } else {
-                //printf("\tF\t%s\n", file.data.name.c_str());
             }
         } else if (fileData.type == Io::Type::Directory) {
+#ifdef NDEBUG
             // lxdream crash
             if (file.data.name == "pc") {
                 continue;
             }
-            // search sub directory for a game (.iso, .cdi, .gdi)
-            std::vector<Io::File> subFiles = io->getDirList(fileData.path);
-            auto gameFile = std::find_if(subFiles.begin(), subFiles.end(), [](const Io::File &f) {
-                return f.type == Io::Type::File && RetroUtility::isGame(f.name);
-            });
+#endif
+            Io::File gameFile = io->findFile(fileData.path, {".iso", ".gdi", ".cdi"}, "track");
             // directory contains a game
-            if (gameFile != subFiles.end()) {
-                //printf("\tI\t%s\n", file.data.name.c_str());
+            if (!gameFile.name.empty()) {
                 file.isGame = true;
-                file.isoPath = gameFile->path;
-                // search for a preview image in the game sub directory
-                auto previewFile = std::find_if(subFiles.begin(), subFiles.end(), [](const Io::File &f) {
-                    return Utility::endsWith(f.name, ".jpg", false)
-                           || Utility::endsWith(f.name, ".png", false);
-                });
-                if (previewFile != subFiles.end()) {
-                    file.preview = previewFile->path;
-                } else {
-                    // DreamShell compatibility
-                    file.preview = RetroUtility::findPath(io, "apps/iso_loader/covers/" + file.data.name + ".jpg");
-                }
-            } else {
-                //printf("\tD\t%s\n", file.data.name.c_str());
+                file.isoPath = gameFile.path;
+                // DreamShell compatibility
+                file.preview = RetroUtility::findPath(io, "apps/iso_loader/covers/" + file.data.name + ".jpg");
             }
         }
 
@@ -368,4 +352,3 @@ void Filer::onUpdate() {
 
     C2DObject::onUpdate();
 }
-
