@@ -7,6 +7,7 @@
 #include "colors.h"
 #include "filer.h"
 #include "utility.h"
+#include "isoloader.h"
 
 using namespace c2d;
 
@@ -50,6 +51,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
 
     retroDream = rd;
     io = retroDream->getRender()->getIo();
+
     setPosition(rect.left, rect.top);
 
     // set default colors
@@ -57,14 +59,14 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     colorFile = COL_BLUE;
 
     // calculate number of lines shown
-    line_height = getSize().y / 13; // 13 lines
-    max_lines = (int) (getSize().y / line_height);
-    if ((float) max_lines * line_height < getSize().y) {
-        line_height = getSize().y / (float) max_lines;
+    line_height = 28;
+    max_lines = (int) (rect.height / line_height);
+    if ((float) max_lines * line_height < rect.height) {
+        line_height = rect.height / (float) max_lines;
     }
 
     // add selection rectangle (highlight)
-    highlight = new RoundedRectangleShape(Vector2f(getSize().x - 2, line_height), 10, 8);
+    highlight = new RoundedRectangleShape(Vector2f(rect.width - 3, line_height), 10, 8);
     highlight->setFillColor(COL_YELLOW);
     highlight->setOutlineColor(COL_BLUE_DARK);
     highlight->setOutlineThickness(2);
@@ -72,7 +74,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
 
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
-        FloatRect r = {1, (line_height * (float) i) + 1, getSize().x - 2, line_height - 2};
+        FloatRect r = {1, (line_height * (float) i) + 1, rect.width - 2, line_height - 2};
         auto line = new Line(r, "", retroDream->getRender()->getFont(),
                              (unsigned int) (line_height - (line_height / 10)));
         lines.push_back(line);
@@ -106,7 +108,11 @@ void Filer::updateLines() {
                         lines[i]->getText()->getFillColor() : highlight->getOutlineColor();
                 highlight->setOutlineColor(color);
                 // handle header title
-                retroDream->getHeader()->setString(lines[i]->getText()->getString());
+                if (file.isGame) {
+                    retroDream->getHeader()->setString(lines[i]->getText()->getString());
+                } else {
+                    retroDream->getHeader()->setString(file.data.path);
+                }
             }
         }
     }
@@ -121,9 +127,7 @@ void Filer::updateLines() {
 bool Filer::getDir(const std::string &p) {
 
     printf("getDir(%s):\n", p.c_str());
-    if (retroDream->getStatusBox() != nullptr) {
-        retroDream->getStatusBox()->show("Please Wait", "Loading: " + p, false, true);
-    }
+    retroDream->showStatus("LOADING...", p);
 
     if (p.empty()) {
         return false;
@@ -163,7 +167,8 @@ bool Filer::getDir(const std::string &p) {
                 file.isGame = true;
                 file.isoPath = gameFile.path;
                 // DreamShell compatibility
-                file.preview = RetroUtility::findPath(io, "apps/iso_loader/covers/" + file.data.name + ".jpg");
+                std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
+                file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(gameFile.name) + ".jpg";
             }
         }
 
@@ -338,15 +343,33 @@ void Filer::onUpdate() {
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
 
-    if (keys > 0 && keys != Input::Delay &&
-        ((keys == Input::Key::Up) || (keys == Input::Key::Down)
-         || (keys == Input::Key::Left) || (keys == Input::Key::Right) || (keys == Input::Key::Fire2))) {
-        previewClock.restart();
+    if (keys > 0 && keys != Input::Delay
+        && keys != Input::Key::Start && keys != Input::Key::Fire1
+        && keys != Input::Key::Fire3 && keys != Input::Key::Fire4) {
         retroDream->getPreview()->unload();
+        previewClock.restart();
+#if 0
+        retroDream->infoBox->text->setString("");
+#endif
     } else if (keys == 0) {
         if (getSelection().isGame && !getSelection().preview.empty() && !retroDream->getPreview()->isLoaded()
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
             retroDream->getPreview()->load(getSelection().preview);
+            retroDream->showStatus("PREVIEW...", getSelection().preview);
+            //malloc_stats();
+#if 0
+            // testing
+            IsoLoader::Config config = IsoLoader::loadConfig(retroDream, getSelection().isoPath);
+            char str[8];
+            snprintf(str, 127, "%i", config.async);
+            retroDream->infoBox->text->setString(
+                    "MEM: " + config.memory
+                    + "\nDMA: " + (config.dma > 0 ? "ON" : "OFF")
+                    + "\nSYNC: " + str
+                    + "\nCDDA: " + (config.cdda > 0 ? "ON" : "OFF")
+                    + "\nLOADER: " + config.device
+            );
+#endif
         }
     }
 

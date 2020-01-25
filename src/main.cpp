@@ -21,7 +21,7 @@ using namespace c2d;
 RetroConfig *retroConfig;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlineThickness)
-        : RectangleShape(size) {
+        : RoundedRectangleShape(size, 10, 8) {
 
     render = r;
 
@@ -35,7 +35,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     setFillColor(COL_BLUE);
     setOutlineColor(COL_BLUE_DARK);
-    setOutlineThickness(outlineThickness);
+    setOutlineThickness(outlineThickness + 6);
 
     /// header text
     FloatRect headerRect = {
@@ -52,42 +52,42 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     header->getText()->setOutlineThickness(2);
     add(header);
 
-    /// preview box
-    float previewSize = (size.x / 2) - 20;
-    preview = new Preview({previewSize, previewSize});
-    preview->setPosition(previewSize + 30, 48);
-    preview->setFillColor(COL_BLUE_DARK);
-    preview->setOutlineColor(Color::White);
-    preview->setOutlineThickness(2);
-    add(preview);
-
     /// filers
-    FloatRect filerRect = {8, 48, (size.x / 2) - 10, size.y - 96};
+    FloatRect filerRect = {
+            PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
+            PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
+    };
     filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::LastPath));
     filerLeft->setFillColor(COL_BLUE_GRAY);
-    filerLeft->setOutlineColor(Color::White);
-    filerLeft->setOutlineThickness(2);
+    filerLeft->setOutlineColor(COL_BLUE_DARK);
+    filerLeft->setOutlineThickness(3);
     filerLeft->setColor(COL_BLUE_DARK, COL_BLUE);
     add(filerLeft);
-
-    /*
-    filerRect = {(size.x / 2) + 4, 64, (size.x / 2) - 10, size.y - (64 + 16)};
-    filerRight = new Filer(this, filerRect, "/");
-    filerRight->setFillColor(COL_BLUE_GRAY);
-    filerRight->setOutlineColor(Color::White);
-    filerRight->setOutlineThickness(2);
-    filerRight->setAlpha(100);
-    filerRight->setVisibility(Visibility::Hidden);
-    add(filerRight);
-    */
-
     filer = filerLeft;
+
+    /// preview box
+    float previewSize = (size.x / 2) - 32;
+    preview = new Preview({previewSize, previewSize});
+    preview->setPosition(previewSize + 52, PERCENT(size.y, 10.0f));
+    preview->setFillColor(COL_BLUE_DARK);
+    preview->setOutlineColor(Color::White);
+    preview->setOutlineThickness(3);
+    add(preview);
+
+    infoBox = new InfoBox({preview->getPosition().x,
+                           preview->getPosition().y + preview->getSize().y + 6,
+                           preview->getSize().x, PERCENT(size.y, 22.2f)});
+    infoBox->setFillColor(COL_BLUE_GRAY);
+    infoBox->setOutlineColor(COL_BLUE_DARK);
+    infoBox->setOutlineThickness(2);
+    infoBox->text->setFillColor(COL_BLUE_DARK);
+    add(infoBox);
 
     // "hide main rect layer"
     blurLayer = new RectangleShape(render->getSize());
     blurLayer->setPosition(-outlineThickness, -outlineThickness);
     blurLayer->setFillColor(Color::Gray);
-    blurLayer->add(new TweenAlpha(0, 200, 0.3));
+    blurLayer->add(new TweenAlpha(0, 230, 0.3));
     blurLayer->setVisibility(Visibility::Hidden);
     add(blurLayer);
 
@@ -103,8 +103,8 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     add(optionMenu);
 
     FloatRect fileMenuRect = {
-            0, size.y / 2,
-            PERCENT(size.x, 40), PERCENT(size.y, 70)
+            size.x, size.y / 2,
+            PERCENT(size.x, 50), PERCENT(size.y, 70)
     };
     fileMenu = new FileMenu(this, fileMenuRect);
     fileMenu->setOrigin(Origin::Left);
@@ -114,7 +114,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     add(fileMenu);
 
     statusBox = new StatusBox(this, {4, getSize().y - 4,
-                                     getSize().x - 16, 36});
+                                     getSize().x - 16, 40});
     statusBox->setOrigin(Origin::BottomLeft);
     statusBox->setLayer(10);
     add(statusBox);
@@ -139,7 +139,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Fire1) {
         Io::Type type = filer->getSelection().data.type;
         if (filer->getSelection().isGame) {
-            IsoLoader::run(render->getIo(), filer->getSelection().isoPath);
+            IsoLoader::run(this, filer->getSelection().isoPath);
         } else if (type == Io::Type::File && RetroUtility::isElf(filer->getSelection().data.name)) {
             RetroUtility::exec(filer->getSelection().data.path);
         } else if (type == Io::Type::Directory) {
@@ -147,17 +147,17 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
         }
     } else if (keys & Input::Key::Fire2) {
         filer->exit();
-    } else if (keys & Input::Key::Fire3) {
+    } else if (keys & Input::Key::Fire4) {
+        Filer::RetroFile file = filer->getSelection();
+        fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
         fileMenu->setVisibility(fileMenu->isVisible() ?
                                 Visibility::Hidden : Visibility::Visible, true);
-        // dc: alpha = nok
-        //blurLayer->setVisibility(fileMenu->getVisibility(), true);
-    } else if (keys & Input::Key::Fire4) {
+        blurLayer->setVisibility(fileMenu->getVisibility(), true);
+    } else if (keys & Input::Key::Fire3) {
     } else if (keys & Input::Key::Start) {
         optionMenu->setVisibility(optionMenu->isVisible() ?
                                   Visibility::Hidden : Visibility::Visible, true);
-        // dc: alpha = nok
-        //blurLayer->setVisibility(optionMenu->getVisibility(), true);
+        blurLayer->setVisibility(optionMenu->getVisibility(), true);
     }
 
     if (keys & EV_QUIT) {
@@ -196,6 +196,12 @@ RetroConfig *RetroDream::getConfig() {
     return retroConfig;
 }
 
+void RetroDream::showStatus(const std::string &title, const std::string &msg) {
+    if (statusBox != nullptr) {
+        statusBox->show(title, msg);
+    }
+}
+
 int main() {
 
 #ifdef __DREAMCAST__
@@ -217,15 +223,6 @@ int main() {
     /// render
     auto *render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     render->setIo(retroIo);
-
-#if defined(__DREAMCAST__) && !defined(NDEBUG)
-    // dc-load "recovery"
-    // flip renderer to update inputs
-    render->flip();
-    if (render->getInput()->getKeys() & Input::Key::Start) {
-        RetroUtility::exec("/rd/dcload-serial.bin");
-    }
-#endif
 
     /// main rect
     FloatRect screenSize = retroConfig->getRect(RetroConfig::ScreenSize);

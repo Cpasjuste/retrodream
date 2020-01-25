@@ -22,6 +22,8 @@ std::string RetroIo::getDataPath() {
             dataPath = "/sd/RD/";
         } else if (exist("/ide/RD")) {
             dataPath = "/ide/RD/";
+        } else if (exist("/cd/RD")) {
+            dataPath = "/cd/RD/";
         }
     }
 

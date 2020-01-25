@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include "cross2d/c2d.h"
+#include "main.h"
 #include "isoloader.h"
 #include "utility.h"
 
@@ -21,7 +22,7 @@ extern "C" {
 }
 #endif
 
-int IsoLoader::run(Io *io, const std::string &path) {
+int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
 
 #ifdef __DREAMCAST__
 #ifdef __EMBEDDED_MODULE_DEBUG__
@@ -32,7 +33,7 @@ int IsoLoader::run(Io *io, const std::string &path) {
         return -1;
     }
 
-    IsoLoader::Config cfg = IsoLoader::loadConfig(io, path);
+    IsoLoader::Config cfg = IsoLoader::loadConfig(retroDream, path);
 
     isoLdr->use_dma = cfg.dma;
     isoLdr->emu_cdda = cfg.cdda;
@@ -43,12 +44,14 @@ int IsoLoader::run(Io *io, const std::string &path) {
 
     // find loader path
     if (cfg.device == std::string("auto")) {
-        std::string p = RetroUtility::findPath(io, "/firmware/isoldr/ide.bin");
+        std::string p = RetroUtility::findPath(retroDream->getRender()->getIo(),
+                                               "/firmware/isoldr/ide.bin");
         if (p.size() > 3) {
             setenv("PATH", Utility::remove(p, "/firmware/isoldr/ide.bin").c_str(), 1);
         }
     } else {
-        std::string p = RetroUtility::findPath(io, "/firmware/isoldr/" + cfg.device + ".bin");
+        std::string p = RetroUtility::findPath(retroDream->getRender()->getIo(),
+                                               "/firmware/isoldr/" + cfg.device + ".bin");
         if (p.size() > 3) {
             setenv("PATH", Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin").c_str(), 1);
         }
@@ -72,13 +75,13 @@ int IsoLoader::run(Io *io, const std::string &path) {
 
 }
 
-IsoLoader::Config IsoLoader::loadConfig(Io *io, const std::string &isoPath) {
+IsoLoader::Config IsoLoader::loadConfig(RetroDream *retroDream, const std::string &isoPath) {
 
     IsoLoader::Config config{};
 
-    getConfigInfo(&config, isoPath);
+    getConfigInfo(retroDream, &config, isoPath);
 
-    char *buf = io->read(config.path);
+    char *buf = retroDream->getRender()->getIo()->read(config.path);
     if (buf == nullptr) {
         printf("IsoLoader::loadConfig: preset not found: %s\n", config.path.c_str());
         return config;
@@ -123,7 +126,7 @@ IsoLoader::Config IsoLoader::loadConfig(Io *io, const std::string &isoPath) {
     return config;
 }
 
-void IsoLoader::saveConfig(c2d::Io *io, const Config &config) {
+void IsoLoader::saveConfig(RetroDream *retroDream, const Config &config) {
 
     char str[1024];
 
@@ -133,10 +136,10 @@ void IsoLoader::saveConfig(c2d::Io *io, const Config &config) {
              "cdda = %d\nfastboot = %d\ntype = %d\nmode = %d\nmemory = %s\n",
              config.title.c_str(), config.device.c_str(), config.dma, config.async,
              config.cdda, config.fastboot, config.type, config.mode, config.memory.c_str());
-    io->write(config.path, str);
+    retroDream->getRender()->getIo()->write(config.path, str);
 }
 
-void IsoLoader::getConfigInfo(Config *config, const std::string &isoPath) {
+void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std::string &isoPath) {
 
     if (config == nullptr || isoPath.empty()) {
         return;
@@ -147,7 +150,7 @@ void IsoLoader::getConfigInfo(Config *config, const std::string &isoPath) {
     uint8 boot_sector[2048];
 
     if (fs_iso_mount("/iso", isoPath.c_str()) != 0) {
-        printf("IsoLoader::getBootSectorMd5: could not mound iso: %s\n", isoPath.c_str());
+        printf("IsoLoader::getConfigInfo: could not mound iso: %s\n", isoPath.c_str());
         return;
     }
 
@@ -164,10 +167,10 @@ void IsoLoader::getConfigInfo(Config *config, const std::string &isoPath) {
 
     fs_iso_unmount("/iso");
 
-    std::string dev;
+    std::string device;
     size_t pos = isoPath.find('/', 1);
     if (pos != std::string::npos) {
-        dev = isoPath.substr(0, pos);
+        device = isoPath.substr(0, pos);
     }
 
     // TODO: do this better
@@ -176,7 +179,8 @@ void IsoLoader::getConfigInfo(Config *config, const std::string &isoPath) {
              md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
              md5[9], md5[10], md5[11], md5[12], md5[13], md5[14], md5[15]);
 
-    config->path = dev + "/DS/apps/iso_loader/presets" + dev + "_" + _md5 + ".cfg";
+    config->path = retroDreamn->getConfig()->get(RetroConfig::DsPath)
+                   + "apps/iso_loader/presets" + device + "_" + _md5 + ".cfg";
 #else
     config->title = "test";
     config->path = c2d_renderer->getIo()->getDataPath() + "RD/test.cfg";

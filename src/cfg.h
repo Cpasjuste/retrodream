@@ -26,15 +26,15 @@ public:
 
     std::string get(const OptionId &id);
 
-    void set(const OptionId &id, const std::string &value);
+    void set(const OptionId &id, const std::string &value, bool save = true);
 
     int getInt(const OptionId &id);
 
-    void setInt(const OptionId &id, int value);
+    void setInt(const OptionId &id, int value, bool save = true);
 
     c2d::FloatRect getRect(const OptionId &id);
 
-    void setRect(const OptionId &id, const c2d::FloatRect &rect);
+    void setRect(const OptionId &id, const c2d::FloatRect &rect, bool save = true);
 
 
 private:

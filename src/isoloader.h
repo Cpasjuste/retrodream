@@ -28,11 +28,11 @@ public:
         std::string path;
     };
 
-    static int run(c2d::Io *io, const std::string &path);
+    static int run(RetroDream *retroDream, const std::string &path);
 
-    static Config loadConfig(c2d::Io *io, const std::string &isoPath);
+    static Config loadConfig(RetroDream *retroDream, const std::string &isoPath);
 
-    static void saveConfig(c2d::Io *io, const Config &config);
+    static void saveConfig(RetroDream *retroDream, const Config &config);
 
 #if defined (__EMBEDDED_MODULE_DEBUG__)
 
@@ -41,7 +41,7 @@ public:
 #endif
 
 private:
-    static void getConfigInfo(Config *config, const std::string &isoPath);
+    static void getConfigInfo(RetroDream *retroDream, Config *config, const std::string &isoPath);
 
 };
 

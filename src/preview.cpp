@@ -10,10 +10,10 @@ using namespace c2d;
 Preview::Preview(const Vector2f &size)
         : RoundedRectangleShape(size, 10, 8) {
 
-    textureHolder = new Rectangle({getSize().x / 2, getSize().y / 2,
-                                   getSize().x - 16, getSize().y - 16});
+    textureHolder = new Rectangle({size.x / 2, size.y / 2,
+                                   size.x - 16, size.y - 16});
     textureHolder->setOrigin(Origin::Center);
-    textureHolder->add(new TweenScale({0, 0}, {1, 1}, 0.2f));
+    textureHolder->add(new TweenScale({0.1, 0.1}, {1, 1}, 0.1f));
     textureHolder->setVisibility(Visibility::Hidden);
     add(textureHolder);
 }
@@ -44,8 +44,8 @@ void Preview::load(const std::string &path) {
     texture->setOrigin(Origin::Center);
     texture->setPosition(Vector2f(textureHolder->getSize().x / 2, textureHolder->getSize().y / 2));
     float tex_scaling = std::min(
-            textureHolder->getSize().x / texture->getTextureRect().width,
-            textureHolder->getSize().y / texture->getTextureRect().height);
+            textureHolder->getSize().x / (float) texture->getTextureRect().width,
+            textureHolder->getSize().y / (float) texture->getTextureRect().height);
     texture->setScale(tex_scaling, tex_scaling);
     textureHolder->add(texture);
     textureHolder->setVisibility(Visibility::Visible, true);

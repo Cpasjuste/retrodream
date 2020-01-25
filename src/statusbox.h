@@ -19,8 +19,6 @@ public:
 
     void hide();
 
-    void setAlpha(uint8_t alpha, bool recursive = false) override;
-
 private:
 
     virtual void onDraw(c2d::Transform &transform, bool draw = true) override;
@@ -30,8 +28,7 @@ private:
     c2d::Texture *icon;
     c2d::Text *titleText;
     c2d::Text *messageText;
-    c2d::TweenAlpha *tween;
-    c2d::Clock *clock;
+    c2d::C2DClock clock;
     //SDL_mutex *mutex;
     bool infinite = false;
 };

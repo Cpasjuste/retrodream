@@ -15,12 +15,16 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     retroDream = rd;
 
     title = new Text("FILE OPTION", 36);
-    title->setOrigin(Origin::Right);
-    title->setPosition(rect.width - 16, -22);
+    title->setOrigin(Origin::Left);
+    title->setPosition(16, -22);
     title->setOutlineThickness(4);
     title->setOutlineColor(COL_BLUE_DARK);
     add(title);
 
-    add(new TweenPosition({-(rect.width + 10), rect.top}, {-16, rect.top}, 0.3f));
+    add(new TweenPosition({rect.left + 10, rect.top}, {rect.left - (rect.width - 16), rect.top}, 0.3f));
     setVisibility(Visibility::Hidden);
+}
+
+void FileMenu::setTitle(const std::string &text) {
+    title->setString(text);
 }

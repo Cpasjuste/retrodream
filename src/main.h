@@ -12,8 +12,9 @@
 #include "optionmenu.h"
 #include "filemenu.h"
 #include "statusbox.h"
+#include "infobox.h"
 
-class RetroDream : public c2d::RectangleShape {
+class RetroDream : public c2d::RoundedRectangleShape {
 
 public:
 
@@ -35,11 +36,11 @@ public:
         return filer;
     }
 
-    StatusBox *getStatusBox() {
-        return statusBox;
-    }
+    void showStatus(const std::string &title, const std::string &msg);
 
     RetroConfig *getConfig();
+
+    InfoBox *infoBox = nullptr;
 
     bool quit = false;
 
