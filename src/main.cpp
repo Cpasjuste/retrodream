@@ -124,8 +124,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (keys & Input::Key::Fire3) {
-    } else if (keys & Input::Key::Fire4) {
+    if (keys & Input::Key::Fire4) {
         Filer::RetroFile file = filer->getSelection();
         optionMenu->setVisibility(Visibility::Hidden, true);
         fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");

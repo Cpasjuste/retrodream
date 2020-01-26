@@ -22,7 +22,9 @@ public:
 
     void setTitle(const std::string &text);
 
-    virtual void setVisibility(c2d::Visibility visibility, bool tweenPlay = false);
+    void setVisibility(c2d::Visibility visibility, bool tweenPlay = false) override;
+
+    bool onInput(c2d::Input::Player *players) override;
 
 private:
 

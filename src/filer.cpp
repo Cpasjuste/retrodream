@@ -35,7 +35,6 @@ void Line::setSize(float width, float height) {
 }
 
 void Line::setString(const std::string &string) {
-    //printf("setString: %s\n", string.c_str());
     text->setString(Utility::toUpper(string));
 }
 
@@ -331,7 +330,9 @@ int Filer::getIndex() {
 
 void Filer::onUpdate() {
 
-    if (!isVisible()) {
+    if (!isVisible()
+        || retroDream->getOptionMenu()->isVisible()
+        || retroDream->getFileMenu()->isVisible()) {
         return;
     }
 
@@ -347,7 +348,6 @@ void Filer::onUpdate() {
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
             retroDream->getPreview()->load(getSelection().preview);
             retroDream->showStatus("PREVIEW...", getSelection().preview);
-            //malloc_stats();
         }
     }
 
