@@ -146,18 +146,23 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
     }
 
 #ifdef __DREAMCAST__
+    printf("IsoLoader::getConfigInfo: %s\n", isoPath.c_str());
+
     uint8 md5[16];
     uint8 boot_sector[2048];
 
+    printf("IsoLoader::getConfigInfo: fs_iso_mount\n");
     if (fs_iso_mount("/iso", isoPath.c_str()) != 0) {
         printf("IsoLoader::getConfigInfo: could not mound iso: %s\n", isoPath.c_str());
         return;
     }
 
+    printf("IsoLoader::getConfigInfo: fs_iso_first_file\n");
     file_t fd;
     fd = fs_iso_first_file("/iso");
 
     if (fd != FILEHND_INVALID) {
+        printf("IsoLoader::getConfigInfo: fs_ioctl\n");
         if (fs_ioctl(fd, (int) boot_sector, ISOFS_IOCTL_GET_BOOT_SECTOR_DATA) > -1) {
             kos_md5(boot_sector, sizeof(boot_sector), md5);
         }
@@ -165,6 +170,7 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
         fs_close(fd);
     }
 
+    printf("IsoLoader::getConfigInfo: fs_iso_unmount\n");
     fs_iso_unmount("/iso");
 
     std::string device;
@@ -181,6 +187,8 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
 
     config->path = retroDreamn->getConfig()->get(RetroConfig::DsPath)
                    + "apps/iso_loader/presets" + device + "_" + _md5 + ".cfg";
+
+    printf("IsoLoader::getConfigInfo: config->path: %s\n", config->path.c_str());
 #else
     config->title = "test";
     config->path = c2d_renderer->getIo()->getDataPath() + "RD/test.cfg";

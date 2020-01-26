@@ -27,20 +27,20 @@ StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect)
     icon->add(new TweenRotation(0, 360, 2, TweenLoop::Loop));
     add(icon);
 
-    titleText = new Text("Please Wait...", (unsigned int) (rect.height * 0.6f));
+    titleText = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
     titleText->setFillColor(COL_RED);
     titleText->setOutlineColor(Color::Black);
     titleText->setOutlineThickness(1);
-    titleText->setPosition(icon->getPosition().x + (icon->getSize().x / 2) - 5, 0);
+    titleText->setPosition(icon->getPosition().x + (icon->getSize().x / 2) - 8, 0);
     add(titleText);
 
-    messageText = new Text("Doing something in background, please wait", (unsigned int) (rect.height * 0.4f));
+    messageText = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE_SMALL);
     messageText->setFillColor(COL_RED);
     messageText->setOutlineColor(Color::Black);
     messageText->setOutlineThickness(1);
     messageText->setOrigin(Origin::BottomLeft);
     messageText->setPosition(icon->getPosition().x + (icon->getSize().x / 2) - 5, rect.height - 2);
-    messageText->setSizeMax(rect.width - icon->getSize().x - 16, 0);
+    messageText->setSizeMax(rect.width - icon->getSize().x + 10, 0);
     add(messageText);
 
     clock.restart();
@@ -57,12 +57,13 @@ StatusBox::~StatusBox() {
 void StatusBox::show(const std::string &title, const std::string &message, bool inf, bool drawNow) {
 
     //SDL_LockMutex(mutex);
-    titleText->setString(title);
-    messageText->setString(message);
+    titleText->setString(Utility::toUpper(title));
+    messageText->setString(Utility::toUpper(message));
     //SDL_UnlockMutex(mutex);
 
     infinite = inf;
     clock.restart();
+    icon->setVisibility(Visibility::Visible, true);
     setVisibility(Visibility::Visible, true);
     if (drawNow) {
         for (int i = 0; i < 10; i++) {

@@ -12,7 +12,11 @@
 #include "optionmenu.h"
 #include "filemenu.h"
 #include "statusbox.h"
+#include "utility.h"
 #include "infobox.h"
+
+#define FONT_SIZE 24
+#define FONT_SIZE_SMALL 16
 
 class RetroDream : public c2d::RoundedRectangleShape {
 
@@ -36,12 +40,19 @@ public:
         return filer;
     }
 
+    FileMenu *getFileMenu() {
+        return fileMenu;
+    }
+
+    OptionMenu *getOptionMenu() {
+        return optionMenu;
+    }
+
     void showStatus(const std::string &title, const std::string &msg);
 
     RetroConfig *getConfig();
 
     InfoBox *infoBox = nullptr;
-
     bool quit = false;
 
 private:
@@ -54,7 +65,7 @@ private:
     c2d::C2DClock timer;
     Filer *filer = nullptr;
     Filer *filerLeft = nullptr;
-    Filer *filerRight = nullptr;
+    //Filer *filerRight = nullptr;
     Header *header = nullptr;
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;

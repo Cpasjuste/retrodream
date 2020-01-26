@@ -14,7 +14,7 @@ OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect)
 
     retroDream = rd;
 
-    title = new Text("RETRODREAM OPTIONS", 36);
+    title = new Text("RETRODREAM OPTIONS", FONT_SIZE);
     title->setOrigin(Origin::Right);
     title->setPosition(rect.width - 16, -22);
     title->setOutlineThickness(4);

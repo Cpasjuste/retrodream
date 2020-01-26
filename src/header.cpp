@@ -2,8 +2,8 @@
 // Created by cpasjuste on 16/01/2020.
 //
 
-#include "header.h"
-#include "utility.h"
+#include "cross2d/c2d.h"
+#include "main.h"
 
 using namespace c2d;
 
@@ -15,8 +15,8 @@ Header::Header(const c2d::FloatRect &rect)
         : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     setPosition(rect.left, rect.top);
-    float charSize = rect.height - 5;
-    text = new Text("RetroDream", (unsigned int) charSize);
+    float charSize = FONT_SIZE;
+    text = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", (unsigned int) charSize);
     text->setOrigin(Origin::Left);
     text->setPosition(PERCENT(rect.width, 2), (rect.height / 2) - 1);
     text->setSizeMax(rect.width - charSize - 10, 0);

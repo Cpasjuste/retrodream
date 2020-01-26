@@ -75,13 +75,17 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     add(preview);
 
     infoBox = new InfoBox({preview->getPosition().x,
-                           preview->getPosition().y + preview->getSize().y + 6,
+                           preview->getPosition().y + preview->getSize().y + 8,
                            preview->getSize().x, PERCENT(size.y, 22.2f)});
     infoBox->setFillColor(COL_BLUE_GRAY);
     infoBox->setOutlineColor(COL_BLUE_DARK);
     infoBox->setOutlineThickness(2);
     infoBox->text->setFillColor(COL_BLUE_DARK);
     add(infoBox);
+
+    statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});
+    statusBox->setOrigin(Origin::BottomLeft);
+    add(statusBox);
 
     // "hide main rect layer"
     blurLayer = new RectangleShape(render->getSize());
@@ -90,6 +94,15 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     blurLayer->add(new TweenAlpha(0, 230, 0.3));
     blurLayer->setVisibility(Visibility::Hidden);
     add(blurLayer);
+
+    FloatRect fileMenuRect = {
+            previewSize + 52, PERCENT(size.y, 10.0f),
+            previewSize + 32, previewSize};
+    fileMenu = new FileMenu(this, fileMenuRect);
+    fileMenu->setFillColor(COL_BLUE);
+    fileMenu->setOutlineColor(COL_BLUE_DARK);
+    fileMenu->setOutlineThickness(6);
+    add(fileMenu);
 
     FloatRect optionMenuRect = {
             size.x / 2, size.y,
@@ -102,23 +115,6 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     optionMenu->setOutlineThickness(6);
     add(optionMenu);
 
-    FloatRect fileMenuRect = {
-            size.x, size.y / 2,
-            PERCENT(size.x, 50), PERCENT(size.y, 70)
-    };
-    fileMenu = new FileMenu(this, fileMenuRect);
-    fileMenu->setOrigin(Origin::Left);
-    fileMenu->setFillColor(COL_BLUE);
-    fileMenu->setOutlineColor(COL_BLUE_DARK);
-    fileMenu->setOutlineThickness(6);
-    add(fileMenu);
-
-    statusBox = new StatusBox(this, {4, getSize().y - 4,
-                                     getSize().x - 16, 40});
-    statusBox->setOrigin(Origin::BottomLeft);
-    statusBox->setLayer(10);
-    add(statusBox);
-
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
     render->getInput()->setRepeatDelay(inputDelay);
     timer.restart();
@@ -128,33 +124,16 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (keys & Input::Key::Up) {
-        filer->up();
-    } else if (keys & Input::Key::Down) {
-        filer->down();
-    } else if (keys & Input::Key::Right) {
-        filer->setSelection(filer->getIndex() + filer->getMaxLines());
-    } else if (keys & Input::Key::Left) {
-        filer->setSelection(filer->getIndex() - filer->getMaxLines());
-    } else if (keys & Input::Key::Fire1) {
-        Io::Type type = filer->getSelection().data.type;
-        if (filer->getSelection().isGame) {
-            IsoLoader::run(this, filer->getSelection().isoPath);
-        } else if (type == Io::Type::File && RetroUtility::isElf(filer->getSelection().data.name)) {
-            RetroUtility::exec(filer->getSelection().data.path);
-        } else if (type == Io::Type::Directory) {
-            filer->enter(filer->getIndex());
-        }
-    } else if (keys & Input::Key::Fire2) {
-        filer->exit();
+    if (keys & Input::Key::Fire3) {
     } else if (keys & Input::Key::Fire4) {
         Filer::RetroFile file = filer->getSelection();
+        optionMenu->setVisibility(Visibility::Hidden, true);
         fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
         fileMenu->setVisibility(fileMenu->isVisible() ?
                                 Visibility::Hidden : Visibility::Visible, true);
         blurLayer->setVisibility(fileMenu->getVisibility(), true);
-    } else if (keys & Input::Key::Fire3) {
     } else if (keys & Input::Key::Start) {
+        fileMenu->setVisibility(Visibility::Hidden, true);
         optionMenu->setVisibility(optionMenu->isVisible() ?
                                   Visibility::Hidden : Visibility::Visible, true);
         blurLayer->setVisibility(optionMenu->getVisibility(), true);
@@ -164,7 +143,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
         quit = true;
     }
 
-    return RectangleShape::onInput(players);
+    return C2DObject::onInput(players);
 }
 
 void RetroDream::onDraw(Transform &transform, bool draw) {
