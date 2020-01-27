@@ -185,12 +185,12 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg) {
 int main() {
 
     /// render
-    auto *render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+    auto render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
 
     /// splash
-    RectangleShape *splash = new RectangleShape({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+    auto splash = new C2DRectangle({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     splash->setFillColor(COL_BLUE_GRAY);
-    C2DTexture *splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
+    auto splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
     splash->add(splashTex);
