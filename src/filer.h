@@ -52,7 +52,7 @@ public:
         Game
     };
 
-    Filer(RetroDream *retroDream, const c2d::FloatRect &rect, const std::string &path);
+    Filer(RetroDream *retroDream, const c2d::FloatRect &rect, const std::string &path, int lineSpacing = 2);
 
     bool getDir(const std::string &path);
 

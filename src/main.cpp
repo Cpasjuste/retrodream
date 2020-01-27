@@ -27,11 +27,11 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
 #ifdef __PLATFORM_LINUX__
     Font *font = new Font();
-    font->loadFromFile(render->getIo()->getDataPath() + "/magnum.ttf");
+    font->loadFromFile(render->getIo()->getDataPath() + "/future.ttf");
     render->setFont(font);
 #endif
     render->getFont()->setFilter(Texture::Filter::Point);
-    render->getFont()->setOffset({0, -2});
+    render->getFont()->setOffset({0, 5});
 
     setFillColor(COL_BLUE);
     setOutlineColor(COL_BLUE_DARK);
@@ -57,7 +57,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
             PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
             PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
     };
-    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::LastPath));
+    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::LastPath), 12);
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(COL_BLUE_DARK);
     filerLeft->setOutlineThickness(3);

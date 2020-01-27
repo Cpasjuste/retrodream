@@ -18,7 +18,7 @@ Line::Line(const FloatRect &rect, const std::string &str, Font *font, unsigned i
     text->setOutlineThickness(2);
     text->setOrigin(Origin::Left);
     text->setPosition(6, rect.height / 2);
-    text->setSizeMax(rect.width - ((float) fontSize), 0);
+    text->setSizeMax(rect.width - ((float) fontSize) - 4, 0);
 
     setFillColor(Color::Transparent);
 
@@ -46,7 +46,7 @@ Text *Line::getText() {
     return text;
 }
 
-Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path)
+Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path, int lineSpacing)
         : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     retroDream = rd;
@@ -59,7 +59,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     colorFile = COL_BLUE;
 
     // calculate number of lines shown
-    line_height = FONT_SIZE + 2;
+    line_height = FONT_SIZE + lineSpacing;
     max_lines = (int) (rect.height / line_height);
     if ((float) max_lines * line_height < rect.height) {
         line_height = rect.height / (float) max_lines;

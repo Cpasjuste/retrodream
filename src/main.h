@@ -15,7 +15,7 @@
 #include "utility.h"
 #include "infobox.h"
 
-#define FONT_SIZE 24
+#define FONT_SIZE 15
 #define FONT_SIZE_SMALL 16
 
 class RetroDream : public c2d::RoundedRectangleShape {

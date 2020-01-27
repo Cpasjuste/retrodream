@@ -34,12 +34,13 @@ StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect)
     titleText->setPosition(icon->getPosition().x + (icon->getSize().x / 2) - 8, 0);
     add(titleText);
 
-    messageText = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE_SMALL);
+    messageText = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
+    messageText->setScale(0.85f, 0.85f);
     messageText->setFillColor(COL_RED);
     messageText->setOutlineColor(Color::Black);
     messageText->setOutlineThickness(1);
-    messageText->setOrigin(Origin::BottomLeft);
-    messageText->setPosition(icon->getPosition().x + (icon->getSize().x / 2) - 5, rect.height - 2);
+    //messageText->setOrigin(Origin::BottomLeft);
+    messageText->setPosition(titleText->getPosition().x, titleText->getPosition().y + FONT_SIZE + 8);
     messageText->setSizeMax(rect.width - icon->getSize().x + 10, 0);
     add(messageText);
 

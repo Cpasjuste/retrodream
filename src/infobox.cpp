@@ -12,7 +12,7 @@ InfoBox::InfoBox(const c2d::FloatRect &rect)
         : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     setPosition(rect.left, rect.top);
-    text = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE_SMALL);
+    text = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
     text->setString("");
     text->setPosition(6, 4);
     text->setOutlineColor(Color::Black);
