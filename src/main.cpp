@@ -189,7 +189,7 @@ int main() {
 
     /// splash
     auto splash = new C2DRectangle({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
-    splash->setFillColor(COL_BLUE_GRAY);
+    splash->setFillColor(Color::White);
     auto splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);

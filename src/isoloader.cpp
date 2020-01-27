@@ -40,22 +40,30 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
     isoLdr->emu_async = cfg.async;
     isoLdr->fast_boot = cfg.fastboot;
     isoLdr->boot_mode = cfg.mode;
-    isoLdr->exec.type = cfg.type;
+    if (cfg.type != BIN_TYPE_AUTO) {
+        isoLdr->exec.type = cfg.type;
+    }
 
     // find loader path
+    std::string loaderPath;
     if (cfg.device == std::string("auto")) {
         std::string p = RetroUtility::findPath(retroDream->getRender()->getIo(),
-                                               "/firmware/isoldr/ide.bin");
-        if (p.size() > 3) {
-            setenv("PATH", Utility::remove(p, "/firmware/isoldr/ide.bin").c_str(), 1);
+                                               "DS/firmware/isoldr/ide.bin");
+        if (!p.empty()) {
+            printf("IsoLoader::run: loaderPath: %s\n", loaderPath.c_str());
+            loaderPath = Utility::remove(p, "/firmware/isoldr/ide.bin");
+            strncpy(isoLdr->fs_dev, "ide", 7);
         }
     } else {
         std::string p = RetroUtility::findPath(retroDream->getRender()->getIo(),
-                                               "/firmware/isoldr/" + cfg.device + ".bin");
-        if (p.size() > 3) {
-            setenv("PATH", Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin").c_str(), 1);
+                                               "DS/firmware/isoldr/" + cfg.device + ".bin");
+        if (!p.empty()) {
+            printf("IsoLoader::run: loaderPath: %s\n", loaderPath.c_str());
+            loaderPath = Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin");
+            strncpy(isoLdr->fs_dev, cfg.device.c_str(), 7);
         }
     }
+    setenv("PATH", loaderPath.c_str(), 1);
 
     isoldr_exec(isoLdr, strtoul(cfg.memory.c_str(), nullptr, 16));
 
