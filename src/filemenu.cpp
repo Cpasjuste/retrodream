@@ -6,7 +6,6 @@
 #include "main.h"
 #include "colors.h"
 #include "filemenu.h"
-#include "isoloader.h"
 
 using namespace c2d;
 
@@ -44,14 +43,14 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
 
     FloatRect configRect = {16, 16, rect.width - 32, rect.height - 64};
     configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect);
-    configGroup.addOption({"BOOT:", {"DIRECT", "IP.BIN", "IP.BIN (TRUNC)"}, 0, Boot});
-    configGroup.addOption({"MEMORY:", FileMenuMemAddr, 0, Memory});
-    configGroup.addOption({"DMA:", {"OFF", "ON"}, 0, Dma});
-    configGroup.addOption({"SYNC:", {"OFF", "1", "2", "3", "4", "5", "6", "7", "8", "16"}, 0, Sync});
-    configGroup.addOption({"CDDA:", {"OFF", "ON"}, 0, Cdda});
-    configGroup.addOption({"LOADER:", {"AUTO", "CD", "SD", "IDE", "PC", "5", "6", "7", "8"}, 0, Loader});
-    configGroup.addOption({"OS:", {"AUTO", "HOMEBREW", "KATANA", "WINCE"}, 0, Os});
-    configBox->load(&configGroup);
+    presetConfig.addOption({"BOOT:", {"DIRECT", "IP.BIN", "IP.BIN (CUT)"}, 0, Mode});
+    presetConfig.addOption({"MEMORY:", FileMenuMemAddr, 0, Memory});
+    presetConfig.addOption({"DMA:", {"OFF", "ON"}, 0, Dma});
+    presetConfig.addOption({"SYNC:", {"OFF", "1", "2", "3", "4", "5", "6", "7", "8", "16"}, 0, Async});
+    presetConfig.addOption({"CDDA:", {"OFF", "ON"}, 0, Cdda});
+    presetConfig.addOption({"LOADER:", {"AUTO", "1", "2", "3", "4", "5", "6", "7", "8"}, 0, Device});
+    presetConfig.addOption({"OS:", {"AUTO", "HOMEBREW", "KATANA", "WINCE"}, 0, Type});
+    configBox->load(&presetConfig);
 
     configBox->getListBoxLeft()->setFillColor(COL_BLUE);
     configBox->getListBoxLeft()->setTextOutlineColor(Color::Black);
@@ -81,29 +80,47 @@ void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     if (visibility == Visibility::Visible) {
         Filer::RetroFile file = retroDream->getFiler()->getSelection();
         if (file.isGame) {
-            IsoLoader::Config config = IsoLoader::loadConfig(retroDream, file.isoPath);
-            configGroup.getOption(Boot)->setChoicesIndex(config.mode);
-            configGroup.getOption(Memory)->setChoicesIndex(config.memory);
-            configGroup.getOption(Dma)->setChoicesIndex(config.dma);
-            if (config.async < 1) {
-                configGroup.getOption(Sync)->setChoicesIndex(0);
+            isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.isoPath);
+            presetConfig.getOption(Mode)->setChoicesIndex(isoLoaderConfig.mode);
+            presetConfig.getOption(Memory)->setChoicesIndex(Utility::toUpper(isoLoaderConfig.memory));
+            presetConfig.getOption(Dma)->setChoicesIndex(isoLoaderConfig.dma);
+            if (isoLoaderConfig.async < 1) {
+                presetConfig.getOption(Async)->setChoicesIndex(0);
             } else {
-                configGroup.getOption(Sync)->setChoicesIndex(Utility::toString(config.async));
+                presetConfig.getOption(Async)->setChoicesIndex(Utility::toString(isoLoaderConfig.async));
             }
-            configGroup.getOption(Cdda)->setChoicesIndex(config.cdda);
-            if (config.device == "auto") {
-                configGroup.getOption(Loader)->setChoicesIndex(0);
+            presetConfig.getOption(Cdda)->setChoicesIndex(isoLoaderConfig.cdda);
+            if (isoLoaderConfig.device == "auto") {
+                presetConfig.getOption(Device)->setChoicesIndex(0);
             } else {
-                configGroup.getOption(Loader)->setChoicesIndex(config.device);
+                presetConfig.getOption(Device)->setChoicesIndex(isoLoaderConfig.device);
             }
-            configGroup.getOption(Os)->setChoicesIndex(config.type);
-            configBox->load(&configGroup);
+            presetConfig.getOption(Type)->setChoicesIndex(isoLoaderConfig.type);
+            configBox->load(&presetConfig);
         } else {
             // TODO: handle files operations
         }
     }
 
     RoundedRectangleShape::setVisibility(visibility, tweenPlay);
+}
+
+void FileMenu::save() {
+    if (dirty) {
+        isoLoaderConfig.device = Utility::toLower(presetConfig.getOption(Device)->getString());
+        isoLoaderConfig.dma = presetConfig.getOption(Dma)->getChoiceIndex();
+        isoLoaderConfig.cdda = presetConfig.getOption(Cdda)->getChoiceIndex();
+        isoLoaderConfig.mode = presetConfig.getOption(Mode)->getChoiceIndex();
+        isoLoaderConfig.type = presetConfig.getOption(Type)->getChoiceIndex();
+        isoLoaderConfig.memory = Utility::toLower(presetConfig.getOption(Memory)->getString());
+        if (presetConfig.getOption(Async)->getString() == "OFF") {
+            isoLoaderConfig.async = 0;
+        } else {
+            isoLoaderConfig.async = Utility::parseInt(presetConfig.getOption(Async)->getString());
+        }
+        IsoLoader::saveConfig(retroDream, isoLoaderConfig);
+        dirty = false;
+    }
 }
 
 bool FileMenu::onInput(c2d::Input::Player *players) {
@@ -116,10 +133,14 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
         configBox->navigate(ConfigBox::Navigation::Down);
     } else if (keys & Input::Key::Right) {
         configBox->navigate(ConfigBox::Navigation::Right);
+        dirty = true;
     } else if (keys & Input::Key::Left) {
         configBox->navigate(ConfigBox::Navigation::Left);
+        dirty = true;
     } else if (keys & Input::Key::Fire2) {
-        // TODO: save
+        save();
+        retroDream->getBlur()->setVisibility(Visibility::Hidden, true);
+        setVisibility(Visibility::Hidden, true);
     }
 
     return true;

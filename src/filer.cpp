@@ -153,9 +153,12 @@ bool Filer::getDir(const std::string &p) {
             if (RetroUtility::isGame(file.data.name)) {
                 file.isGame = true;
                 file.isoPath = file.data.path;
+                // DreamShell compatibility
+                std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
+                file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(file.data.name) + ".jpg";
             }
         } else if (fileData.type == Io::Type::Directory) {
-            Io::File gameFile = io->findFile(fileData.path, {".iso", ".gdi", ".cdi"}, "track");
+            Io::File gameFile = io->findFile(fileData.path, {".gdi"}, "track");
             // directory contains a game
             if (!gameFile.name.empty()) {
                 file.isGame = true;

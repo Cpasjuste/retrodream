@@ -130,11 +130,13 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
         fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
         fileMenu->setVisibility(fileMenu->isVisible() ?
                                 Visibility::Hidden : Visibility::Visible, true);
+        fileMenu->save();
         blurLayer->setVisibility(fileMenu->getVisibility(), true);
     } else if (keys & Input::Key::Start) {
-        fileMenu->setVisibility(Visibility::Hidden, true);
         optionMenu->setVisibility(optionMenu->isVisible() ?
                                   Visibility::Hidden : Visibility::Visible, true);
+        fileMenu->setVisibility(Visibility::Hidden, true);
+        fileMenu->save();
         blurLayer->setVisibility(optionMenu->getVisibility(), true);
     }
 
@@ -204,12 +206,29 @@ int main() {
 
     /// main rect
     FloatRect screenSize = retroConfig->getRect(RetroConfig::ScreenSize);
+
+    // splash
+    RectangleShape *splashRect = new RectangleShape(screenSize);
+    splashRect->setFillColor(COL_BLUE_GRAY);
+    C2DTexture *splashTex = new C2DTexture(retroIo->getRomFsPath() + "skin/splash.png");
+    splashTex->setOrigin(Origin::Center);
+    splashTex->setPosition(screenSize.width / 2, screenSize.height / 2);
+    splashRect->add(splashTex);
+    render->add(splashRect);
+    for (int i = 0; i < 5; i++) {
+        render->flip();
+    }
+
+    /// main rect
     float outline = 6;
     FloatRect rect = {screenSize.left + outline, screenSize.top + outline,
                       screenSize.width - outline * 2, screenSize.height - outline * 2};
     auto *retroDream = new RetroDream(render, {rect.width, rect.height}, outline);
     retroDream->setPosition(rect.left, rect.top);
     render->add(retroDream);
+
+    // delete splash
+    delete (splashRect);
 
     while (!retroDream->quit) {
         render->flip();

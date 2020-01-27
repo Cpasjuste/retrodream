@@ -48,6 +48,10 @@ public:
         return optionMenu;
     }
 
+    c2d::RectangleShape *getBlur() {
+        return blurLayer;
+    }
+
     void showStatus(const std::string &title, const std::string &msg);
 
     RetroConfig *getConfig();

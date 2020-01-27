@@ -128,8 +128,7 @@ IsoLoader::Config IsoLoader::loadConfig(RetroDream *retroDream, const std::strin
 
 void IsoLoader::saveConfig(RetroDream *retroDream, const Config &config) {
 
-    char str[1024];
-
+    char str[512];
     memset(str, 0, sizeof(str));
     snprintf(str, sizeof(str),
              "title = %s\ndevice = %s\ndma = %d\nasync = %d\n"
