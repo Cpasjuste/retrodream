@@ -127,7 +127,7 @@ void Filer::updateLines() {
 bool Filer::getDir(const std::string &p) {
 
     printf("getDir(%s):\n", p.c_str());
-    retroDream->showStatus("LOADING...", p);
+    retroDream->showStatus("LOADING DIRECTORY...", p);
 
     if (p.empty()) {
         return false;
@@ -350,7 +350,7 @@ void Filer::onUpdate() {
         if (getSelection().isGame && !getSelection().preview.empty() && !retroDream->getPreview()->isLoaded()
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
             retroDream->getPreview()->load(getSelection().preview);
-            retroDream->showStatus("PREVIEW...", getSelection().preview);
+            retroDream->showStatus("LOADING PREVIEW...", getSelection().preview);
         }
     }
 

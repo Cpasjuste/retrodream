@@ -57,7 +57,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
             PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
             PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
     };
-    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::LastPath), 12);
+    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::LastPath), 10);
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(COL_BLUE_DARK);
     filerLeft->setOutlineThickness(3);
@@ -184,6 +184,24 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg) {
 
 int main() {
 
+    /// render
+    auto *render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+
+    /// splash
+    RectangleShape *splash = new RectangleShape({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+    splash->setFillColor(COL_BLUE_GRAY);
+    C2DTexture *splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
+    splashTex->setOrigin(Origin::Center);
+    splashTex->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
+    splash->add(splashTex);
+    render->add(splash);
+    for (int i = 0; i < 5; i++) {
+        render->flip();
+    }
+    // delete splash
+    delete (splash);
+    /// splash
+
 #ifdef __DREAMCAST__
 #ifdef NDEBUG
     InitSDCard();
@@ -199,27 +217,10 @@ int main() {
     retroConfig = new RetroConfig(retroIo);
     printf("data_path: %s\n", retroConfig->get(RetroConfig::DataPath).c_str());
     printf("last_path: %s\n", retroConfig->get(RetroConfig::LastPath).c_str());
-
-    /// render
-    auto *render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     render->setIo(retroIo);
 
     /// main rect
     FloatRect screenSize = retroConfig->getRect(RetroConfig::ScreenSize);
-
-    // splash
-    RectangleShape *splashRect = new RectangleShape(screenSize);
-    splashRect->setFillColor(COL_BLUE_GRAY);
-    C2DTexture *splashTex = new C2DTexture(retroIo->getRomFsPath() + "skin/splash.png");
-    splashTex->setOrigin(Origin::Center);
-    splashTex->setPosition(screenSize.width / 2, screenSize.height / 2);
-    splashRect->add(splashTex);
-    render->add(splashRect);
-    for (int i = 0; i < 5; i++) {
-        render->flip();
-    }
-
-    /// main rect
     float outline = 6;
     FloatRect rect = {screenSize.left + outline, screenSize.top + outline,
                       screenSize.width - outline * 2, screenSize.height - outline * 2};
@@ -227,9 +228,7 @@ int main() {
     retroDream->setPosition(rect.left, rect.top);
     render->add(retroDream);
 
-    // delete splash
-    delete (splashRect);
-
+    // let's go
     while (!retroDream->quit) {
         render->flip();
     }

@@ -42,7 +42,7 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     add(title);
 
     FloatRect configRect = {16, 16, rect.width - 32, rect.height - 64};
-    configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect);
+    configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect, FONT_SIZE + 10);
     presetConfig.addOption({"BOOT:", {"DIRECT", "IP.BIN", "IP.BIN (CUT)"}, 0, Mode});
     presetConfig.addOption({"MEMORY:", FileMenuMemAddr, 0, Memory});
     presetConfig.addOption({"DMA:", {"OFF", "ON"}, 0, Dma});
