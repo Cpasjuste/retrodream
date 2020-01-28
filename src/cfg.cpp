@@ -39,9 +39,9 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
     if (!io->exist(path)) {
         printf("RetroConfig::DataPath '%s' doesn't exist, restoring default: '%s'\n",
                path.c_str(), io->getDataPath().c_str());
-        path = io->getDataPath();
+        path = Utility::removeLastSlash(io->getDataPath());
         io->create(path);
-        set(DataPath, path, false);
+        set(DataPath, path + "/", false);
         saveNeeded = true;
     }
     path = getGroup("main")->getOption(LastPath)->getString();
