@@ -14,8 +14,16 @@ InfoBox::InfoBox(const c2d::FloatRect &rect)
     setPosition(rect.left, rect.top);
     text = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
     text->setString("");
-    text->setPosition(6, 4);
+    text->setPosition(10, 10);
     text->setOutlineColor(Color::Black);
-    text->setOutlineThickness(1);
+    text->setOutlineThickness(2);
     add(text);
+}
+
+void InfoBox::setText(const std::string &txt) {
+    text->setString(txt);
+}
+
+void InfoBox::setTextColor(const c2d::Color &color) {
+    text->setFillColor(color);
 }

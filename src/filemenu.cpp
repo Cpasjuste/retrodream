@@ -9,26 +9,6 @@
 
 using namespace c2d;
 
-const std::vector<std::string> FileMenuMemAddr = {
-        "0X8C004000",
-        "0X8C000100",
-        "0X8C004800",
-        "0X8C008000",
-        "0X8CEf8000",
-        "0X8CF80000",
-        "0X8CFE0000",
-        "0X8CFE8000",
-        "0X8CFD0000",
-        "0X8CFF0000",
-        "0X8CFF4800",
-        "0X8CFF6000",
-        "0X8CE00000",
-        "0X8C008000",
-        "0X8CFA0000",
-        "0X8CFC0000",
-        "0X8CFD0000"
-};
-
 FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
         : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
@@ -44,12 +24,14 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     FloatRect configRect = {16, 16, rect.width - 32, rect.height - 64};
     configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect, FONT_SIZE + 10);
     presetConfig.addOption({"BOOT:", {"DIRECT", "IP.BIN", "IP.BIN (CUT)"}, 0, Mode});
-    presetConfig.addOption({"MEMORY:", FileMenuMemAddr, 0, Memory});
+    presetConfig.addOption({"MEMORY:", getAddresses(), 0, Memory});
     presetConfig.addOption({"DMA:", {"OFF", "ON"}, 0, Dma});
     presetConfig.addOption({"SYNC:", {"OFF", "1", "2", "3", "4", "5", "6", "7", "8", "16"}, 0, Async});
     presetConfig.addOption({"CDDA:", {"OFF", "ON"}, 0, Cdda});
-    presetConfig.addOption({"LOADER:", {"AUTO", "1", "2", "3", "4", "5", "6", "7", "8"}, 0, Device});
     presetConfig.addOption({"OS:", {"AUTO", "HOMEBREW", "KATANA", "WINCE"}, 0, Type});
+    presetConfig.addOption({"LOADER:",
+                            {"AUTO", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"},
+                            0, Device});
     configBox->load(&presetConfig);
 
     configBox->getListBoxLeft()->setFillColor(COL_BLUE);
@@ -144,4 +126,25 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
     }
 
     return true;
+}
+
+std::vector<std::string> FileMenu::getAddresses() {
+
+    return {
+            "0X8C004000",
+            "0X8C000100",
+            "0X8C004800",
+            "0X8C008000",
+            "0X8CE00000",
+            "0X8CEF8000",
+            "0X8CF80000",
+            "0X8CFA0000",
+            "0X8CFC0000",
+            "0X8CFD0000",
+            "0X8CFE0000",
+            "0X8CFE8000",
+            "0X8CFF0000",
+            "0X8CFF4800",
+            "0X8CFF6000"
+    };
 }

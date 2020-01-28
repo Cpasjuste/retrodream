@@ -11,6 +11,12 @@ public:
 
     explicit InfoBox(const c2d::FloatRect &rect);
 
+    void setText(const std::string &text);
+
+    void setTextColor(const c2d::Color &color);
+
+private:
+
     c2d::Text *text = nullptr;
 
 };

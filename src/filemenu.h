@@ -32,6 +32,8 @@ public:
 
 private:
 
+    static std::vector<std::string> getAddresses();
+
     RetroDream *retroDream = nullptr;
     c2d::Text *title = nullptr;
     c2d::ConfigBox *configBox = nullptr;

@@ -4,25 +4,68 @@
 
 #include "cross2d/c2d.h"
 #include "main.h"
+#include "header.h"
 
 using namespace c2d;
 
-void Header::setString(const std::string &str) {
-    text->setString(str);
+Header::Header(const c2d::FloatRect &rect) : Rectangle(rect) {
+
+    left = new RoundedRectangleShape({PERCENT(rect.width, 93), rect.height},
+                                     10, 8);
+    textLeft = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
+    textLeft->setOrigin(Origin::Left);
+    textLeft->setPosition(PERCENT(left->getSize().x, 2), (rect.height / 2));
+    textLeft->setSizeMax(left->getSize().x - FONT_SIZE - 10, 0);
+    left->add(textLeft);
+    add(left);
+
+    right = new RoundedRectangleShape({PERCENT(rect.width, 6), rect.height},
+                                      10, 8);
+    right->setPosition(PERCENT(rect.width, 94), 0);
+    textRight = new Text("GDI", FONT_SIZE);
+    textRight->setOrigin(Origin::Center);
+    textRight->setPosition(right->getSize().x / 2 + 1, right->getSize().y / 2);
+    textRight->setSizeMax(right->getSize().x, 0);
+    right->add(textRight);
+    add(right);
 }
 
-Header::Header(const c2d::FloatRect &rect)
-        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
-
-    setPosition(rect.left, rect.top);
-    float charSize = FONT_SIZE;
-    text = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", (unsigned int) charSize);
-    text->setOrigin(Origin::Left);
-    text->setPosition(PERCENT(rect.width, 2), (rect.height / 2) - 1);
-    text->setSizeMax(rect.width - charSize - 10, 0);
-    add(text);
+c2d::Text *Header::getTextLeft() {
+    return textLeft;
 }
 
-c2d::Text *Header::getText() {
-    return text;
+c2d::Text *Header::getTextRight() {
+    return textRight;
+}
+
+void Header::setString(const std::string &l, const std::string &r) {
+    textLeft->setString(l);
+    textRight->setString(r);
+}
+
+void Header::setStringLeft(const std::string &l) {
+    textLeft->setString(l);
+}
+
+void Header::setStringRight(const std::string &r) {
+    textRight->setString(r);
+}
+
+void Header::setFillColor(const c2d::Color &color) {
+    left->setFillColor(color);
+    right->setFillColor(color);
+}
+
+void Header::setOutlineColor(const c2d::Color &color) {
+    left->setOutlineColor(color);
+    right->setOutlineColor(color);
+}
+
+void Header::setOutlineThickness(float thickness) {
+    left->setOutlineThickness(thickness);
+    right->setOutlineThickness(thickness);
+}
+
+void Header::setStringRightColor(const c2d::Color &color) {
+    right->setFillColor(color);
 }

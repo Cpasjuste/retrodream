@@ -18,7 +18,7 @@ extern "C" {
 
 using namespace c2d;
 
-RetroConfig *retroConfig;
+static RetroConfig *retroConfig;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlineThickness)
         : RoundedRectangleShape(size, 10, 8) {
@@ -47,9 +47,12 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     header->setFillColor(COL_BLUE_DARK);
     header->setOutlineColor(Color::White);
     header->setOutlineThickness(2);
-    header->getText()->setFillColor(COL_YELLOW);
-    header->getText()->setOutlineColor(Color::Black);
-    header->getText()->setOutlineThickness(2);
+    header->getTextLeft()->setFillColor(COL_YELLOW);
+    header->getTextLeft()->setOutlineColor(Color::Black);
+    header->getTextLeft()->setOutlineThickness(2);
+    header->getTextRight()->setFillColor(COL_YELLOW);
+    header->getTextRight()->setOutlineColor(Color::Black);
+    header->getTextRight()->setOutlineThickness(2);
     add(header);
 
     /// filers
@@ -77,10 +80,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     infoBox = new InfoBox({preview->getPosition().x,
                            preview->getPosition().y + preview->getSize().y + 8,
                            preview->getSize().x, PERCENT(size.y, 22.2f)});
-    infoBox->setFillColor(COL_BLUE_GRAY);
+    infoBox->setFillColor(COL_BLUE_LIGHT);
     infoBox->setOutlineColor(COL_BLUE_DARK);
     infoBox->setOutlineThickness(2);
-    infoBox->text->setFillColor(COL_BLUE_DARK);
+    infoBox->setTextColor(Color::White);
     add(infoBox);
 
     statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});

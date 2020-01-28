@@ -48,15 +48,18 @@ public:
         return optionMenu;
     }
 
+    InfoBox *getInfoBox() {
+        return infoBox;
+    }
+
     c2d::RectangleShape *getBlur() {
         return blurLayer;
     }
 
-    void showStatus(const std::string &title, const std::string &msg);
-
     RetroConfig *getConfig();
 
-    InfoBox *infoBox = nullptr;
+    void showStatus(const std::string &title, const std::string &msg);
+
     bool quit = false;
 
 private:
@@ -75,6 +78,7 @@ private:
     OptionMenu *optionMenu = nullptr;
     FileMenu *fileMenu = nullptr;
     StatusBox *statusBox = nullptr;
+    InfoBox *infoBox = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
     int inputDelay;
     unsigned int oldKeys;

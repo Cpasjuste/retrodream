@@ -2,6 +2,16 @@
 // Created by cpasjuste on 21/01/2020.
 //
 
+#ifdef __DREAMCAST__
+
+#include <kos.h>
+
+#else
+
+#include <dirent.h>
+
+#endif
+
 #include "cross2d/c2d.h"
 #include "retroio.h"
 
@@ -49,3 +59,61 @@ void RetroIo::setDataPath(const std::string &path) {
         getDataPath();
     }
 }
+
+#ifdef __DREAMCAST__
+
+bool RetroIo::hasMoreThanOneFile(const std::string &path) {
+
+    dirent_t *ent;
+    file_t fd;
+    int count = 0;
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if ((fd = fs_open(path.c_str(), O_RDONLY | O_DIR)) != FILEHND_INVALID) {
+        while ((ent = fs_readdir(fd)) != nullptr) {
+            if (ent->name[0] == '.') {
+                continue;
+            }
+            count++;
+            if (count > 1) {
+                break;
+            }
+        }
+        fs_close(fd);
+    }
+
+    return count > 1;
+}
+
+#else
+
+bool RetroIo::hasMoreThanOneFile(const std::string &path) {
+
+    struct dirent *ent;
+    DIR *dir;
+    int count = 0;
+
+    if (path.empty()) {
+        return false;
+    }
+
+    if ((dir = opendir(path.c_str())) != nullptr) {
+        while ((ent = readdir(dir)) != nullptr) {
+            if (ent->d_name[0] == '.') {
+                continue;
+            }
+            count++;
+            if (count > 1) {
+                break;
+            }
+        }
+        closedir(dir);
+    }
+
+    return count > 1;
+}
+
+#endif

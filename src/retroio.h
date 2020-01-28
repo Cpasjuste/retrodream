@@ -17,6 +17,8 @@ public:
 
     std::string getConfigPath();
 
+    bool hasMoreThanOneFile(const std::string &path);
+
 private:
 
     std::string dataPath;

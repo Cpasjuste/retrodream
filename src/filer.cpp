@@ -50,7 +50,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
         : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     retroDream = rd;
-    io = retroDream->getRender()->getIo();
+    io = (RetroIo *) retroDream->getRender()->getIo();
 
     setPosition(rect.left, rect.top);
 
@@ -109,9 +109,21 @@ void Filer::updateLines() {
                 // handle header title
                 if (file.isGame) {
                     //std::string p = Utility::remove(file.isoPath, path + "/" + file.data.name + "/");
-                    retroDream->getHeader()->setString(file.data.name);
+                    retroDream->getHeader()->setStringLeft(file.data.name);
+                    retroDream->getHeader()->setStringRight(file.isoType);
+                    if (file.isoType == "CDI") {
+                        retroDream->getHeader()->setStringRightColor(COL_YELLOW);
+                    } else if (file.isoType == "GDI") {
+                        retroDream->getHeader()->setStringRightColor(COL_GREEN);
+                    } else if (file.isoType == "OPT") {
+                        retroDream->getHeader()->setStringRightColor(COL_GREEN_DARK);
+                    } else if (file.isoType == "ISO") {
+                        retroDream->getHeader()->setStringRightColor(COL_ORANGE);
+                    }
                 } else {
-                    retroDream->getHeader()->setString(file.data.path);
+                    retroDream->getHeader()->setStringLeft(file.data.path);
+                    retroDream->getHeader()->setStringRight(file.data.type == Io::Type::File ? "FIL" : "DIR");
+                    retroDream->getHeader()->setStringRightColor(COL_BLUE_DARK);
                 }
             }
         }
@@ -140,7 +152,7 @@ bool Filer::getDir(const std::string &p) {
     }
     retroDream->getConfig()->set(RetroConfig::LastPath, path);
 
-    std::vector<Io::File> dirList = io->getDirList(path, true);
+    std::vector<Io::File> dirList = io->getDirList(path, true, false);
     if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
         Io::File file("..", "..", Io::Type::Directory, 0, colorDir);
         dirList.insert(dirList.begin(), file);
@@ -153,16 +165,42 @@ bool Filer::getDir(const std::string &p) {
             if (RetroUtility::isGame(file.data.name)) {
                 file.isGame = true;
                 file.isoPath = file.data.path;
+                if (Utility::endsWith(file.isoPath, ".iso", false)) {
+                    file.isoType = "ISO";
+                } else if (Utility::endsWith(file.isoPath, ".cdi", false)) {
+                    file.isoType = "CDI";
+                } else if (Utility::endsWith(file.isoPath, ".gdi", false)) {
+                    file.isoType = "GDI";
+                }
                 // DreamShell compatibility
                 std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
                 file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(file.data.name) + ".jpg";
             }
         } else if (fileData.type == Io::Type::Directory) {
-            Io::File gameFile = io->findFile(fileData.path, {".gdi"}, "track");
+            Io::File gameFile = io->findFile(fileData.path, {".gdi", ".cdi", ".iso"}, "track");
             // directory contains a game
             if (!gameFile.name.empty()) {
+                // if sub dir contains iso or cdi but more than one file, don't assume it's a game
+                if (Utility::endsWith(gameFile.name, ".cdi")) {
+                    file.isoType = "CDI";
+                } else if (Utility::endsWith(gameFile.name, ".iso")) {
+                    file.isoType = "ISO";
+                }
+                if (!file.isoType.empty()) {
+                    if (io->hasMoreThanOneFile(fileData.path)) {
+                        files.emplace_back(file);
+                        continue;
+                    }
+                }
                 file.isGame = true;
                 file.isoPath = gameFile.path;
+                if (file.isoType.empty()) {
+                    if (io->exist(fileData.path + "/track01.iso")) {
+                        file.isoType = "OPT";
+                    } else {
+                        file.isoType = "GDI";
+                    }
+                }
                 // DreamShell compatibility
                 std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
                 file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(gameFile.name) + ".jpg";

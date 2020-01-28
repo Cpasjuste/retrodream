@@ -7,7 +7,7 @@
 
 #include "cross2d/skeleton/sfml/RectangleShape.hpp"
 #include "cross2d/skeleton/sfml/Text.hpp"
-#include "cross2d/skeleton/io.h"
+#include "retroio.h"
 
 class RetroDream;
 
@@ -41,6 +41,7 @@ public:
         RetroFile() = default;
 
         c2d::Io::File data;
+        std::string isoType;
         std::string isoPath;
         std::string preview;
         std::string preset;
@@ -93,7 +94,7 @@ private:
     std::vector<Line *> lines;
     std::vector<int> item_index_prev;
     RetroDream *retroDream = nullptr;
-    c2d::Io *io = nullptr;
+    RetroIo *io = nullptr;
     c2d::RoundedRectangleShape *highlight = nullptr;
     c2d::C2DClock previewClock;
     int previewLoadDelay = 500;
