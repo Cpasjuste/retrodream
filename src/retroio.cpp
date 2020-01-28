@@ -28,10 +28,10 @@ std::string RetroIo::getHomePath() {
 std::string RetroIo::getDataPath() {
 #ifdef __DREAMCAST__
     if (dataPath.empty()) {
-        if (exist("/sd/RD")) {
-            dataPath = "/sd/RD/";
-        } else if (exist("/ide/RD")) {
+        if (exist("/ide/RD")) {
             dataPath = "/ide/RD/";
+        } else if (exist("/sd/RD")) {
+            dataPath = "/sd/RD/";
         } else if (exist("/cd/RD")) {
             dataPath = "/cd/RD/";
         }
