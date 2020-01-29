@@ -104,6 +104,4 @@ void StatusBox::onDraw(c2d::Transform &transform, bool draw) {
 #ifdef __DREAMCAST__
     mutex_unlock(&mutex);
 #endif
-
-    Rectangle::onDraw(transform, draw);
 }

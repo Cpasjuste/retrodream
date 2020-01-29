@@ -193,7 +193,7 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg) {
 }
 
 int main() {
-    
+
     c2d_default_font_texture_size = {512, 512};
 
     /// render
