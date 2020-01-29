@@ -35,7 +35,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     setFillColor(COL_BLUE);
     setOutlineColor(COL_BLUE_DARK);
-    setOutlineThickness(outlineThickness + 6);
+    setOutlineThickness(outlineThickness * 2);
 
     /// header text
     FloatRect headerRect = {
@@ -222,9 +222,10 @@ int main() {
 
     /// main rect
     FloatRect screenSize = retroConfig->getRect(RetroConfig::ScreenSize);
+    //FloatRect screenSize = {32, 32, 640-64, 480-64};
     float outline = 6;
     FloatRect rect = {screenSize.left + outline, screenSize.top + outline,
-                      screenSize.width - outline * 2, screenSize.height - outline * 2};
+                      screenSize.width - (outline * 2), screenSize.height - (outline * 2)};
     auto *retroDream = new RetroDream(render, {rect.width, rect.height}, outline);
     retroDream->setPosition(rect.left, rect.top);
     render->add(retroDream);
