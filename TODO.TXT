@@ -1,6 +1,6 @@
 - fix directory creation (/.../RD/)
 - main menu (options + exit to ds)
-- handle ending slashes in retrodream.cfg
 - verify loading time when retrodream.cfg exists
 - add help box (buttons etc)
 - add credits
+OK - handle ending slashes in retrodream.cfg

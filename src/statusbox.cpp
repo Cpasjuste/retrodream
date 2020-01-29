@@ -75,6 +75,7 @@ void StatusBox::show(const std::string &title, const std::string &message, bool 
 
     infinite = inf;
     clock.restart();
+
     icon->setVisibility(Visibility::Visible, true);
     setVisibility(Visibility::Visible, true);
     if (drawNow) {

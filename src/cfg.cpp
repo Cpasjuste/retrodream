@@ -17,24 +17,30 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
     FloatRect screenSize(0, 0, 640, 480);
 
     Group main("main");
-
     main.addOption({"retrodream_path", io->getDataPath(), OptionId::RdPath});
     main.addOption({"dreamshell_path", RetroUtility::findPath(io, "DS/"), OptionId::DsPath});
     main.addOption({"filer_path", io->getHomePath(), OptionId::FilerPath});
     main.addOption({"screen_size", screenSize, OptionId::ScreenSize});
     main.addOption({"input_delay", 200, OptionId::InputDelay});
-
     addGroup(main);
 
     // load the configuration from file, overwriting default values
     if (!load()) {
         // file doesn't exist or is malformed, (re)create it
-        save();
+        printf("RetroConfig: config file doesn't exist or is malformed, "
+               "creating a new one (%s)\n", getPath().c_str());
+        if (!save()) {
+            printf("RetroConfig: could not create configuration file (%s)\n", getPath().c_str());
+        }
     }
 
-    // ensure all paths exist
+    // ensure all paths exists
     bool saveNeeded = false;
+
     std::string rdPath = getGroup("main")->getOption(RdPath)->getString();
+    if (!Utility::endsWith(rdPath, "/")) {
+        rdPath += "/";
+    }
     if (!io->exist(rdPath)) {
         printf("RetroConfig: RetroDream path '%s' doesn't exist, restoring default: '%s'\n",
                rdPath.c_str(), io->getDataPath().c_str());
@@ -45,6 +51,9 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
     }
 
     std::string dsPath = getGroup("main")->getOption(DsPath)->getString();
+    if (!Utility::endsWith(dsPath, "/")) {
+        dsPath += "/";
+    }
     if (!io->exist(dsPath)) {
         std::string newPath = RetroUtility::findPath(io, "DS/");
         printf("RetroConfig: DreamShell path '%s' doesn't exist, restoring default: '%s'\n",
