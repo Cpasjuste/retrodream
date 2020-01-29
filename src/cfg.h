@@ -15,8 +15,8 @@ class RetroConfig : public c2d::config::Config {
 public:
 
     enum OptionId {
-        DataPath = 0,
-        LastPath = 1,
+        RdPath = 0,
+        FilerPath = 1,
         DsPath = 2,
         ScreenSize = 3,
         InputDelay = 4

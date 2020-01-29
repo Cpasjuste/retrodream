@@ -47,21 +47,17 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
     // find loader path
     std::string loaderPath;
     if (cfg.device == std::string("auto")) {
-        std::string p = RetroUtility::findPath(retroDream->getRender()->getIo(),
-                                               "DS/firmware/isoldr/ide.bin");
-        if (!p.empty()) {
-            printf("IsoLoader::run: loaderPath: %s\n", loaderPath.c_str());
-            loaderPath = Utility::remove(p, "/firmware/isoldr/ide.bin");
-            strncpy(isoLdr->fs_dev, "ide", 7);
-        }
+        std::string p = retroDream->getConfig()->get(RetroConfig::DsPath)
+                        + "firmware/isoldr/ide.bin";
+        printf("IsoLoader::run: loaderPath: %s\n", p.c_str());
+        loaderPath = Utility::remove(p, "/firmware/isoldr/ide.bin");
+        strncpy(isoLdr->fs_dev, "ide", 7);
     } else {
-        std::string p = RetroUtility::findPath(retroDream->getRender()->getIo(),
-                                               "DS/firmware/isoldr/" + cfg.device + ".bin");
-        if (!p.empty()) {
-            printf("IsoLoader::run: loaderPath: %s\n", loaderPath.c_str());
-            loaderPath = Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin");
-            strncpy(isoLdr->fs_dev, cfg.device.c_str(), 7);
-        }
+        std::string p = retroDream->getConfig()->get(RetroConfig::DsPath)
+                        + "firmware/isoldr/" + cfg.device + ".bin";
+        printf("IsoLoader::run: loaderPath: %s\n", p.c_str());
+        loaderPath = Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin");
+        strncpy(isoLdr->fs_dev, cfg.device.c_str(), 7);
     }
     setenv("PATH", loaderPath.c_str(), 1);
 

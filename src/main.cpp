@@ -60,7 +60,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
             PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
             PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
     };
-    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::LastPath), 10);
+    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::FilerPath), 10);
     filerLeft->setFillColor(COL_BLUE_GRAY);
     filerLeft->setOutlineColor(COL_BLUE_DARK);
     filerLeft->setOutlineThickness(3);
@@ -218,8 +218,6 @@ int main() {
     /// config
     auto retroIo = new RetroIo();
     retroConfig = new RetroConfig(retroIo);
-    printf("data_path: %s\n", retroConfig->get(RetroConfig::DataPath).c_str());
-    printf("last_path: %s\n", retroConfig->get(RetroConfig::LastPath).c_str());
     render->setIo(retroIo);
 
     /// main rect

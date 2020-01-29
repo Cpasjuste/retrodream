@@ -18,12 +18,11 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
 
     Group main("main");
 
-    main.addOption({"data_path", io->getDataPath(), OptionId::DataPath});
-    main.addOption({"ds_path", RetroUtility::findPath(io, "DS/"), OptionId::DsPath});
-    main.addOption({"filer_last_path", io->getHomePath(), OptionId::LastPath});
+    main.addOption({"retrodream_path", io->getDataPath(), OptionId::RdPath});
+    main.addOption({"dreamshell_path", RetroUtility::findPath(io, "DS/"), OptionId::DsPath});
+    main.addOption({"filer_path", io->getHomePath(), OptionId::FilerPath});
     main.addOption({"screen_size", screenSize, OptionId::ScreenSize});
     main.addOption({"input_delay", 200, OptionId::InputDelay});
-    main.addOption({"filer_mode", Filer::FilerMode::Browse, OptionId::InputDelay});
 
     addGroup(main);
 
@@ -35,30 +34,32 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
 
     // ensure all paths exist
     bool saveNeeded = false;
-    std::string path = getGroup("main")->getOption(DataPath)->getString();
-    if (!io->exist(path)) {
-        printf("RetroConfig::DataPath '%s' doesn't exist, restoring default: '%s'\n",
-               path.c_str(), io->getDataPath().c_str());
-        path = Utility::removeLastSlash(io->getDataPath());
-        io->create(path);
-        set(DataPath, path + "/", false);
+    std::string rdPath = getGroup("main")->getOption(RdPath)->getString();
+    if (!io->exist(rdPath)) {
+        printf("RetroConfig: RetroDream path '%s' doesn't exist, restoring default: '%s'\n",
+               rdPath.c_str(), io->getDataPath().c_str());
+        rdPath = io->getDataPath();
+        io->create(Utility::removeLastSlash(rdPath));
+        set(RdPath, rdPath, false);
         saveNeeded = true;
     }
-    path = getGroup("main")->getOption(LastPath)->getString();
-    if (!io->exist(path)) {
-        printf("RetroConfig::LastPath: '%s' doesn't exist, restoring default: '%s'\n",
-               path.c_str(), io->getHomePath().c_str());
-        path = io->getHomePath();
-        set(LastPath, path, false);
-        saveNeeded = true;
-    }
-    path = getGroup("main")->getOption(DsPath)->getString();
-    if (!io->exist(path)) {
+
+    std::string dsPath = getGroup("main")->getOption(DsPath)->getString();
+    if (!io->exist(dsPath)) {
         std::string newPath = RetroUtility::findPath(io, "DS/");
-        printf("RetroConfig::DsPath: '%s' doesn't exist, restoring default: '%s'\n",
-               path.c_str(), newPath.c_str());
-        path = io->getHomePath();
+        printf("RetroConfig: DreamShell path '%s' doesn't exist, restoring default: '%s'\n",
+               dsPath.c_str(), newPath.c_str());
+        dsPath = io->getHomePath();
         set(DsPath, newPath, false);
+        saveNeeded = true;
+    }
+
+    std::string filerPath = getGroup("main")->getOption(FilerPath)->getString();
+    if (!io->exist(filerPath)) {
+        printf("RetroConfig: FilerPath '%s' doesn't exist, restoring default: '%s'\n",
+               filerPath.c_str(), io->getHomePath().c_str());
+        filerPath = io->getHomePath();
+        set(FilerPath, filerPath, false);
         saveNeeded = true;
     }
 
@@ -66,7 +67,9 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         save();
     }
 
-    io->setDataPath(get(DataPath));
+    printf("retrodream_path: %s\n", rdPath.c_str());
+    printf("dreamshell_path: %s\n", dsPath.c_str());
+    printf("filer_path: %s\n", filerPath.c_str());
 }
 
 std::string RetroConfig::get(const RetroConfig::OptionId &id) {

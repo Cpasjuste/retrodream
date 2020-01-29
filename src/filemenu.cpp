@@ -63,6 +63,9 @@ void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         Filer::RetroFile file = retroDream->getFiler()->getSelection();
         if (file.isGame) {
             isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.isoPath);
+            if (!retroDream->getRender()->getIo()->exist(isoLoaderConfig.path)) {
+                retroDream->showStatus("PRESET NOT FOUND...", isoLoaderConfig.path);
+            }
             presetConfig.getOption(Mode)->setChoicesIndex(isoLoaderConfig.mode);
             presetConfig.getOption(Memory)->setChoicesIndex(Utility::toUpper(isoLoaderConfig.memory));
             presetConfig.getOption(Dma)->setChoicesIndex(isoLoaderConfig.dma);

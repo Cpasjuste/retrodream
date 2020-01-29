@@ -150,7 +150,7 @@ bool Filer::getDir(const std::string &p) {
     if (path.size() > 1 && Utility::endsWith(path, "/")) {
         path = Utility::removeLastSlash(path);
     }
-    retroDream->getConfig()->set(RetroConfig::LastPath, path);
+    retroDream->getConfig()->set(RetroConfig::FilerPath, path);
 
     std::vector<Io::File> dirList = io->getDirList(path, true, false);
     if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
