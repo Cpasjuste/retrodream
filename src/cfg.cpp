@@ -41,10 +41,10 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         rdPath += "/";
     }
     if (!io->exist(rdPath)) {
-        printf("RetroConfig: RetroDream path '%s' doesn't exist, restoring default: '%s'\n",
+        printf("RetroConfig: RetroDream data path '%s' doesn't exist, restoring default: '%s'\n",
                rdPath.c_str(), io->getDataPath().c_str());
         rdPath = io->getDataPath();
-        io->create(Utility::removeLastSlash(rdPath));
+        io->create(rdPath);
         set(RdPath, rdPath, false);
         saveNeeded = true;
     }

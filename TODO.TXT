@@ -1,6 +1,14 @@
-- fix directory creation (/.../RD/)
+TODO:
+--------------
 - main menu (options + exit to ds)
-- verify loading time when retrodream.cfg exists
 - add help box (buttons etc)
 - add credits
-OK - handle ending slashes in retrodream.cfg
+
+TODO, SOMEDAY:
+--------------
+- improve font generation time (boot time)
+
+DONE:
+------------------
+- handle ending slashes in retrodream.cfg paths
+- fix data directory creation (/ide/RD/ or /sd/RD/)
