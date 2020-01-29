@@ -106,7 +106,7 @@ IsoLoader::Config IsoLoader::loadConfig(RetroDream *retroDream, const std::strin
         } else if (Utility::startWith(line, "dma")) {
             config.dma = Utility::parseInt(value, 0);
         } else if (Utility::startWith(line, "async")) {
-            config.async = Utility::parseInt(value, 0);
+            config.async = Utility::parseInt(value, 8);
         } else if (Utility::startWith(line, "cdda")) {
             config.cdda = Utility::parseInt(value, 0);
         } else if (Utility::startWith(line, "fastboot")) {

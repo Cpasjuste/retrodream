@@ -31,6 +31,9 @@ private:
     c2d::C2DClock clock;
     //SDL_mutex *mutex;
     bool infinite = false;
+#ifdef __DREAMCAST__
+    mutex_t mutex;
+#endif
 };
 
 #endif //PPLAY_STATUS_BOX_H

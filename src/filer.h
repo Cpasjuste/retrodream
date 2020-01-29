@@ -97,7 +97,7 @@ private:
     RetroIo *io = nullptr;
     c2d::RoundedRectangleShape *highlight = nullptr;
     c2d::C2DClock previewClock;
-    int previewLoadDelay = 500;
+    int previewLoadDelay = 300;
     float line_height;
     int max_lines;
     int file_index = 0;

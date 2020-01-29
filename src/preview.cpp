@@ -7,21 +7,17 @@
 
 using namespace c2d;
 
-Preview::Preview(const Vector2f &size)
-        : RoundedRectangleShape(size, 10, 8) {
+Preview::Preview(const c2d::FloatRect &rect)
+        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
-    textureHolder = new Rectangle({size.x / 2, size.y / 2,
-                                   size.x - 16, size.y - 16});
-    textureHolder->setOrigin(Origin::Center);
-    textureHolder->add(new TweenScale({0.1, 0.1}, {1, 1}, 0.1f));
-    textureHolder->setVisibility(Visibility::Hidden);
-    add(textureHolder);
+    add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.1f));
+    setVisibility(Visibility::Hidden);
 }
 
 void Preview::load(const std::string &path) {
 
     if (path.empty()) {
-        textureHolder->setVisibility(Visibility::Hidden, true);
+        setVisibility(Visibility::Hidden, true);
         loaded = false;
         return;
     }
@@ -41,14 +37,14 @@ void Preview::load(const std::string &path) {
         return;
     }
 
-    texture->setOrigin(Origin::Center);
-    texture->setPosition(Vector2f(textureHolder->getSize().x / 2, textureHolder->getSize().y / 2));
+    texture->setOrigin(Origin::Left);
+    texture->setPosition(Vector2f(8, getSize().y / 2));
     float tex_scaling = std::min(
-            textureHolder->getSize().x / (float) texture->getTextureRect().width,
-            textureHolder->getSize().y / (float) texture->getTextureRect().height);
+            getSize().x / ((float) texture->getTextureRect().width + 16),
+            getSize().y / ((float) texture->getTextureRect().height + 16));
     texture->setScale(tex_scaling, tex_scaling);
-    textureHolder->add(texture);
-    textureHolder->setVisibility(Visibility::Visible, true);
+    add(texture);
+    setVisibility(Visibility::Visible, true);
 }
 
 void Preview::unload() {

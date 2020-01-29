@@ -14,7 +14,7 @@ public:
     struct Config {
         int dma = 0;
         int cdda = 0;
-        int async = 0;
+        int async = 8;
         int mode = 0;
         int type = 0;
         int fastboot = 0;

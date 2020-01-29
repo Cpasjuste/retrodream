@@ -11,7 +11,7 @@ class Preview : public c2d::RoundedRectangleShape {
 
 public:
 
-    Preview(const c2d::Vector2f &size);
+    Preview(const c2d::FloatRect &rect);
 
     void load(const std::string &path = "");
 
@@ -21,7 +21,6 @@ public:
 
 private:
 
-    c2d::Rectangle *textureHolder = nullptr;
     c2d::Texture *texture = nullptr;
     bool loaded = false;
 

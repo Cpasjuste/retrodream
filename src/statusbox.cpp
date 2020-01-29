@@ -39,13 +39,15 @@ StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect)
     messageText->setFillColor(COL_RED);
     messageText->setOutlineColor(Color::Black);
     messageText->setOutlineThickness(1);
-    //messageText->setOrigin(Origin::BottomLeft);
     messageText->setPosition(titleText->getPosition().x, titleText->getPosition().y + FONT_SIZE + 8);
     messageText->setSizeMax(rect.width - icon->getSize().x + 10, 0);
     add(messageText);
 
     clock.restart();
     //mutex = SDL_CreateMutex();
+#ifdef __DREAMCAST__
+    mutex_init(&mutex, MUTEX_TYPE_DEFAULT);
+#endif
 
     add(new TweenAlpha(0, 255, 0.5f));
     setVisibility(Visibility::Hidden);
@@ -53,14 +55,23 @@ StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect)
 
 StatusBox::~StatusBox() {
     //SDL_DestroyMutex(mutex);
+#ifdef __DREAMCAST__
+    mutex_destroy(&mutex);
+#endif
 }
 
 void StatusBox::show(const std::string &title, const std::string &message, bool inf, bool drawNow) {
 
     //SDL_LockMutex(mutex);
+#ifdef __DREAMCAST__
+    mutex_lock(&mutex);
+#endif
     titleText->setString(Utility::toUpper(title));
     messageText->setString(Utility::toUpper(message));
     //SDL_UnlockMutex(mutex);
+#ifdef __DREAMCAST__
+    mutex_unlock(&mutex);
+#endif
 
     infinite = inf;
     clock.restart();
@@ -84,7 +95,15 @@ void StatusBox::onDraw(c2d::Transform &transform, bool draw) {
         setVisibility(Visibility::Hidden, true);
     }
 
+#ifdef __DREAMCAST__
+    mutex_lock(&mutex);
+#endif
     //SDL_LockMutex(mutex);
     Rectangle::onDraw(transform, draw);
     //SDL_UnlockMutex(mutex);
+#ifdef __DREAMCAST__
+    mutex_unlock(&mutex);
+#endif
+
+    Rectangle::onDraw(transform, draw);
 }

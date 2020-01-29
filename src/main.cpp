@@ -18,7 +18,8 @@ extern "C" {
 
 using namespace c2d;
 
-static RetroConfig *retroConfig;
+static RetroConfig *retroConfig = nullptr;
+static c2d::Texture *splashTex = nullptr;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlineThickness)
         : RoundedRectangleShape(size, 10, 8) {
@@ -68,18 +69,25 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     add(filerLeft);
     filer = filerLeft;
 
+    // splash/title texture
+    add(splashTex);
+    splashTex->setOrigin(Origin::Center);
+    splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 40));
+
     /// preview box
     float previewSize = (size.x / 2) - 32;
-    preview = new Preview({previewSize, previewSize});
-    preview->setPosition(previewSize + 52, PERCENT(size.y, 10.0f));
-    preview->setFillColor(COL_BLUE_DARK);
-    preview->setOutlineColor(Color::White);
+    FloatRect previewRect = {
+            previewSize + 52, PERCENT(size.y, 10.0f),
+            previewSize + 32, previewSize};
+    preview = new Preview(previewRect);
+    preview->setFillColor(COL_BLUE_GRAY);
+    preview->setOutlineColor(COL_BLUE_DARK);
     preview->setOutlineThickness(3);
     add(preview);
 
-    infoBox = new InfoBox({preview->getPosition().x,
-                           preview->getPosition().y + preview->getSize().y + 8,
-                           preview->getSize().x, PERCENT(size.y, 22.2f)});
+    infoBox = new InfoBox({previewRect.left,
+                           previewRect.top + previewRect.height + 8,
+                           previewSize, PERCENT(size.y, 22.2f)});
     infoBox->setFillColor(COL_BLUE_LIGHT);
     infoBox->setOutlineColor(COL_BLUE_DARK);
     infoBox->setOutlineThickness(2);
@@ -98,13 +106,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     blurLayer->setVisibility(Visibility::Hidden);
     add(blurLayer);
 
-    FloatRect fileMenuRect = {
-            previewSize + 52, PERCENT(size.y, 10.0f),
-            previewSize + 32, previewSize};
-    fileMenu = new FileMenu(this, fileMenuRect);
-    fileMenu->setFillColor(COL_BLUE);
+    fileMenu = new FileMenu(this, previewRect);
+    fileMenu->setFillColor(COL_BLUE_GRAY);
     fileMenu->setOutlineColor(COL_BLUE_DARK);
-    fileMenu->setOutlineThickness(6);
+    fileMenu->setOutlineThickness(3);
     add(fileMenu);
 
     FloatRect optionMenuRect = {
@@ -129,12 +134,14 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     if (keys & Input::Key::Fire4) {
         Filer::RetroFile file = filer->getSelection();
-        optionMenu->setVisibility(Visibility::Hidden, true);
-        fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
-        fileMenu->setVisibility(fileMenu->isVisible() ?
-                                Visibility::Hidden : Visibility::Visible, true);
-        fileMenu->save();
-        blurLayer->setVisibility(fileMenu->getVisibility(), true);
+        if (file.isGame) {
+            optionMenu->setVisibility(Visibility::Hidden, true);
+            fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
+            fileMenu->setVisibility(fileMenu->isVisible() ?
+                                    Visibility::Hidden : Visibility::Visible, true);
+            fileMenu->save();
+            blurLayer->setVisibility(fileMenu->getVisibility(), true);
+        }
     } else if (keys & Input::Key::Start) {
         optionMenu->setVisibility(optionMenu->isVisible() ?
                                   Visibility::Hidden : Visibility::Visible, true);
@@ -186,6 +193,8 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg) {
 }
 
 int main() {
+    
+    c2d_default_font_texture_size = {512, 512};
 
     /// render
     auto render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
@@ -193,16 +202,17 @@ int main() {
     /// splash
     auto splash = new C2DRectangle({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     splash->setFillColor(Color::White);
-    auto splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
+    render->add(splash);
+    splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
-    splash->add(splashTex);
-    render->add(splash);
+    render->add(splashTex);
     for (int i = 0; i < 5; i++) {
         render->flip();
     }
-    // delete splash
+    // remove splash but do not delete for later use
     delete (splash);
+    render->remove(splashTex);
     /// splash
 
 #ifdef __DREAMCAST__

@@ -15,9 +15,9 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     retroDream = rd;
 
     title = new Text("FILE OPTION", FONT_SIZE);
-    title->setOrigin(Origin::Left);
-    title->setPosition(16, -16);
-    title->setOutlineThickness(4);
+    title->setOrigin(Origin::BottomLeft);
+    title->setPosition(16, 0);
+    title->setOutlineThickness(3);
     title->setOutlineColor(COL_BLUE_DARK);
     add(title);
 
@@ -26,7 +26,7 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     presetConfig.addOption({"BOOT:", {"DIRECT", "IP.BIN", "IP.BIN (CUT)"}, 0, Mode});
     presetConfig.addOption({"MEMORY:", getAddresses(), 0, Memory});
     presetConfig.addOption({"DMA:", {"OFF", "ON"}, 0, Dma});
-    presetConfig.addOption({"SYNC:", {"OFF", "1", "2", "3", "4", "5", "6", "7", "8", "16"}, 0, Async});
+    presetConfig.addOption({"SYNC:", {"OFF", "1", "2", "3", "4", "5", "6", "7", "8", "16"}, 8, Async});
     presetConfig.addOption({"CDDA:", {"OFF", "ON"}, 0, Cdda});
     presetConfig.addOption({"OS:", {"AUTO", "HOMEBREW", "KATANA", "WINCE"}, 0, Type});
     presetConfig.addOption({"LOADER:",
@@ -34,12 +34,12 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
                             0, Device});
     configBox->load(&presetConfig);
 
-    configBox->getListBoxLeft()->setFillColor(COL_BLUE);
+    configBox->getListBoxLeft()->setFillColor(COL_BLUE_GRAY);
     configBox->getListBoxLeft()->setTextOutlineColor(Color::Black);
     configBox->getListBoxLeft()->setTextOutlineThickness(2);
     configBox->getListBoxLeft()->setTextColor(COL_BLUE_DARK);
 
-    configBox->getListBoxRight()->setFillColor(COL_BLUE);
+    configBox->getListBoxRight()->setFillColor(COL_BLUE_GRAY);
     configBox->getListBoxRight()->setTextOutlineColor(COL_BLUE_DARK);
     configBox->getListBoxRight()->setTextOutlineThickness(2);
     configBox->getListBoxRight()->setTextColor(Color::White);
@@ -49,7 +49,7 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
 
     add(configBox);
 
-    add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.3f));
+    add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.1f));
     setVisibility(Visibility::Hidden);
 }
 
