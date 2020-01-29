@@ -56,6 +56,10 @@ public:
         return blurLayer;
     }
 
+    void debugClockStart(const char *msg);
+
+    void debugClockEnd(const char *msg);
+
     RetroConfig *getConfig();
 
     void showStatus(const std::string &title, const std::string &msg);
@@ -82,6 +86,7 @@ private:
     c2d::RectangleShape *blurLayer = nullptr;
     int inputDelay;
     unsigned int oldKeys;
+    c2d::C2DClock debugClock;
 };
 
 #endif //RETRODREAM_MAIN_H

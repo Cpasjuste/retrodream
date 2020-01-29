@@ -392,7 +392,7 @@ void Filer::onUpdate() {
         }
     }
 
-    C2DObject::onUpdate();
+    RoundedRectangleShape::onUpdate();
 }
 
 bool Filer::onInput(c2d::Input::Player *players) {

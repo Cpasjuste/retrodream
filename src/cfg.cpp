@@ -5,7 +5,6 @@
 #include "cross2d/c2d.h"
 #include "cfg.h"
 #include "retroio.h"
-#include "filer.h"
 #include "utility.h"
 
 using namespace c2d;

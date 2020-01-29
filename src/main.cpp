@@ -14,6 +14,11 @@ extern "C" {
 #include "ds/include/fs.h"
 #include "ds/include/isoldr.h"
 }
+#ifdef NDEBUG
+KOS_INIT_FLAGS(INIT_DEFAULT | INIT_QUIET | INIT_NO_DCLOAD);
+#else
+KOS_INIT_FLAGS(INIT_DEFAULT);
+#endif
 #endif
 
 using namespace c2d;
@@ -72,7 +77,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     // splash/title texture
     add(splashTex);
     splashTex->setOrigin(Origin::Center);
-    splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 40));
+    splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 42));
 
     /// preview box
     float previewSize = (size.x / 2) - 32;
@@ -192,6 +197,19 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg) {
     }
 }
 
+void RetroDream::debugClockStart(const char *msg) {
+#ifndef NDEBUG
+    printf("debugClockStart: %s\n", msg);
+    debugClock.restart();
+#endif
+}
+
+void RetroDream::debugClockEnd(const char *msg) {
+#ifndef NDEBUG
+    printf("debugClockEnd: %s: %f\n", msg, debugClock.getElapsedTime().asSeconds());
+#endif
+}
+
 int main() {
 
     c2d_default_font_texture_size = {512, 512};
@@ -207,7 +225,7 @@ int main() {
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
     render->add(splashTex);
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 2; i++) {
         render->flip();
     }
     // remove splash but do not delete for later use

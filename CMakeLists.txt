@@ -108,7 +108,7 @@ if (PLATFORM_DREAMCAST)
             src/ds/include/minilzo
             src/ds/include/fatfs
             )
-    list(APPEND LDFLAGS kosutils)
+    list(APPEND LDFLAGS kallisti kosutils kosext2fs)
 endif ()
 
 #############
