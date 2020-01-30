@@ -13,7 +13,7 @@
 #include "filemenu.h"
 #include "statusbox.h"
 #include "utility.h"
-#include "infobox.h"
+#include "helpbox.h"
 
 #define FONT_SIZE 15
 
@@ -47,8 +47,8 @@ public:
         return optionMenu;
     }
 
-    InfoBox *getInfoBox() {
-        return infoBox;
+    HelpBox *getHelpBox() {
+        return helpBox;
     }
 
     c2d::RectangleShape *getBlur() {
@@ -81,7 +81,7 @@ private:
     OptionMenu *optionMenu = nullptr;
     FileMenu *fileMenu = nullptr;
     StatusBox *statusBox = nullptr;
-    InfoBox *infoBox = nullptr;
+    HelpBox *helpBox = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
     int inputDelay;
     unsigned int oldKeys;

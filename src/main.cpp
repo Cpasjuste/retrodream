@@ -61,20 +61,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     header->getTextRight()->setOutlineThickness(2);
     add(header);
 
-    /// filers
-    FloatRect filerRect = {
-            PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
-            PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
-    };
-    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::FilerPath), 10);
-    filerLeft->setFillColor(COL_BLUE_GRAY);
-    filerLeft->setOutlineColor(COL_BLUE_DARK);
-    filerLeft->setOutlineThickness(3);
-    filerLeft->setColor(COL_BLUE_DARK, COL_BLUE);
-    add(filerLeft);
-    filer = filerLeft;
-
-    // splash/title texture
+    /// splash/title texture
     add(splashTex);
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 42));
@@ -90,14 +77,26 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     preview->setOutlineThickness(3);
     add(preview);
 
-    infoBox = new InfoBox({previewRect.left,
-                           previewRect.top + previewRect.height + 8,
-                           previewSize, PERCENT(size.y, 22.2f)});
-    infoBox->setFillColor(COL_BLUE_LIGHT);
-    infoBox->setOutlineColor(COL_BLUE_DARK);
-    infoBox->setOutlineThickness(2);
-    infoBox->setTextColor(Color::White);
-    add(infoBox);
+    helpBox = new HelpBox(this, {previewRect.left,
+                                 previewRect.top + previewRect.height + 8,
+                                 previewSize, PERCENT(size.y, 22.2f)});
+    helpBox->setFillColor(COL_BLUE_LIGHT);
+    helpBox->setOutlineColor(COL_BLUE_DARK);
+    helpBox->setOutlineThickness(2);
+    add(helpBox);
+
+    /// filers
+    FloatRect filerRect = {
+            PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
+            PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
+    };
+    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::FilerPath), 10);
+    filerLeft->setFillColor(COL_BLUE_GRAY);
+    filerLeft->setOutlineColor(COL_BLUE_DARK);
+    filerLeft->setOutlineThickness(3);
+    filerLeft->setColor(COL_BLUE_DARK, COL_BLUE);
+    add(filerLeft);
+    filer = filerLeft;
 
     statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});
     statusBox->setOrigin(Origin::BottomLeft);

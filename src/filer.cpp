@@ -120,10 +120,16 @@ void Filer::updateLines() {
                     } else if (file.isoType == "ISO") {
                         retroDream->getHeader()->setStringRightColor(COL_ORANGE);
                     }
+                    // help buttons
+                    retroDream->getHelpBox()->setString(HelpBox::HelpButton::A, "RUN GAME");
+                    retroDream->getHelpBox()->setString(HelpBox::HelpButton::Y, "GAME OPTIONS");
                 } else {
                     retroDream->getHeader()->setStringLeft(file.data.path);
                     retroDream->getHeader()->setStringRight(file.data.type == Io::Type::File ? "FIL" : "DIR");
                     retroDream->getHeader()->setStringRightColor(COL_BLUE_DARK);
+                    // help buttons
+                    retroDream->getHelpBox()->setString(HelpBox::HelpButton::A, "ENTER");
+                    retroDream->getHelpBox()->setString(HelpBox::HelpButton::Y, "UNUSED");
                 }
             }
         }
