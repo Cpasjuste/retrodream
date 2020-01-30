@@ -18,6 +18,7 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
     Group main("main");
     main.addOption({"retrodream_path", io->getDataPath(), OptionId::RdPath});
     main.addOption({"dreamshell_path", RetroUtility::findPath(io, "DS/"), OptionId::DsPath});
+    main.addOption({"dreamshell_bin_path", RetroUtility::findPath(io, "DS/DS.BIN"), OptionId::DsBinPath});
     main.addOption({"filer_path", io->getHomePath(), OptionId::FilerPath});
     main.addOption({"screen_size", screenSize, OptionId::ScreenSize});
     main.addOption({"input_delay", 200, OptionId::InputDelay});
@@ -59,6 +60,7 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
                dsPath.c_str(), newPath.c_str());
         dsPath = io->getHomePath();
         set(DsPath, newPath, false);
+        set(DsBinPath, newPath + "DS.BIN", false);
         saveNeeded = true;
     }
 

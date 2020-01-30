@@ -23,6 +23,8 @@ void RetroUtility::exec(const std::string &path) {
     }
 
     arch_exec(elf, fs_total(f));
+#else
+    printf(" RetroUtility::exec(%s): not implemented on linux\n", path.c_str());
 #endif
 }
 

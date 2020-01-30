@@ -18,8 +18,9 @@ public:
         RdPath = 0,
         FilerPath = 1,
         DsPath = 2,
-        ScreenSize = 3,
-        InputDelay = 4
+        DsBinPath = 3,
+        ScreenSize = 4,
+        InputDelay = 5
     };
 
     explicit RetroConfig(c2d::Io *io);

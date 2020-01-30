@@ -41,10 +41,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     debugClockStart("font cache");
     Text *cacheText = new Text(
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_'()", FONT_SIZE);
+            " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_'()", FONT_SIZE);
     add(cacheText);
     render->flip(false, false);
-    delete(cacheText);
+    delete (cacheText);
     debugClockEnd("font cache");
 
     setFillColor(COL_BLUE);
@@ -126,7 +126,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     FloatRect optionMenuRect = {
             size.x / 2, size.y,
-            PERCENT(size.x, 50), PERCENT(size.y, 70)
+            PERCENT(size.x, 60), PERCENT(size.y, 70)
     };
     optionMenu = new OptionMenu(this, optionMenuRect);
     optionMenu->setOrigin(Origin::Bottom);
@@ -232,9 +232,7 @@ int main() {
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
     render->add(splashTex);
-    for (int i = 0; i < 2; i++) {
-        render->flip();
-    }
+    render->flip();
     // remove splash but do not delete for later use
     delete (splash);
     render->remove(splashTex);
