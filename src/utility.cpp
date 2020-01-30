@@ -2,6 +2,7 @@
 // Created by cpasjuste on 15/01/2020.
 //
 
+#include "cross2d/c2d.h"
 #include "utility.h"
 
 using namespace c2d;
@@ -26,11 +27,11 @@ void RetroUtility::exec(const std::string &path) {
 }
 
 bool RetroUtility::isGame(const std::string &fileName) {
-    //std::string file = Utility::toLower(fileName);
-    return !Utility::startWith(fileName, "track") &&
-           (Utility::endsWith(fileName, ".iso")
-            || Utility::endsWith(fileName, ".cdi")
-            || Utility::endsWith(fileName, ".gdi"));
+    std::string file = Utility::toLower(fileName);
+    return !Utility::startWith(file, "track") &&
+           (Utility::endsWith(file, ".iso", false)
+            || Utility::endsWith(file, ".cdi", false)
+            || Utility::endsWith(file, ".gdi", false));
 }
 
 bool RetroUtility::isElf(const std::string &fileName) {

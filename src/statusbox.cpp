@@ -66,8 +66,8 @@ void StatusBox::show(const std::string &title, const std::string &message, bool 
 #ifdef __DREAMCAST__
     mutex_lock(&mutex);
 #endif
-    titleText->setString(title);
-    messageText->setString(message);
+    titleText->setString(Utility::toUpper(title));
+    messageText->setString(Utility::toUpper(message));
     //SDL_UnlockMutex(mutex);
 #ifdef __DREAMCAST__
     mutex_unlock(&mutex);
