@@ -43,12 +43,12 @@ HelpBox::HelpBox(RetroDream *retroDream, const c2d::FloatRect &rect)
     add(lines[HelpButton::A]);
 
     lines[HelpButton::Y] = new HelpLine(
-            {rect.width / 2 - 8, 4, rect.width, 32},
+            {rect.width / 2 - 10, 4, rect.width, 32},
             {32, 0, 32, 32}, texture);
     add(lines[HelpButton::Y]);
 
     lines[HelpButton::B] = new HelpLine(
-            {rect.width / 2 - 8, 36, rect.width, 32},
+            {rect.width / 2 - 10, 36, rect.width, 32},
             {0, 32, 32, 32}, texture);
     lines[HelpButton::B]->text->setString("BACK");
     add(lines[HelpButton::B]);

@@ -118,13 +118,13 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     FloatRect optionMenuRect = {
             size.x / 2, size.y,
-            PERCENT(size.x, 80), PERCENT(size.y, 70)
+            PERCENT(size.x, 50), PERCENT(size.y, 70)
     };
     optionMenu = new OptionMenu(this, optionMenuRect);
     optionMenu->setOrigin(Origin::Bottom);
-    optionMenu->setFillColor(COL_BLUE);
+    optionMenu->setFillColor(COL_BLUE_GRAY);
     optionMenu->setOutlineColor(COL_BLUE_DARK);
-    optionMenu->setOutlineThickness(6);
+    optionMenu->setOutlineThickness(3);
     add(optionMenu);
 
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);

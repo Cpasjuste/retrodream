@@ -15,12 +15,12 @@ OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect)
     retroDream = rd;
 
     title = new Text("RETRODREAM OPTIONS", FONT_SIZE);
-    title->setOrigin(Origin::Right);
-    title->setPosition(rect.width - 16, -22);
-    title->setOutlineThickness(4);
+    title->setOrigin(Origin::BottomLeft);
+    title->setPosition(16, -1);
+    title->setOutlineThickness(3);
     title->setOutlineColor(COL_BLUE_DARK);
     add(title);
 
-    add(new TweenPosition({rect.left, rect.top + rect.height + 10}, {rect.left, rect.top + 24}, 0.3f));
+    add(new TweenPosition({rect.left, rect.top + rect.height + 10}, {rect.left, rect.top + 24}, 0.2f));
     setVisibility(Visibility::Hidden);
 }

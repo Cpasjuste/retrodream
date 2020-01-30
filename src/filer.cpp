@@ -99,13 +99,6 @@ void Filer::updateLines() {
             if ((int) i == highlight_index) {
                 // handle highlight
                 highlight->setPosition(lines[i]->getPosition());
-                Color color = highlight_use_files_color ?
-                              lines[i]->getText()->getFillColor() : highlight->getFillColor();
-                color.a = highlight->getAlpha();
-                highlight->setFillColor(color);
-                color = highlight_use_files_color ?
-                        lines[i]->getText()->getFillColor() : highlight->getOutlineColor();
-                highlight->setOutlineColor(color);
                 // handle header title
                 if (file.isGame) {
                     //std::string p = Utility::remove(file.isoPath, path + "/" + file.data.name + "/");
@@ -135,7 +128,7 @@ void Filer::updateLines() {
         }
     }
 
-    if (files.empty() || !use_highlight) {
+    if (files.empty()) {
         highlight->setVisibility(Visibility::Hidden, false);
     } else {
         highlight->setVisibility(Visibility::Visible, false);

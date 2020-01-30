@@ -50,7 +50,7 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
 
     add(configBox);
 
-    add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.1f));
+    add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.2f));
     setVisibility(Visibility::Hidden);
 }
 

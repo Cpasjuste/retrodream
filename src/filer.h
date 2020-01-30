@@ -102,8 +102,6 @@ private:
     int max_lines;
     int file_index = 0;
     int highlight_index = 0;
-    bool use_highlight = true;
-    bool highlight_use_files_color = false;
     c2d::Color colorDir;
     c2d::Color colorFile;
 };
