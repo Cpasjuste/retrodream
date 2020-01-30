@@ -135,6 +135,17 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     optionMenu->setOutlineThickness(3);
     add(optionMenu);
 
+    FloatRect CreditsRect = {
+            size.x / 2, size.y / 2,
+            PERCENT(size.x, 75), PERCENT(size.y, 75)
+    };
+    credits = new Credits(this, CreditsRect);
+    credits->setOrigin(Origin::Center);
+    credits->setFillColor(COL_BLUE_GRAY);
+    credits->setOutlineColor(COL_BLUE_DARK);
+    credits->setOutlineThickness(3);
+    add(credits);
+
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
     render->getInput()->setRepeatDelay(inputDelay);
     timer.restart();
@@ -144,22 +155,24 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (keys & Input::Key::Fire4) {
-        Filer::RetroFile file = filer->getSelection();
-        if (file.isGame) {
-            optionMenu->setVisibility(Visibility::Hidden, true);
-            fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
-            fileMenu->setVisibility(fileMenu->isVisible() ?
-                                    Visibility::Hidden : Visibility::Visible, true);
+    if (!credits->isVisible()) {
+        if (keys & Input::Key::Fire4) {
+            Filer::RetroFile file = filer->getSelection();
+            if (file.isGame) {
+                optionMenu->setVisibility(Visibility::Hidden, true);
+                fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
+                fileMenu->setVisibility(fileMenu->isVisible() ?
+                                        Visibility::Hidden : Visibility::Visible, true);
+                fileMenu->save();
+                blurLayer->setVisibility(fileMenu->getVisibility(), true);
+            }
+        } else if (keys & Input::Key::Start) {
+            optionMenu->setVisibility(optionMenu->isVisible() ?
+                                      Visibility::Hidden : Visibility::Visible, true);
+            fileMenu->setVisibility(Visibility::Hidden, true);
             fileMenu->save();
-            blurLayer->setVisibility(fileMenu->getVisibility(), true);
+            blurLayer->setVisibility(optionMenu->getVisibility(), true);
         }
-    } else if (keys & Input::Key::Start) {
-        optionMenu->setVisibility(optionMenu->isVisible() ?
-                                  Visibility::Hidden : Visibility::Visible, true);
-        fileMenu->setVisibility(Visibility::Hidden, true);
-        fileMenu->save();
-        blurLayer->setVisibility(optionMenu->getVisibility(), true);
     }
 
     if (keys & EV_QUIT) {

@@ -51,14 +51,15 @@ OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect)
     add(configBox);
 
     //add(new TweenPosition({rect.left, rect.top + rect.height + 10}, {rect.left, rect.top + 24}, 0.2f));
-    add(new TweenPosition({rect.left, rect.top + rect.height + 10}, {rect.left, rect.top + rect.height - 128}, 0.2f));
+    add(new TweenPosition({rect.left, rect.top + rect.height + 10},
+                          {rect.left, rect.top + rect.height - 128}, 0.2f));
     setVisibility(Visibility::Hidden);
 }
 
 void OptionMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
     if (visibility == Visibility::Visible) {
-
+        // TODO: reload options if changed
     }
 
     RoundedRectangleShape::setVisibility(visibility, tweenPlay);
@@ -66,6 +67,7 @@ void OptionMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
 void OptionMenu::save() {
     if (dirty) {
+        // TODO: save options if changed
         dirty = false;
     }
 }
@@ -94,7 +96,8 @@ bool OptionMenu::onInput(c2d::Input::Player *players) {
                 arch_reboot();
 #endif
             } else if (option->getId() == Credits) {
-                // TODO
+                retroDream->getCredits()->setVisibility(Visibility::Visible, true);
+                setVisibility(Visibility::Hidden, true);
             }
         }
     } else if (keys & Input::Key::Fire2) {

@@ -5,6 +5,7 @@
 #ifndef RETRODREAM_MAIN_H
 #define RETRODREAM_MAIN_H
 
+#include "colors.h"
 #include "cfg.h"
 #include "filer.h"
 #include "header.h"
@@ -14,6 +15,7 @@
 #include "statusbox.h"
 #include "utility.h"
 #include "helpbox.h"
+#include "credits.h"
 
 #define FONT_SIZE 15
 
@@ -51,6 +53,10 @@ public:
         return helpBox;
     }
 
+    Credits *getCredits() {
+        return credits;
+    }
+
     c2d::RectangleShape *getBlur() {
         return blurLayer;
     }
@@ -75,13 +81,13 @@ private:
     c2d::C2DClock timer;
     Filer *filer = nullptr;
     Filer *filerLeft = nullptr;
-    //Filer *filerRight = nullptr;
     Header *header = nullptr;
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;
     FileMenu *fileMenu = nullptr;
     StatusBox *statusBox = nullptr;
     HelpBox *helpBox = nullptr;
+    Credits *credits = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
     int inputDelay;
     unsigned int oldKeys;
