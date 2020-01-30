@@ -35,7 +35,7 @@ void Line::setSize(float width, float height) {
 }
 
 void Line::setString(const std::string &string) {
-    text->setString(Utility::toUpper(string));
+    text->setString(string);
 }
 
 void Line::setColor(const Color &color) {
@@ -93,7 +93,7 @@ void Filer::updateLines() {
             // set file
             Filer::RetroFile file = files[file_index + i];
             lines[i]->setVisibility(Visibility::Visible);
-            lines[i]->setString(Utility::toUpper(file.data.name));
+            lines[i]->setString(file.data.name);
             lines[i]->getText()->setFillColor(file.data.type == Io::Type::File ? colorFile : colorDir);
             // set highlight position and color
             if ((int) i == highlight_index) {
