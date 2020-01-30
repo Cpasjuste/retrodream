@@ -9,7 +9,7 @@
 #define COL_GREEN_DARK  Color(68, 125, 80)
 #define COL_YELLOW      Color(240, 226, 107)
 #define COL_ORANGE      Color(255, 153, 51)
-#define COL_RED         Color(255, 105, 97)
+#define COL_RED         Color(228, 63, 41)
 #define COL_GRAY        Color(40, 40, 40)
 #define COL_GRAY_LIGHT  Color(230, 230, 234)
 #define COL_BLUE        Color(97, 190, 236)
