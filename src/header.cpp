@@ -12,7 +12,7 @@ Header::Header(const c2d::FloatRect &rect) : Rectangle(rect) {
 
     left = new RoundedRectangleShape({PERCENT(rect.width, 92), rect.height},
                                      10, 8);
-    textLeft = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
+    textLeft = new Text("", FONT_SIZE);
     textLeft->setOrigin(Origin::Left);
     textLeft->setPosition(PERCENT(left->getSize().x, 2), (rect.height / 2));
     textLeft->setSizeMax(left->getSize().x - FONT_SIZE - 10, 0);

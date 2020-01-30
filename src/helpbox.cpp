@@ -54,7 +54,7 @@ HelpBox::HelpBox(RetroDream *retroDream, const c2d::FloatRect &rect)
     add(lines[HelpButton::B]);
 
     lines[HelpButton::Start] = new HelpLine(
-            {2, 66, rect.width, 32},
+            {2, 68, rect.width, 32},
             {64, 0, 32, 32}, texture);
     lines[HelpButton::Start]->text->setString("MAIN MENU");
     add(lines[HelpButton::Start]);

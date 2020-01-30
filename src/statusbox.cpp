@@ -27,14 +27,14 @@ StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect)
     icon->add(new TweenRotation(0, 360, 2, TweenLoop::Loop));
     add(icon);
 
-    titleText = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
+    titleText = new Text("", FONT_SIZE);
     titleText->setFillColor(COL_RED);
     titleText->setOutlineColor(Color::Black);
     titleText->setOutlineThickness(1);
     titleText->setPosition(icon->getPosition().x + (icon->getSize().x / 2) - 8, 0);
     add(titleText);
 
-    messageText = new Text("ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", FONT_SIZE);
+    messageText = new Text("", FONT_SIZE);
     messageText->setScale(0.85f, 0.85f);
     messageText->setFillColor(COL_RED);
     messageText->setOutlineColor(Color::Black);

@@ -39,6 +39,14 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     render->getFont()->setFilter(Texture::Filter::Point);
     render->getFont()->setOffset({0, 5});
 
+    debugClockStart("font cache");
+    Text *cacheText = new Text(
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_'()", FONT_SIZE);
+    add(cacheText);
+    render->flip(false, false);
+    delete(cacheText);
+    debugClockEnd("font cache");
+
     setFillColor(COL_BLUE);
     setOutlineColor(COL_BLUE_DARK);
     setOutlineThickness(outlineThickness * 2);

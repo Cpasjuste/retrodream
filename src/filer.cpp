@@ -75,7 +75,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
         FloatRect r = {1, (line_height * (float) i) + 1, rect.width - 2, line_height - 2};
-        auto line = new Line(r, "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-.", retroDream->getRender()->getFont(), FONT_SIZE);
+        auto line = new Line(r, "", retroDream->getRender()->getFont(), FONT_SIZE);
         lines.push_back(line);
         add(line);
     }
