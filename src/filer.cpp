@@ -304,6 +304,10 @@ void Filer::down() {
 
 void Filer::setSelection(int new_index) {
 
+    if (new_index == 0 && files.size() > 1) {
+        new_index = 1;
+    }
+
     if (new_index < max_lines / 2) {
         file_index = 0;
         highlight_index = new_index < 0 ? 0 : new_index;
@@ -336,7 +340,7 @@ void Filer::setSize(float width, float height) {
 
 Filer::RetroFile Filer::getSelection() {
     if (!files.empty() && files.size() > (size_t) file_index + highlight_index) {
-        return files[file_index + highlight_index];
+        return files.at(file_index + highlight_index);
     }
     return Filer::RetroFile();
 }
