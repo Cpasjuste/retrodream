@@ -41,7 +41,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     debugClockStart("font cache");
     Text *cacheText = new Text(
-            " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_'()", FONT_SIZE);
+            " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!:.,-_'()\"", FONT_SIZE);
     add(cacheText);
     render->flip(false, false);
     delete (cacheText);
