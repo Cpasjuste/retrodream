@@ -30,7 +30,8 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     presetConfig.addOption({"CDDA:", {"OFF", "ON"}, 0, Cdda});
     presetConfig.addOption({"OS:", {"AUTO", "HOMEBREW", "KATANA", "WINCE"}, 0, Type});
     presetConfig.addOption({"LOADER:",
-                            {"AUTO", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"},
+                            {"AUTO", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                             "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"},
                             0, Device});
     configBox->load(&presetConfig);
 
