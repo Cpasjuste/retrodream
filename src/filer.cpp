@@ -101,7 +101,6 @@ void Filer::updateLines() {
                 highlight->setPosition(lines[i]->getPosition());
                 // handle header title
                 if (file.isGame) {
-                    //std::string p = Utility::remove(file.isoPath, path + "/" + file.data.name + "/");
                     retroDream->getHeader()->setStringLeft(file.data.name);
                     retroDream->getHeader()->setStringRight(file.isoType);
                     if (file.isoType == "CDI") {
@@ -157,6 +156,8 @@ bool Filer::getDir(const std::string &p) {
         dirList.insert(dirList.begin(), file);
     }
 
+    std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
+
     for (auto const &fileData : dirList) {
         RetroFile file;
         file.data = fileData;
@@ -172,7 +173,6 @@ bool Filer::getDir(const std::string &p) {
                     file.isoType = "GDI";
                 }
                 // DreamShell compatibility
-                std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
                 file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(file.data.name) + ".jpg";
             }
         } else if (fileData.type == Io::Type::Directory) {
@@ -201,7 +201,6 @@ bool Filer::getDir(const std::string &p) {
                     }
                 }
                 // DreamShell compatibility
-                std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
                 file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(gameFile.name) + ".jpg";
             }
         }
