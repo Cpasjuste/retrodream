@@ -384,12 +384,13 @@ void Filer::onUpdate() {
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
 
+    /*
     if (keys > 0 && keys != Input::Delay
         && keys != Input::Key::Start && keys != Input::Key::Fire1
         && keys != Input::Key::Fire3 && keys != Input::Key::Fire4) {
         retroDream->getPreview()->unload();
         previewClock.restart();
-    } else if (keys == 0) {
+    } else*/ if (keys == 0) {
         if (getSelection().isGame && !getSelection().preview.empty() && !retroDream->getPreview()->isLoaded()
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
             retroDream->getPreview()->load(getSelection().preview);
@@ -411,12 +412,20 @@ bool Filer::onInput(c2d::Input::Player *players) {
     unsigned int keys = players[0].keys;
 
     if (keys & Input::Key::Up) {
+        retroDream->getPreview()->unload();
+        previewClock.restart();
         up();
     } else if (keys & Input::Key::Down) {
+        retroDream->getPreview()->unload();
+        previewClock.restart();
         down();
     } else if (keys & Input::Key::Right) {
+        retroDream->getPreview()->unload();
+        previewClock.restart();
         setSelection(getIndex() + getMaxLines());
     } else if (keys & Input::Key::Left) {
+        retroDream->getPreview()->unload();
+        previewClock.restart();
         setSelection(getIndex() - getMaxLines());
     } else if (keys & Input::Key::Fire1) {
         Io::Type type = getSelection().data.type;
@@ -425,9 +434,13 @@ bool Filer::onInput(c2d::Input::Player *players) {
         } else if (type == Io::Type::File && RetroUtility::isElf(getSelection().data.name)) {
             RetroUtility::exec(getSelection().data.path);
         } else if (type == Io::Type::Directory) {
+            retroDream->getPreview()->unload();
+            previewClock.restart();
             enter(getIndex());
         }
     } else if (keys & Input::Key::Fire2) {
+        retroDream->getPreview()->unload();
+        previewClock.restart();
         exit();
     }
 

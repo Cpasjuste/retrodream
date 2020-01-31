@@ -17,7 +17,9 @@ Preview::Preview(const c2d::FloatRect &rect)
 void Preview::load(const std::string &path) {
 
     if (path.empty()) {
-        setVisibility(Visibility::Hidden, true);
+        if (isVisible()) {
+            setVisibility(Visibility::Hidden, true);
+        }
         loaded = false;
         return;
     }

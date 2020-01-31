@@ -66,9 +66,9 @@ bool RetroUtility::screenshot(c2d::Io *io, const std::string &path) {
     int i = 0, res;
     std::string id = "0";
 
-    while (io->exist(path + id + ".ppm")) {
+    while (io->exist(path + id + ".png")) {
         i++;
-        id = Utility::toString(i) + ".ppm";
+        id = Utility::toString(i);
     }
 
     res = vid_screen_shot((path + id + ".ppm").c_str());
@@ -86,10 +86,9 @@ bool RetroUtility::screenshot(c2d::Io *io, const std::string &path) {
 
     // convert!
     res = stbi_write_png((path + id + ".png").c_str(), w, h, n, pixels, w * n);
-
     // free resources, delete ppm
     free(pixels);
-    io->remove((path + id + ".ppm"));
+    //io->remove((path + id + ".ppm"));
 
     return res == 1;
 #else
