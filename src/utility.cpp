@@ -3,6 +3,8 @@
 //
 
 #include "cross2d/c2d.h"
+#include "cross2d/skeleton/stb_image.h"
+#include "cross2d/skeleton/stb_image_write.h"
 #include "utility.h"
 
 using namespace c2d;
@@ -61,13 +63,35 @@ std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
 
 bool RetroUtility::screenshot(c2d::Io *io, const std::string &path) {
 #ifdef __DREAMCAST__
-    int i = 0;
-    std::string p = path + "/" + "0.ppm";
-    while (io->exist(p)) {
+    int i = 0, res;
+    std::string id = "0";
+
+    while (io->exist(path + id + ".ppm")) {
         i++;
-        p = path + "/" + Utility::toString(i) + ".ppm";
+        id = Utility::toString(i) + ".ppm";
     }
-    return vid_screen_shot(p.c_str()) == 0;
+
+    res = vid_screen_shot((path + id + ".ppm").c_str());
+    if (res != 0) {
+        return false;
+    }
+
+    // convert to png, on requests.... (crap)
+    int w, h, n;
+    unsigned char *pixels = stbi_load((path + id + ".ppm").c_str(), &w, &h, &n, 3);
+    if (pixels == nullptr) {
+        io->remove((path + id + ".ppm"));
+        return false;
+    }
+
+    // convert!
+    res = stbi_write_png((path + id + ".png").c_str(), w, h, n, pixels, w * n);
+
+    // free resources, delete ppm
+    free(pixels);
+    io->remove((path + id + ".ppm"));
+
+    return res == 1;
 #else
     printf("RetroUtility::screenshot: not supported on linux\n");
     return false;
