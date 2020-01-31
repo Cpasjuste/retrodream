@@ -32,7 +32,7 @@ private:
     //SDL_mutex *mutex;
     bool infinite = false;
 #ifdef __DREAMCAST__
-    mutex_t mutex;
+    //mutex_t mutex;
 #endif
 };
 

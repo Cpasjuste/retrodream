@@ -58,3 +58,18 @@ std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
     return io->getHomePath() + path;
 #endif
 }
+
+bool RetroUtility::screenshot(c2d::Io *io, const std::string &path) {
+#ifdef __DREAMCAST__
+    int i = 0;
+    std::string p = path + "/" + "0.ppm";
+    while (io->exist(p)) {
+        i++;
+        p = path + "/" + Utility::toString(i) + ".ppm";
+    }
+    return vid_screen_shot(p.c_str()) == 0;
+#else
+    printf("RetroUtility::screenshot: not supported on linux\n");
+    return false;
+#endif
+}

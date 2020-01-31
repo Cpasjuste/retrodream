@@ -45,6 +45,7 @@ public:
         std::string isoPath;
         std::string preview;
         std::string preset;
+        std::string upperName;
         bool isGame = false;
     };
 

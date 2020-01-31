@@ -35,7 +35,7 @@ void Line::setSize(float width, float height) {
 }
 
 void Line::setString(const std::string &string) {
-    text->setString(Utility::toUpper(string));
+    text->setString(string);
 }
 
 void Line::setColor(const Color &color) {
@@ -93,7 +93,7 @@ void Filer::updateLines() {
             // set file
             Filer::RetroFile file = files[file_index + i];
             lines[i]->setVisibility(Visibility::Visible);
-            lines[i]->setString(Utility::toUpper(file.data.name));
+            lines[i]->setString(file.upperName);
             lines[i]->getText()->setFillColor(file.data.type == Io::Type::File ? colorFile : colorDir);
             // set highlight position and color
             if ((int) i == highlight_index) {
@@ -161,6 +161,7 @@ bool Filer::getDir(const std::string &p) {
     for (auto const &fileData : dirList) {
         RetroFile file;
         file.data = fileData;
+        file.upperName = Utility::toUpper(file.data.name);
         if (fileData.type == Io::Type::File) {
             if (RetroUtility::isGame(file.data.name)) {
                 file.isGame = true;
@@ -302,7 +303,7 @@ void Filer::down() {
 
 void Filer::setSelection(int new_index) {
 
-    if (new_index == 0 && files.size() > 1) {
+    if (new_index == 0 && files.size() > 1 && files.at(0).data.name == "..") {
         new_index = 1;
     }
 

@@ -46,6 +46,7 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
                rdPath.c_str(), io->getDataPath().c_str());
         rdPath = io->getDataPath();
         io->create(rdPath);
+        io->create(rdPath + "screenshots");
         set(RdPath, rdPath, false);
         saveNeeded = true;
     }

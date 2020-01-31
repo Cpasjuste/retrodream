@@ -21,6 +21,8 @@ public:
     static float percentSize(float size, float percent);
 
     static std::string findPath(c2d::Io *io, const std::string &path);
+
+    static bool screenshot(c2d::Io *io, const std::string &path);
 };
 
 #define PERCENT(x1, x2) RetroUtility::percentSize(x1, x2)

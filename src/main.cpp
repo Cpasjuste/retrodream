@@ -156,7 +156,12 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     unsigned int keys = players[0].keys;
 
     if (!credits->isVisible()) {
-        if (keys & Input::Key::Fire4) {
+        if (keys & Input::Key::Fire3) {
+            std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots";
+            if (RetroUtility::screenshot(render->getIo(), path)) {
+                showStatus("SCREENSHOT...", path);
+            }
+        } else if (keys & Input::Key::Fire4) {
             Filer::RetroFile file = filer->getSelection();
             if (file.isGame) {
                 optionMenu->setVisibility(Visibility::Hidden, true);

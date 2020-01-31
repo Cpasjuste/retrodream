@@ -1,6 +1,5 @@
 TODO:
 --------------
-- add credits
 
 TODO, SOMEDAY:
 --------------
@@ -12,3 +11,6 @@ DONE:
 - fix data directory creation (/ide/RD/ or /sd/RD/)
 - add help box (buttons etc)
 - main menu (options + exit to ds)
+- add credits
+- add screenshot option
+- fix root directory highlight position
