@@ -166,11 +166,11 @@ bool Filer::getDir(const std::string &p) {
             if (RetroUtility::isGame(file.data.name)) {
                 file.isGame = true;
                 file.isoPath = file.data.path;
-                if (Utility::endsWith(file.isoPath, ".iso", false)) {
+                if (Utility::endsWith(file.isoPath, ".iso")) {
                     file.isoType = "ISO";
-                } else if (Utility::endsWith(file.isoPath, ".cdi", false)) {
+                } else if (Utility::endsWith(file.isoPath, ".cdi")) {
                     file.isoType = "CDI";
-                } else if (Utility::endsWith(file.isoPath, ".gdi", false)) {
+                } else if (Utility::endsWith(file.isoPath, ".gdi")) {
                     file.isoType = "GDI";
                 }
                 // DreamShell compatibility
@@ -187,6 +187,7 @@ bool Filer::getDir(const std::string &p) {
                     file.isoType = "ISO";
                 }
                 if (!file.isoType.empty()) {
+                    // if we found an iso/cdi and more than one file in the directory, don't add it as a game
                     if (io->hasMoreThanOneFile(fileData.path)) {
                         files.emplace_back(file);
                         continue;
