@@ -156,7 +156,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     unsigned int keys = players[0].keys;
 
     if (!credits->isVisible()) {
-        if (keys & Input::Key::Fire3) {
+        if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
             std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
             if (RetroUtility::screenshot(render->getIo(), path)) {
                 showStatus("SCREENSHOT...", path);

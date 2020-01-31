@@ -35,7 +35,6 @@ HelpBox::HelpBox(RetroDream *retroDream, const c2d::FloatRect &rect)
     lines[HelpButton::X] = new HelpLine(
             {2, 4, rect.width, 32},
             {0, 0, 32, 32}, texture);
-    lines[HelpButton::X]->text->setString("SHOT");
     add(lines[HelpButton::X]);
 
     lines[HelpButton::A] = new HelpLine(
