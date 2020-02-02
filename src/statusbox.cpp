@@ -9,8 +9,7 @@
 
 using namespace c2d;
 
-StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect)
-        : Rectangle(rect) {
+StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect) : Rectangle(rect) {
 
     retroDream = rd;
 
@@ -47,8 +46,9 @@ StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect)
 }
 
 void StatusBox::show(const std::string &title, const std::string &message,
-                     const c2d::Color &color, bool inf, bool drawNow) {
+                     const c2d::Color &color, bool inf) {
 
+    infinite = inf;
     titleText->setString(Utility::toUpper(title));
     messageText->setString(Utility::toUpper(message));
 
@@ -59,19 +59,12 @@ void StatusBox::show(const std::string &title, const std::string &message,
         icon->setFillColor(color);
     }
 
-    infinite = inf;
-    clock.restart();
-
     if (!isVisible()) {
         setVisibility(Visibility::Visible, true);
         iconTween->play();
     }
 
-    if (drawNow) {
-        for (int i = 0; i < 10; i++) {
-            retroDream->getRender()->flip();
-        }
-    }
+    clock.restart();
 }
 
 void StatusBox::hide() {
@@ -79,12 +72,11 @@ void StatusBox::hide() {
     infinite = false;
 }
 
-//void StatusBox::onUpdate() {
-void StatusBox::onDraw(c2d::Transform &transform, bool draw) {
+void StatusBox::onUpdate() {
 
     if (isVisible() && !infinite && clock.getElapsedTime().asSeconds() > 2) {
         setVisibility(Visibility::Hidden, true);
     }
 
-    Rectangle::onDraw(transform, draw);
+    Rectangle::onUpdate();
 }

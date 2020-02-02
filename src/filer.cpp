@@ -70,6 +70,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     highlight->setFillColor(COL_YELLOW);
     highlight->setOutlineColor(COL_BLUE_DARK);
     highlight->setOutlineThickness(2);
+    highlight->add(new TweenColor(COL_YELLOW, Color::Yellow, 1.0f, TweenLoop::PingPong, TweenState::Playing));
     add(highlight);
 
     // add lines
@@ -137,7 +138,7 @@ void Filer::updateLines() {
 bool Filer::getDir(const std::string &p) {
 
     printf("getDir(%s):\n", p.c_str());
-    retroDream->showStatus("LOADING DIRECTORY...", p);
+    retroDream->showStatus("LOADING DIRECTORY...", p, COL_GREEN);
 
     if (p.empty()) {
         return false;
@@ -211,6 +212,7 @@ bool Filer::getDir(const std::string &p) {
     }
 
     setSelection(0);
+    previewClock.restart();
 
     return true;
 }
@@ -384,17 +386,15 @@ void Filer::onUpdate() {
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
 
-    /*
-    if (keys > 0 && keys != Input::Delay
-        && keys != Input::Key::Start && keys != Input::Key::Fire1
-        && keys != Input::Key::Fire3 && keys != Input::Key::Fire4) {
-        retroDream->getPreview()->unload();
-        previewClock.restart();
-    } else*/ if (keys == 0) {
+    if (keys == 0) {
         if (getSelection().isGame && !getSelection().preview.empty() && !retroDream->getPreview()->isLoaded()
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
-            retroDream->getPreview()->load(getSelection().preview);
-            retroDream->showStatus("LOADING PREVIEW...", getSelection().preview);
+            bool loaded = retroDream->getPreview()->load(getSelection().preview);
+            if (loaded) {
+                retroDream->showStatus("PREVIEW LOADED...", getSelection().preview, COL_GREEN);
+            } else {
+                retroDream->showStatus("PREVIEW NOT FOUND...", getSelection().preview, COL_RED);
+            }
         }
     }
 

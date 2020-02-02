@@ -13,7 +13,7 @@ public:
 
     Preview(const c2d::FloatRect &rect);
 
-    void load(const std::string &path = "");
+    bool load(const std::string &path = "");
 
     void unload();
 

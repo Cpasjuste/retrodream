@@ -43,7 +43,7 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
     cpasjuste->setOutlineThickness(2);
     add(cpasjuste);
 
-    add(new TweenPosition({rect.left, -rect.top - 32}, {rect.left, rect.top}, 0.2f));
+    add(new TweenPosition({rect.left, -rect.top - 32}, {rect.left, rect.top}, 0.4f));
     setVisibility(Visibility::Hidden);
 }
 

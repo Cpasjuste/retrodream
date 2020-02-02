@@ -12,13 +12,13 @@ public:
     explicit StatusBox(RetroDream *rd, const c2d::FloatRect &rect);
 
     void show(const std::string &title, const std::string &message,
-              const c2d::Color &color = COL_RED, bool infinite = false, bool drawNow = false);
+              const c2d::Color &color = COL_RED, bool infinite = false);
 
     void hide();
 
 private:
 
-    void onDraw(c2d::Transform &transform, bool draw = true) override;
+    void onUpdate() override;
 
     RetroDream *retroDream = nullptr;
     c2d::Texture *icon = nullptr;

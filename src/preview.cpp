@@ -14,14 +14,14 @@ Preview::Preview(const c2d::FloatRect &rect)
     setVisibility(Visibility::Hidden);
 }
 
-void Preview::load(const std::string &path) {
+bool Preview::load(const std::string &path) {
 
     if (path.empty()) {
         if (isVisible()) {
             setVisibility(Visibility::Hidden, true);
         }
         loaded = false;
-        return;
+        return true;
     }
 
     if (texture != nullptr) {
@@ -36,7 +36,7 @@ void Preview::load(const std::string &path) {
     if (!texture->available) {
         delete (texture);
         texture = nullptr;
-        return;
+        return false;
     }
 
     texture->setOrigin(Origin::Left);
@@ -47,10 +47,14 @@ void Preview::load(const std::string &path) {
     texture->setScale(tex_scaling, tex_scaling);
     add(texture);
     setVisibility(Visibility::Visible, true);
+
+    return true;
 }
 
 void Preview::unload() {
-    load();
+    if (loaded) {
+        load();
+    }
 }
 
 bool Preview::isLoaded() {

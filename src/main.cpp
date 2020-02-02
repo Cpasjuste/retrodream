@@ -185,7 +185,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     return C2DObject::onInput(players);
 }
 
-void RetroDream::onDraw(Transform &transform, bool draw) {
+void RetroDream::onUpdate() {
 
     // handle key repeat delay
     unsigned int keys = render->getInput()->getKeys(0);
@@ -207,7 +207,7 @@ void RetroDream::onDraw(Transform &transform, bool draw) {
         }
     }
 
-    RectangleShape::onDraw(transform, draw);
+    RectangleShape::onUpdate();
 }
 
 RetroConfig *RetroDream::getConfig() {
