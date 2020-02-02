@@ -61,10 +61,11 @@ std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
 #endif
 }
 
-bool RetroUtility::screenshot(c2d::Io *io, const std::string &path) {
+bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
 #ifdef __DREAMCAST__
     int i = 0, res;
     std::string id = "0";
+    Io *io = retroDream->getRender()->getIo();
 
     while (io->exist(path + id + ".png")) {
         i++;
@@ -88,7 +89,9 @@ bool RetroUtility::screenshot(c2d::Io *io, const std::string &path) {
     res = stbi_write_png((path + id + ".png").c_str(), w, h, n, pixels, w * n);
     // free resources, delete ppm
     free(pixels);
-    //io->remove((path + id + ".ppm"));
+    io->remove((path + id + ".ppm"));
+
+    retroDream->showStatus("SCREENSHOT...", (path + id + ".png"), COL_YELLOW);
 
     return res == 1;
 #else

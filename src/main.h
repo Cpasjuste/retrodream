@@ -67,7 +67,8 @@ public:
 
     RetroConfig *getConfig();
 
-    void showStatus(const std::string &title, const std::string &msg);
+    void showStatus(const std::string &title, const std::string &msg,
+                    const c2d::Color &color = COL_RED);
 
     bool quit = false;
 

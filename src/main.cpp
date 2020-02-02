@@ -158,9 +158,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     if (!credits->isVisible()) {
         if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
             std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
-            if (RetroUtility::screenshot(render->getIo(), path)) {
-                showStatus("SCREENSHOT...", path);
-            }
+            RetroUtility::screenshot(this, path);
         } else if (keys & Input::Key::Fire4) {
             Filer::RetroFile file = filer->getSelection();
             if (file.isGame) {
@@ -216,9 +214,10 @@ RetroConfig *RetroDream::getConfig() {
     return retroConfig;
 }
 
-void RetroDream::showStatus(const std::string &title, const std::string &msg) {
+void RetroDream::showStatus(const std::string &title, const std::string &msg,
+                            const c2d::Color &color) {
     if (statusBox != nullptr) {
-        statusBox->show(title, msg);
+        statusBox->show(title, msg, color);
     }
 }
 
