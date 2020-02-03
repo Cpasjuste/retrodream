@@ -91,7 +91,11 @@ bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
     free(pixels);
     io->remove((path + id + ".ppm"));
 
-    retroDream->showStatus("SCREENSHOT SAVED...", (path + id + ".png"), COL_GREEN);
+    if (res == 1) {
+        retroDream->showStatus("SCREENSHOT SAVED...", (path + id + ".png"), COL_GREEN);
+    } else {
+        retroDream->showStatus("SCREENSHOT PROBLEM...", (path + id + ".png"), COL_RED);
+    }
 
     return res == 1;
 #else

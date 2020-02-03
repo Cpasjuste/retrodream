@@ -90,9 +90,11 @@ bool OptionMenu::onInput(c2d::Input::Player *players) {
         auto option = configBox->getSelection();
         if (option != nullptr) {
             if (option->getId() == LaunchDs) {
+                retroDream->getConfig()->set(RetroConfig::FilerPath, retroDream->getFiler()->getPath());
                 RetroUtility::exec(retroDream->getConfig()->get(RetroConfig::DsBinPath));
             } else if (option->getId() == Reboot) {
 #ifdef __DREAMCAST__
+                retroDream->getConfig()->set(RetroConfig::FilerPath, retroDream->getFiler()->getPath());
                 arch_reboot();
 #endif
             } else if (option->getId() == Credits) {

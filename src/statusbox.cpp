@@ -48,6 +48,10 @@ StatusBox::StatusBox(RetroDream *rd, const c2d::FloatRect &rect) : Rectangle(rec
 void StatusBox::show(const std::string &title, const std::string &message,
                      const c2d::Color &color, bool inf) {
 
+    if (messageText == nullptr) {
+        return;
+    }
+
     infinite = inf;
     titleText->setString(Utility::toUpper(title));
     messageText->setString(Utility::toUpper(message));

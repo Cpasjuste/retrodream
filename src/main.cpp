@@ -30,6 +30,9 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
         : RoundedRectangleShape(size, 10, 8) {
 
     render = r;
+    setFillColor(COL_BLUE);
+    setOutlineColor(COL_BLUE_DARK);
+    setOutlineThickness(outlineThickness * 2);
 
 #ifdef __PLATFORM_LINUX__
     Font *font = new Font();
@@ -47,9 +50,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     delete (cacheText);
     debugClockEnd("font cache");
 
-    setFillColor(COL_BLUE);
-    setOutlineColor(COL_BLUE_DARK);
-    setOutlineThickness(outlineThickness * 2);
+    // statusBox, first
+    statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});
+    statusBox->setOrigin(Origin::BottomLeft);
+    add(statusBox);
 
     /// header text
     FloatRect headerRect = {
@@ -105,10 +109,6 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     filerLeft->setColor(COL_BLUE_DARK, COL_BLUE);
     add(filerLeft);
     filer = filerLeft;
-
-    statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});
-    statusBox->setOrigin(Origin::BottomLeft);
-    add(statusBox);
 
     // "hide main rect layer"
     blurLayer = new RectangleShape(render->getSize());
@@ -216,9 +216,7 @@ RetroConfig *RetroDream::getConfig() {
 
 void RetroDream::showStatus(const std::string &title, const std::string &msg,
                             const c2d::Color &color) {
-    if (statusBox != nullptr) {
-        statusBox->show(title, msg, color);
-    }
+    statusBox->show(title, msg, color);
 }
 
 void RetroDream::debugClockStart(const char *msg) {

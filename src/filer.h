@@ -82,6 +82,8 @@ public:
 
     int getIndex();
 
+    std::string getPath();
+
 private:
 
     void updateLines();
