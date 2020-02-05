@@ -91,7 +91,7 @@ private:
     Credits *credits = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
     int inputDelay;
-    unsigned int oldKeys;
+    unsigned int oldKeys = 0;
     c2d::C2DClock debugClock;
 };
 

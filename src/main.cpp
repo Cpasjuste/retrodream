@@ -244,13 +244,12 @@ int main() {
     splash->setFillColor(Color::White);
     render->add(splash);
     splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
-    splashTex->setOrigin(Origin::Center);
-    splashTex->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
-    render->add(splashTex);
+    auto sprite = new Sprite(splashTex, {0, 0, splashTex->getSize().x, splashTex->getSize().y});
+    sprite->setOrigin(Origin::Center);
+    sprite->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
+    render->add(sprite);
     render->flip();
-    // remove splash but do not delete for later use
-    delete (splash);
-    render->remove(splashTex);
+    delete (sprite);
     /// splash
 
 #ifdef __DREAMCAST__
@@ -258,9 +257,6 @@ int main() {
     InitSDCard();
 #endif
     InitIDE();
-#ifdef __EMBEDDED_MODULE_DEBUG__
-    fs_iso_init();
-#endif
 #endif
 
     /// config
@@ -284,10 +280,6 @@ int main() {
     }
 
     delete (render);
-
-#if defined(__DREAMCAST__) && defined (__EMBEDDED_MODULE_DEBUG__)
-    fs_iso_shutdown();
-#endif
 
     return 0;
 }
