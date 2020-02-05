@@ -138,13 +138,13 @@ void Filer::updateLines() {
 
 bool Filer::getDir(const std::string &p) {
 
-    printf("getDir(%s):\n", p.c_str());
-    // TODO: fix random crash :/
-    //retroDream->showStatus("LOADING DIRECTORY...", p, COL_GREEN);
-
     if (p.empty()) {
         return false;
     }
+
+    printf("getDir(%s):\n", p.c_str());
+    // TODO: fix random crash :/
+    //retroDream->showStatus("LOADING DIRECTORY...", p, COL_GREEN);
 
     files.clear();
     path = p;
