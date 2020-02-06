@@ -2,6 +2,10 @@
 // Created by cpasjuste on 15/01/2020.
 //
 
+#ifndef __DREAMCAST__
+#include <zconf.h>
+#endif
+
 #include "cross2d/c2d.h"
 #include "main.h"
 #include "colors.h"
@@ -23,8 +27,11 @@ KOS_INIT_FLAGS(INIT_DEFAULT);
 
 using namespace c2d;
 
+static Renderer *render = nullptr;
+static Texture *splashTex = nullptr;
+static Sprite *splashSprite = nullptr;
+static Text *debugText = nullptr;
 static RetroConfig *retroConfig = nullptr;
-static c2d::Texture *splashTex = nullptr;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlineThickness)
         : RoundedRectangleShape(size, 10, 8) {
@@ -36,12 +43,14 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
 #ifdef __PLATFORM_LINUX__
     Font *font = new Font();
+    font->setFilter(Texture::Filter::Point);
+    font->setOffset({0, 5});
     font->loadFromFile(render->getIo()->getDataPath() + "/future.ttf");
     render->setFont(font);
+    debugText->setFont(font);
 #endif
-    render->getFont()->setFilter(Texture::Filter::Point);
-    render->getFont()->setOffset({0, 5});
 
+    retroDebug("LOADING FONT...");
     debugClockStart("font cache");
     Text *cacheText = new Text(
             " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!:.,-_'()\"", FONT_SIZE);
@@ -51,11 +60,13 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     debugClockEnd("font cache");
 
     // statusBox, first
+    retroDebug("LOADING STATUS BOX...");
     statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});
     statusBox->setOrigin(Origin::BottomLeft);
     add(statusBox);
 
     /// header text
+    retroDebug("LOADING HEADER BOX...");
     FloatRect headerRect = {
             PERCENT(size.x, 1.5f), PERCENT(size.y, 1.5f),
             PERCENT(size.x, 97), PERCENT(size.y, 6.5f)
@@ -79,6 +90,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 42));
 
     /// preview box
+    retroDebug("LOADING PREVIEW BOX...");
     float previewSize = (size.x / 2) - 32;
     FloatRect previewRect = {
             previewSize + 52, PERCENT(size.y, 10.0f),
@@ -89,6 +101,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     preview->setOutlineThickness(3);
     add(preview);
 
+    retroDebug("LOADING HELP BOX...");
     helpBox = new HelpBox(this, {previewRect.left,
                                  previewRect.top + previewRect.height + 8,
                                  previewSize, PERCENT(size.y, 22.2f)});
@@ -98,6 +111,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     add(helpBox);
 
     /// filers
+    retroDebug("LOADING GAMES...");
     FloatRect filerRect = {
             PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
             PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
@@ -118,12 +132,14 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     blurLayer->setVisibility(Visibility::Hidden);
     add(blurLayer);
 
+    retroDebug("LOADING FILE MENU...");
     fileMenu = new FileMenu(this, previewRect);
     fileMenu->setFillColor(COL_BLUE_GRAY);
     fileMenu->setOutlineColor(COL_BLUE_DARK);
     fileMenu->setOutlineThickness(3);
     add(fileMenu);
 
+    retroDebug("LOADING OPTIONS MENU...");
     FloatRect optionMenuRect = {
             size.x / 2, size.y,
             PERCENT(size.x, 60), PERCENT(size.y, 70)
@@ -135,6 +151,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     optionMenu->setOutlineThickness(3);
     add(optionMenu);
 
+    retroDebug("LOADING CREDITS...");
     FloatRect CreditsRect = {
             size.x / 2, size.y / 2,
             PERCENT(size.x, 75), PERCENT(size.y, 75)
@@ -149,6 +166,8 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
     render->getInput()->setRepeatDelay(inputDelay);
     timer.restart();
+
+    retroDebug("ALMOST DONE...");
 }
 
 bool RetroDream::onInput(c2d::Input::Player *players) {
@@ -232,34 +251,67 @@ void RetroDream::debugClockEnd(const char *msg) {
 #endif
 }
 
+void retroDebug(const char *fmt, ...) {
+
+    va_list args;
+    char buffer[512];
+
+    memset(buffer, 0, 512);
+    va_start(args, fmt);
+    vsnprintf(buffer, MAX_PATH, fmt, args);
+    va_end(args);
+
+    printf("buffer: %s\n", buffer);
+    debugText->setString(Utility::toUpper(buffer));
+    debugText->setLayer(100);
+    debugText->setVisibility(Visibility::Visible);
+    render->flip();
+#ifndef __DREAMCAST__
+    sleep(1);
+#endif
+}
+
 int main() {
 
     c2d_default_font_texture_size = {512, 512};
 
     /// render
-    auto render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+    render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+    render->getFont()->setFilter(Texture::Filter::Point);
+    render->getFont()->setOffset({0, 5});
+
+    /// debug
+    debugText = new Text("LOADING...", FONT_SIZE);
+    debugText->setFillColor(COL_BLUE_DARK);
+    debugText->setOutlineColor(Color::Black);
+    debugText->setOutlineThickness(1);
+    debugText->setOrigin(Origin::BottomLeft);
+    debugText->setPosition(16, C2D_SCREEN_HEIGHT - 16);
+    render->add(debugText);
 
     /// splash
     auto splash = new C2DRectangle({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     splash->setFillColor(Color::White);
     render->add(splash);
     splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
-    auto sprite = new Sprite(splashTex, {0, 0, splashTex->getSize().x, splashTex->getSize().y});
-    sprite->setOrigin(Origin::Center);
-    sprite->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
-    render->add(sprite);
+    splashSprite = new Sprite(splashTex, {0, 0, splashTex->getSize().x, splashTex->getSize().y});
+    splashSprite->setOrigin(Origin::Center);
+    splashSprite->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
+    render->add(splashSprite);
     render->flip();
-    delete (sprite);
     /// splash
 
 #ifdef __DREAMCAST__
 #ifdef NDEBUG
+    retroDebug("MOUNTING SDCARD...");
     InitSDCard();
 #endif
+    retroDebug("MOUNTING HDD...");
     InitIDE();
 #endif
 
     /// config
+    retroDebug("LOADING CONFIG...");
     auto retroIo = new RetroIo();
     retroConfig = new RetroConfig(retroIo);
     render->setIo(retroIo);
@@ -273,6 +325,11 @@ int main() {
     auto *retroDream = new RetroDream(render, {rect.width, rect.height}, outline);
     retroDream->setPosition(rect.left, rect.top);
     render->add(retroDream);
+
+    // be sure all stuff is update/created before splash deletion
+    render->flip();
+    delete (splashSprite);
+    debugText->setVisibility(Visibility::Hidden);
 
     // let's go
     while (!retroDream->quit) {
