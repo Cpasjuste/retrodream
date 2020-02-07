@@ -59,11 +59,13 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     delete (cacheText);
     debugClockEnd("font cache");
 
+    /*
     // statusBox, first
     retroDebug("LOADING STATUS BOX...");
     statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});
     statusBox->setOrigin(Origin::BottomLeft);
     add(statusBox);
+    */
 
     /// header text
     retroDebug("LOADING HEADER BOX...");
@@ -235,7 +237,7 @@ RetroConfig *RetroDream::getConfig() {
 
 void RetroDream::showStatus(const std::string &title, const std::string &msg,
                             const c2d::Color &color) {
-    statusBox->show(title, msg, color);
+    //statusBox->show(title, msg, color);
 }
 
 void RetroDream::debugClockStart(const char *msg) {
@@ -261,13 +263,12 @@ void retroDebug(const char *fmt, ...) {
     vsnprintf(buffer, MAX_PATH, fmt, args);
     va_end(args);
 
-    printf("buffer: %s\n", buffer);
     debugText->setString(Utility::toUpper(buffer));
     debugText->setLayer(100);
     debugText->setVisibility(Visibility::Visible);
     render->flip();
 #ifndef __DREAMCAST__
-    sleep(1);
+    //sleep(1);
 #endif
 }
 
@@ -326,7 +327,7 @@ int main() {
     retroDream->setPosition(rect.left, rect.top);
     render->add(retroDream);
 
-    // be sure all stuff is update/created before splash deletion
+    // be sure all stuff is updated/created before splash deletion
     render->flip();
     delete (splashSprite);
     debugText->setVisibility(Visibility::Hidden);

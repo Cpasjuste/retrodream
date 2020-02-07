@@ -26,7 +26,7 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     presetConfig.addOption({"BOOT:", {"DIRECT", "IP.BIN", "IP.BIN (CUT)"}, 0, Mode});
     presetConfig.addOption({"MEMORY:", getAddresses(), 0, Memory});
     presetConfig.addOption({"DMA:", {"OFF", "ON"}, 0, Dma});
-    presetConfig.addOption({"SYNC:", {"OFF", "1", "2", "3", "4", "5", "6", "7", "8", "16"}, 8, Async});
+    presetConfig.addOption({"SYNC:", {"TRUE", "1", "2", "3", "4", "5", "6", "7", "8", "16"}, 8, Async});
     presetConfig.addOption({"CDDA:", {"OFF", "ON"}, 0, Cdda});
     presetConfig.addOption({"OS:", {"AUTO", "HOMEBREW", "KATANA", "WINCE"}, 0, Type});
     presetConfig.addOption({"LOADER:",
@@ -64,9 +64,9 @@ void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         Filer::RetroFile file = retroDream->getFiler()->getSelection();
         if (file.isGame) {
             isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.isoPath);
-            if (!retroDream->getRender()->getIo()->exist(isoLoaderConfig.path)) {
-                retroDream->showStatus("PRESET NOT FOUND...", isoLoaderConfig.path);
-            }
+            //if (!retroDream->getRender()->getIo()->exist(isoLoaderConfig.path)) {
+            //    retroDream->showStatus("PRESET NOT FOUND...", isoLoaderConfig.path);
+            //}
             presetConfig.getOption(Mode)->setChoicesIndex(isoLoaderConfig.mode);
             presetConfig.getOption(Memory)->setChoicesIndex(Utility::toUpper(isoLoaderConfig.memory));
             presetConfig.getOption(Dma)->setChoicesIndex(isoLoaderConfig.dma);
@@ -99,7 +99,7 @@ void FileMenu::save() {
         isoLoaderConfig.mode = presetConfig.getOption(Mode)->getChoiceIndex();
         isoLoaderConfig.type = presetConfig.getOption(Type)->getChoiceIndex();
         isoLoaderConfig.memory = Utility::toLower(presetConfig.getOption(Memory)->getString());
-        if (presetConfig.getOption(Async)->getString() == "OFF") {
+        if (presetConfig.getOption(Async)->getChoiceIndex() == 0) {
             isoLoaderConfig.async = 0;
         } else {
             isoLoaderConfig.async = Utility::parseInt(presetConfig.getOption(Async)->getString());

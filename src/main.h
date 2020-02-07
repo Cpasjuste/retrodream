@@ -19,7 +19,7 @@
 
 #define FONT_SIZE 15
 
-static void retroDebug(const char *fmt, ...);
+void retroDebug(const char *fmt, ...);
 
 class RetroDream : public c2d::RoundedRectangleShape {
 
@@ -88,7 +88,7 @@ private:
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;
     FileMenu *fileMenu = nullptr;
-    StatusBox *statusBox = nullptr;
+    //StatusBox *statusBox = nullptr;
     HelpBox *helpBox = nullptr;
     Credits *credits = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
