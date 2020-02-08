@@ -70,8 +70,6 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     highlight->setFillColor(COL_YELLOW);
     highlight->setOutlineColor(COL_BLUE_DARK);
     highlight->setOutlineThickness(2);
-    //highlight->add(new TweenColor(COL_YELLOW, Color::Yellow, 1.0f, TweenLoop::PingPong, TweenState::Playing));
-    //highlight->add(new TweenAlpha(150, 255, 1.0f, TweenLoop::PingPong, TweenState::Playing));
     add(highlight);
 
     // add lines
@@ -103,7 +101,7 @@ void Filer::updateLines() {
                 highlight->setPosition(lines[i]->getPosition());
                 // handle header title
                 if (file.isGame) {
-                    retroDream->getHeader()->setStringLeft(file.data.name);
+                    retroDream->getHeader()->setStringLeft(file.upperName);
                     retroDream->getHeader()->setStringRight(file.isoType);
                     if (file.isoType == "CDI") {
                         retroDream->getHeader()->setStringRightColor(COL_YELLOW);
@@ -118,7 +116,7 @@ void Filer::updateLines() {
                     retroDream->getHelpBox()->setString(HelpBox::HelpButton::A, "RUN GAME");
                     retroDream->getHelpBox()->setString(HelpBox::HelpButton::Y, "GAME OPTIONS");
                 } else {
-                    retroDream->getHeader()->setStringLeft(file.data.path);
+                    retroDream->getHeader()->setStringLeft(Utility::toUpper(file.data.path));
                     retroDream->getHeader()->setStringRight(file.data.type == Io::Type::File ? "FIL" : "DIR");
                     retroDream->getHeader()->setStringRightColor(COL_BLUE_DARK);
                     // help buttons

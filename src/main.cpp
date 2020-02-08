@@ -53,8 +53,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     retroDebug("LOADING FONT...");
     debugClockStart("font cache");
     Text *cacheText = new Text(
-            " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!:.,-_'()\"", FONT_SIZE);
-    add(cacheText);
+            " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!:.,-_'()/\"", FONT_SIZE);
+    cacheText->setOutlineColor(Color::Black);
+    cacheText->setOutlineThickness(2);
+    render->add(cacheText);
     render->flip(false, false);
     delete (cacheText);
     debugClockEnd("font cache");
@@ -255,40 +257,32 @@ void RetroDream::debugClockEnd(const char *msg) {
 
 void retroDebug(const char *fmt, ...) {
 
-    va_list args;
-    char buffer[512];
+    if (debugText != nullptr) {
+        va_list args;
+        char buffer[512];
 
-    memset(buffer, 0, 512);
-    va_start(args, fmt);
-    vsnprintf(buffer, MAX_PATH, fmt, args);
-    va_end(args);
+        memset(buffer, 0, 512);
+        va_start(args, fmt);
+        vsnprintf(buffer, MAX_PATH, fmt, args);
+        va_end(args);
 
-    debugText->setString(Utility::toUpper(buffer));
-    debugText->setLayer(100);
-    debugText->setVisibility(Visibility::Visible);
-    render->flip();
+        debugText->setString(Utility::toUpper(buffer));
+        debugText->setVisibility(Visibility::Visible);
+        render->flip();
 #ifndef __DREAMCAST__
-    //sleep(1);
+        //sleep(1);
 #endif
+    }
 }
 
 int main() {
 
-    c2d_default_font_texture_size = {512, 512};
+    c2d_default_font_texture_size = {256, 256};
 
     /// render
     render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
     render->getFont()->setFilter(Texture::Filter::Point);
     render->getFont()->setOffset({0, 5});
-
-    /// debug
-    debugText = new Text("LOADING...", FONT_SIZE);
-    debugText->setFillColor(COL_BLUE_DARK);
-    debugText->setOutlineColor(Color::Black);
-    debugText->setOutlineThickness(1);
-    debugText->setOrigin(Origin::BottomLeft);
-    debugText->setPosition(16, C2D_SCREEN_HEIGHT - 16);
-    render->add(debugText);
 
     /// splash
     auto splash = new C2DRectangle({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
@@ -301,6 +295,15 @@ int main() {
     render->add(splashSprite);
     render->flip();
     /// splash
+
+    /// debug
+    debugText = new Text("LOADING...", FONT_SIZE);
+    debugText->setFillColor(COL_BLUE_DARK);
+    debugText->setOutlineColor(Color::Black);
+    debugText->setOutlineThickness(2);
+    debugText->setOrigin(Origin::BottomLeft);
+    debugText->setPosition(16, C2D_SCREEN_HEIGHT - 16);
+    render->add(debugText);
 
 #ifdef __DREAMCAST__
 #ifdef NDEBUG
@@ -330,7 +333,8 @@ int main() {
     // be sure all stuff is updated/created before splash deletion
     render->flip();
     delete (splashSprite);
-    debugText->setVisibility(Visibility::Hidden);
+    delete (debugText);
+    debugText = nullptr;
 
     // let's go
     while (!retroDream->quit) {
