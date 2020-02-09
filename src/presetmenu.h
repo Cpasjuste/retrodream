@@ -2,12 +2,12 @@
 // Created by cpasjuste on 21/01/2020.
 //
 
-#ifndef RETRODREAM_FILEMENU_H
-#define RETRODREAM_FILEMENU_H
+#ifndef RETRODREAM_PRESETMENU_H
+#define RETRODREAM_PRESETMENU_H
 
 #include "isoloader.h"
 
-class FileMenu : public c2d::RoundedRectangleShape {
+class PresetMenu : public c2d::RoundedRectangleShape {
 
 public:
     enum GameOption {
@@ -20,7 +20,7 @@ public:
         Type
     };
 
-    explicit FileMenu(RetroDream *rd, const c2d::FloatRect &rect);
+    explicit PresetMenu(RetroDream *rd, const c2d::FloatRect &rect);
 
     void setTitle(const std::string &text);
 
@@ -38,9 +38,8 @@ private:
     c2d::Text *title = nullptr;
     c2d::ConfigBox *configBox = nullptr;
     c2d::config::Group presetConfig;
-    c2d::config::Group fileConfig;
     IsoLoader::Config isoLoaderConfig;
     bool dirty = false;
 };
 
-#endif //RETRODREAM_FILEMENU_H
+#endif //RETRODREAM_PRESETMENU_H

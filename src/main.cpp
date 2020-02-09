@@ -118,7 +118,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     retroDebug("LOADING GAMES...");
     FloatRect filerRect = {
             PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
-            PERCENT(size.x, 50.0f), PERCENT(size.y, 79.0f)
+            PERCENT(size.x, 50.0f), PERCENT(size.y, 88.0f)
     };
     filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::FilerPath), 10);
     filerLeft->setFillColor(COL_BLUE_GRAY);
@@ -128,7 +128,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     add(filerLeft);
     filer = filerLeft;
 
-    // "hide main rect layer"
+    // "hide main rect" layer
     blurLayer = new RectangleShape(render->getSize());
     blurLayer->setPosition(-outlineThickness, -outlineThickness);
     blurLayer->setFillColor(Color::Gray);
@@ -137,11 +137,11 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     add(blurLayer);
 
     retroDebug("LOADING FILE MENU...");
-    fileMenu = new FileMenu(this, previewRect);
-    fileMenu->setFillColor(COL_BLUE_GRAY);
-    fileMenu->setOutlineColor(COL_BLUE_DARK);
-    fileMenu->setOutlineThickness(3);
-    add(fileMenu);
+    presetMenu = new PresetMenu(this, previewRect);
+    presetMenu->setFillColor(COL_BLUE_GRAY);
+    presetMenu->setOutlineColor(COL_BLUE_DARK);
+    presetMenu->setOutlineThickness(3);
+    add(presetMenu);
 
     retroDebug("LOADING OPTIONS MENU...");
     FloatRect optionMenuRect = {
@@ -186,17 +186,17 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
             Filer::RetroFile file = filer->getSelection();
             if (file.isGame) {
                 optionMenu->setVisibility(Visibility::Hidden, true);
-                fileMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
-                fileMenu->setVisibility(fileMenu->isVisible() ?
-                                        Visibility::Hidden : Visibility::Visible, true);
-                fileMenu->save();
-                blurLayer->setVisibility(fileMenu->getVisibility(), true);
+                presetMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
+                presetMenu->setVisibility(presetMenu->isVisible() ?
+                                          Visibility::Hidden : Visibility::Visible, true);
+                presetMenu->save();
+                blurLayer->setVisibility(presetMenu->getVisibility(), true);
             }
         } else if (keys & Input::Key::Start) {
             optionMenu->setVisibility(optionMenu->isVisible() ?
                                       Visibility::Hidden : Visibility::Visible, true);
-            fileMenu->setVisibility(Visibility::Hidden, true);
-            fileMenu->save();
+            presetMenu->setVisibility(Visibility::Hidden, true);
+            presetMenu->save();
             blurLayer->setVisibility(optionMenu->getVisibility(), true);
         }
     }
@@ -312,6 +312,9 @@ int main() {
 #endif
     retroDebug("MOUNTING HDD...");
     InitIDE();
+#ifdef __EMBEDDED_MODULE_DEBUG__
+    fs_iso_init();
+#endif
 #endif
 
     /// config
@@ -342,6 +345,12 @@ int main() {
     }
 
     delete (render);
+
+#ifdef __DREAMCAST__
+#ifdef __EMBEDDED_MODULE_DEBUG__
+    fs_iso_shutdown();
+#endif
+#endif
 
     return 0;
 }

@@ -154,10 +154,6 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
     uint8 md5[16];
     uint8 boot_sector[2048];
 
-#ifdef __EMBEDDED_MODULE_DEBUG__
-    printf("IsoLoader::getConfigInfo: fs_iso_init\n");
-    fs_iso_init();
-#endif
     printf("IsoLoader::getConfigInfo: fs_iso_mount\n");
     if (fs_iso_mount("/iso", isoPath.c_str()) != 0) {
         printf("IsoLoader::getConfigInfo: could not mound iso: %s\n", isoPath.c_str());
@@ -179,10 +175,6 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
 
     printf("IsoLoader::getConfigInfo: fs_iso_unmount\n");
     fs_iso_unmount("/iso");
-#ifdef __EMBEDDED_MODULE_DEBUG__
-    printf("IsoLoader::getConfigInfo: fs_iso_shutdown\n");
-    fs_iso_shutdown();
-#endif
 
     std::string device;
     size_t pos = isoPath.find('/', 1);

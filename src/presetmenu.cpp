@@ -5,11 +5,11 @@
 #include "cross2d/c2d.h"
 #include "main.h"
 #include "colors.h"
-#include "filemenu.h"
+#include "presetmenu.h"
 
 using namespace c2d;
 
-FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
+PresetMenu::PresetMenu(RetroDream *rd, const c2d::FloatRect &rect)
         : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
 
     retroDream = rd;
@@ -54,19 +54,16 @@ FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect)
     setVisibility(Visibility::Hidden);
 }
 
-void FileMenu::setTitle(const std::string &text) {
+void PresetMenu::setTitle(const std::string &text) {
     title->setString(text);
 }
 
-void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
+void PresetMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
     if (visibility == Visibility::Visible) {
         Filer::RetroFile file = retroDream->getFiler()->getSelection();
         if (file.isGame) {
             isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.isoPath);
-            //if (!retroDream->getRender()->getIo()->exist(isoLoaderConfig.path)) {
-            //    retroDream->showStatus("PRESET NOT FOUND...", isoLoaderConfig.path);
-            //}
             presetConfig.getOption(Mode)->setChoicesIndex(isoLoaderConfig.mode);
             presetConfig.getOption(Memory)->setChoicesIndex(Utility::toUpper(isoLoaderConfig.memory));
             presetConfig.getOption(Dma)->setChoicesIndex(isoLoaderConfig.dma);
@@ -83,15 +80,13 @@ void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             }
             presetConfig.getOption(Type)->setChoicesIndex(isoLoaderConfig.type);
             configBox->load(&presetConfig);
-        } else {
-            // TODO: handle files operations
         }
     }
 
     RoundedRectangleShape::setVisibility(visibility, tweenPlay);
 }
 
-void FileMenu::save() {
+void PresetMenu::save() {
     if (dirty) {
         isoLoaderConfig.device = Utility::toLower(presetConfig.getOption(Device)->getString());
         isoLoaderConfig.dma = presetConfig.getOption(Dma)->getChoiceIndex();
@@ -109,7 +104,7 @@ void FileMenu::save() {
     }
 }
 
-bool FileMenu::onInput(c2d::Input::Player *players) {
+bool PresetMenu::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
@@ -132,7 +127,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
     return true;
 }
 
-std::vector<std::string> FileMenu::getAddresses() {
+std::vector<std::string> PresetMenu::getAddresses() {
 
     return {
             "0X8C004000",

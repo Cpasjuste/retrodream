@@ -383,7 +383,7 @@ void Filer::onUpdate() {
 
     if (!isVisible()
         || retroDream->getOptionMenu()->isVisible()
-        || retroDream->getFileMenu()->isVisible()
+        || retroDream->getPresetMenu()->isVisible()
         || retroDream->getCredits()->isVisible()) {
         return;
     }
@@ -406,7 +406,7 @@ void Filer::onUpdate() {
 bool Filer::onInput(c2d::Input::Player *players) {
 
     if (retroDream->getOptionMenu()->isVisible()
-        || retroDream->getFileMenu()->isVisible()
+        || retroDream->getPresetMenu()->isVisible()
         || retroDream->getCredits()->isVisible()) {
         return false;
     }

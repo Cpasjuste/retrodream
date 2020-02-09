@@ -11,7 +11,7 @@
 #include "header.h"
 #include "preview.h"
 #include "optionmenu.h"
-#include "filemenu.h"
+#include "presetmenu.h"
 #include "statusbox.h"
 #include "utility.h"
 #include "helpbox.h"
@@ -43,8 +43,8 @@ public:
         return filer;
     }
 
-    FileMenu *getFileMenu() {
-        return fileMenu;
+    PresetMenu *getPresetMenu() {
+        return presetMenu;
     }
 
     OptionMenu *getOptionMenu() {
@@ -87,7 +87,7 @@ private:
     Header *header = nullptr;
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;
-    FileMenu *fileMenu = nullptr;
+    PresetMenu *presetMenu = nullptr;
     //StatusBox *statusBox = nullptr;
     HelpBox *helpBox = nullptr;
     Credits *credits = nullptr;
