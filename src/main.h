@@ -16,6 +16,7 @@
 #include "utility.h"
 #include "helpbox.h"
 #include "credits.h"
+#include "progressbox.h"
 
 #define FONT_SIZE 15
 
@@ -59,6 +60,14 @@ public:
         return credits;
     }
 
+    ProgressBox *getProgressBox() {
+        return progressBox;
+    }
+
+    c2d::MessageBox *getMessageBox() {
+        return messageBox;
+    }
+
     c2d::RectangleShape *getBlur() {
         return blurLayer;
     }
@@ -88,9 +97,10 @@ private:
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;
     PresetMenu *presetMenu = nullptr;
-    //StatusBox *statusBox = nullptr;
     HelpBox *helpBox = nullptr;
     Credits *credits = nullptr;
+    ProgressBox *progressBox = nullptr;
+    c2d::MessageBox *messageBox = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
     int inputDelay;
     unsigned int oldKeys = 0;

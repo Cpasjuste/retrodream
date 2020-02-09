@@ -3,7 +3,9 @@
 //
 
 #ifndef __DREAMCAST__
+
 #include <zconf.h>
+
 #endif
 
 #include "cross2d/c2d.h"
@@ -60,14 +62,6 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     render->flip(false, false);
     delete (cacheText);
     debugClockEnd("font cache");
-
-    /*
-    // statusBox, first
-    retroDebug("LOADING STATUS BOX...");
-    statusBox = new StatusBox(this, {4, size.y - 4, size.x - 16, 40});
-    statusBox->setOrigin(Origin::BottomLeft);
-    add(statusBox);
-    */
 
     /// header text
     retroDebug("LOADING HEADER BOX...");
@@ -167,6 +161,22 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     credits->setOutlineThickness(3);
     add(credits);
 
+    progressBox = new ProgressBox(this, COL_BLUE_LIGHT, COL_BLUE_DARK, COL_BLUE_DARK);
+    progressBox->getTitle()->setFillColor(COL_RED);
+    add(progressBox);
+
+    messageBox = new MessageBox(progressBox->getLocalBounds(), render->getInput(), render->getFont(), FONT_SIZE);
+    messageBox->setPosition(progressBox->getPosition());
+    messageBox->setOrigin(Origin::Center);
+    messageBox->setFillColor(progressBox->getFillColor());
+    messageBox->setOutlineColor(progressBox->getOutlineColor());
+    messageBox->setOutlineThickness(progressBox->getOutlineThickness());
+    messageBox->setSelectedColor(COL_BLUE_DARK, COL_RED);
+    messageBox->setNotSelectedColor(COL_BLUE_DARK, Color::White);
+    messageBox->getTitleText()->setFillColor(COL_RED);
+    messageBox->getMessageText()->setFillColor(COL_BLUE_DARK);
+    add(messageBox);
+
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
     render->getInput()->setRepeatDelay(inputDelay);
     timer.restart();
@@ -178,7 +188,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (!credits->isVisible()) {
+    if (!credits->isVisible() && !progressBox->isVisible()) {
         if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
             std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
             RetroUtility::screenshot(this, path);

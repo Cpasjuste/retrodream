@@ -8,6 +8,7 @@
 #include "filer.h"
 #include "utility.h"
 #include "isoloader.h"
+#include "biosflash.h"
 
 using namespace c2d;
 
@@ -407,7 +408,8 @@ bool Filer::onInput(c2d::Input::Player *players) {
 
     if (retroDream->getOptionMenu()->isVisible()
         || retroDream->getPresetMenu()->isVisible()
-        || retroDream->getCredits()->isVisible()) {
+        || retroDream->getCredits()->isVisible()
+        || retroDream->getProgressBox()->isVisible()) {
         return false;
     }
 
@@ -431,16 +433,51 @@ bool Filer::onInput(c2d::Input::Player *players) {
         setSelection(getIndex() - getMaxLines());
     } else if (keys & Input::Key::Fire1) {
         Io::Type type = getSelection().data.type;
-        if (getSelection().isGame) {
-            // save last path
-            retroDream->getConfig()->set(RetroConfig::FilerPath, path);
-            IsoLoader::run(retroDream, getSelection().isoPath);
-        } else if (type == Io::Type::File && RetroUtility::isElf(getSelection().data.name)) {
-            RetroUtility::exec(getSelection().data.path);
-        } else if (type == Io::Type::Directory) {
+        if (type == Io::Type::Directory) {
             retroDream->getPreview()->unload();
             previewClock.restart();
             enter(getIndex());
+        } else if (getSelection().isGame) {
+            // save last path
+            retroDream->getConfig()->set(RetroConfig::FilerPath, path);
+            IsoLoader::run(retroDream, getSelection().isoPath);
+        } else if (RetroUtility::isElf(getSelection().data.name)) {
+            RetroUtility::exec(getSelection().data.path);
+        } else if (Utility::endsWith(getSelection().data.name, ".bios", false)) {
+            retroDream->getBlur()->setVisibility(Visibility::Visible, true);
+            RetroFile file = getSelection();
+            int ret = retroDream->getMessageBox()->show("BIOS FLASH",
+                                                        "YOU ARE ABOUT TO WRITE '" + file.upperName
+                                                        + "' TO YOUR ROM CHIP.\n\n"
+                                                          "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
+                                                        "CANCEL", "CONFIRM");
+            if (ret == MessageBox::RIGHT) {
+                retroDream->getProgressBox()->setTitle("BIOS FLASHING IN PROGRESS");
+                retroDream->getProgressBox()->setMessage(
+                        "\n\nFLASHING BIOS TO FLASH ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
+                retroDream->getProgressBox()->setProgress("LOADING THING.... \n", 0.0f);
+                retroDream->getProgressBox()->setVisibility(Visibility::Visible);
+                retroDream->getProgressBox()->setVisibility(Visibility::Visible, true);
+                RetroDream *rd = retroDream;
+                BiosFlash::flash(file.data.path, [rd](const std::string &msg, float progress) {
+                    if (progress < 0) {
+                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                        rd->getMessageBox()->show("BIOS FLASH - ERROR", "\n\n\n" + msg, "OK");
+                        rd->getBlur()->setVisibility(Visibility::Hidden, true);
+                    } else if (progress > 1) {
+                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                        rd->getMessageBox()->getTitleText()->setFillColor(COL_GREEN);
+                        rd->getMessageBox()->show("BIOS FLASH - SUCCESS", "\n\n\n" + msg, "OK");
+                        rd->getMessageBox()->getTitleText()->setFillColor(COL_RED);
+                        rd->getBlur()->setVisibility(Visibility::Hidden, true);
+                    } else {
+                        rd->getProgressBox()->setProgress(msg, progress);
+                        rd->getRender()->flip(true, false);
+                    }
+                });
+            } else {
+                retroDream->getBlur()->setVisibility(Visibility::Hidden, true);
+            }
         }
     } else if (keys & Input::Key::Fire2) {
         retroDream->getPreview()->unload();

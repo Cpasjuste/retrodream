@@ -96,6 +96,9 @@ if (PLATFORM_DREAMCAST)
             src/ds/modules/isoldr/exec.c
             src/ds/modules/isoldr/execasm.s
             src/ds/modules/isoldr/module.c
+            # bflash
+            src/ds/modules/bflash/bflash.c
+            src/ds/modules/bflash/devices.c
             )
     list(APPEND CFLAGS
             -D__EMBEDDED_MODULE_DEBUG__
