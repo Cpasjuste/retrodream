@@ -48,7 +48,7 @@ Text *Line::getText() {
 }
 
 Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path, int lineSpacing)
-        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
+        : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
 
     retroDream = rd;
     io = (RetroIo *) retroDream->getRender()->getIo();
@@ -67,7 +67,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     }
 
     // add selection rectangle (highlight)
-    highlight = new RoundedRectangleShape(Vector2f(rect.width - 3, line_height), 10, 8);
+    highlight = new RoundedRectangleShape(Vector2f(rect.width - 2, line_height), 8, 4);
     highlight->setFillColor(COL_YELLOW);
     highlight->setOutlineColor(COL_BLUE_DARK);
     highlight->setOutlineThickness(2);

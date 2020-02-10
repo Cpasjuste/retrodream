@@ -36,7 +36,7 @@ static Text *debugText = nullptr;
 static RetroConfig *retroConfig = nullptr;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlineThickness)
-        : RoundedRectangleShape(size, 10, 8) {
+        : RoundedRectangleShape(size, 8, 4) {
 
     render = r;
     setFillColor(COL_BLUE);

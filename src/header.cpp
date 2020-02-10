@@ -11,7 +11,7 @@ using namespace c2d;
 Header::Header(const c2d::FloatRect &rect) : Rectangle(rect) {
 
     left = new RoundedRectangleShape({PERCENT(rect.width, 92), rect.height},
-                                     10, 8);
+                                     8, 4);
     textLeft = new Text("", FONT_SIZE);
     textLeft->setOrigin(Origin::Left);
     textLeft->setPosition(PERCENT(left->getSize().x, 2), (rect.height / 2));
@@ -20,7 +20,7 @@ Header::Header(const c2d::FloatRect &rect) : Rectangle(rect) {
     add(left);
 
     right = new RoundedRectangleShape({PERCENT(rect.width, 7.5f), rect.height},
-                                      10, 8);
+                                      8, 4);
     right->setPosition(PERCENT(rect.width, 93), 0);
     textRight = new Text("GDI", FONT_SIZE);
     textRight->setOrigin(Origin::Center);

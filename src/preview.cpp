@@ -8,7 +8,7 @@
 using namespace c2d;
 
 Preview::Preview(const c2d::FloatRect &rect)
-        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
+        : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
 
     add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.1f));
     setVisibility(Visibility::Hidden);

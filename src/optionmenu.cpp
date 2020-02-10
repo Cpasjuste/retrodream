@@ -10,7 +10,7 @@
 using namespace c2d;
 
 OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect)
-        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
+        : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
 
     retroDream = rd;
 

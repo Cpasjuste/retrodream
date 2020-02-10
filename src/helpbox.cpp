@@ -26,7 +26,7 @@ HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spri
 }
 
 HelpBox::HelpBox(RetroDream *retroDream, const c2d::FloatRect &rect)
-        : RoundedRectangleShape({rect.width, rect.height}, 10, 8) {
+        : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
 
     setPosition(rect.left, rect.top);
 
