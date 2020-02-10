@@ -14,7 +14,7 @@ Header::Header(const c2d::FloatRect &rect) : Rectangle(rect) {
                                      8, 4);
     textLeft = new Text("", FONT_SIZE);
     textLeft->setOrigin(Origin::Left);
-    textLeft->setPosition(PERCENT(left->getSize().x, 2), (rect.height / 2));
+    textLeft->setPosition(PERCENT(left->getSize().x, 1), (rect.height / 2));
     textLeft->setSizeMax(left->getSize().x - FONT_SIZE - 10, 0);
     left->add(textLeft);
     add(left);
