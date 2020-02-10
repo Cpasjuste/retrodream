@@ -102,7 +102,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     retroDebug("LOADING HELP BOX...");
     helpBox = new HelpBox(this, {previewRect.left,
                                  previewRect.top + previewRect.height + 8,
-                                 previewSize, PERCENT(size.y, 22.2f)});
+                                 previewSize + 6, PERCENT(size.y, 22.2f)});
     helpBox->setFillColor(COL_BLUE_LIGHT);
     helpBox->setOutlineColor(COL_BLUE_DARK);
     helpBox->setOutlineThickness(2);
@@ -306,6 +306,7 @@ int main() {
     splash->setFillColor(Color::White);
     render->add(splash);
     splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
+    splashTex->setFilter(Texture::Filter::Point);
     splashSprite = new Sprite(splashTex, {0, 0, splashTex->getSize().x, splashTex->getSize().y});
     splashSprite->setOrigin(Origin::Center);
     splashSprite->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
