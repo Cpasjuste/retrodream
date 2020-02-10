@@ -14,14 +14,14 @@ PresetMenu::PresetMenu(RetroDream *rd, const c2d::FloatRect &rect)
 
     retroDream = rd;
 
-    title = new Text("FILE OPTION", FONT_SIZE);
+    title = new Text("GAME OPTIONS", FONT_SIZE);
     title->setOrigin(Origin::BottomLeft);
     title->setPosition(16, 0);
     title->setOutlineThickness(3);
     title->setOutlineColor(COL_BLUE_DARK);
     add(title);
 
-    FloatRect configRect = {16, 16, rect.width - 32, rect.height - 64};
+    FloatRect configRect = {16, 16, rect.width - 28, rect.height - 64};
     configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect, FONT_SIZE + 10);
     presetConfig.addOption({"BOOT:", {"DIRECT", "IP.BIN", "IP.BIN (CUT)"}, 0, Mode});
     presetConfig.addOption({"MEMORY:", getAddresses(), 0, Memory});
@@ -61,6 +61,7 @@ void PresetMenu::setTitle(const std::string &text) {
 void PresetMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
     if (visibility == Visibility::Visible) {
+        configBox->reset();
         Filer::RetroFile file = retroDream->getFiler()->getSelection();
         if (file.isGame) {
             isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.isoPath);
@@ -81,6 +82,12 @@ void PresetMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             presetConfig.getOption(Type)->setChoicesIndex(isoLoaderConfig.type);
             configBox->load(&presetConfig);
         }
+        retroDream->getFiler()->setSelectionFront();
+        retroDream->getFiler()->getBlur()->setVisibility(Visibility::Visible, true);
+    } else {
+        save();
+        retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
+        retroDream->getFiler()->setSelectionBack();
     }
 
     RoundedRectangleShape::setVisibility(visibility, tweenPlay);
@@ -119,8 +126,6 @@ bool PresetMenu::onInput(c2d::Input::Player *players) {
         configBox->navigate(ConfigBox::Navigation::Left);
         dirty = true;
     } else if (keys & Input::Key::Fire2) {
-        save();
-        retroDream->getBlur()->setVisibility(Visibility::Hidden, true);
         setVisibility(Visibility::Hidden, true);
     }
 

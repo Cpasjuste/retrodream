@@ -62,6 +62,12 @@ public:
 
     void setSelection(int index);
 
+    void setSelectionFront();
+
+    void setSelectionBack();
+
+    Line *getSelectionLine();
+
     void up();
 
     void down();
@@ -84,6 +90,10 @@ public:
 
     std::string getPath();
 
+    c2d::RectangleShape *getBlur() {
+        return blurLayer;
+    }
+
 private:
 
     void updateLines();
@@ -99,6 +109,7 @@ private:
     RetroDream *retroDream = nullptr;
     RetroIo *io = nullptr;
     c2d::RoundedRectangleShape *highlight = nullptr;
+    c2d::RectangleShape *blurLayer = nullptr;
     c2d::C2DClock previewClock;
     int previewLoadDelay = 500;
     float line_height;

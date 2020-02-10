@@ -19,7 +19,7 @@ HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spri
 
     text = new Text("UNUSED", FONT_SIZE);
     text->setOrigin(Origin::Left);
-    text->setPosition(button->getPosition().x + button->getSize().x + 2, (rect.height / 2) - 1);
+    text->setPosition(button->getPosition().x + button->getSize().x, (rect.height / 2) - 1);
     text->setOutlineThickness(2);
     text->setOutlineColor(Color::Black);
     add(text);
@@ -35,6 +35,7 @@ HelpBox::HelpBox(RetroDream *retroDream, const c2d::FloatRect &rect)
     lines[HelpButton::X] = new HelpLine(
             {2, 4, rect.width, 32},
             {0, 0, 32, 32}, texture);
+    lines[HelpButton::X]->text->setString("FILE OPTIONS");
     add(lines[HelpButton::X]);
 
     lines[HelpButton::A] = new HelpLine(
@@ -43,12 +44,12 @@ HelpBox::HelpBox(RetroDream *retroDream, const c2d::FloatRect &rect)
     add(lines[HelpButton::A]);
 
     lines[HelpButton::Y] = new HelpLine(
-            {rect.width / 2 - 10, 4, rect.width, 32},
+            {rect.width / 2 - 6, 4, rect.width, 32},
             {32, 0, 32, 32}, texture);
     add(lines[HelpButton::Y]);
 
     lines[HelpButton::B] = new HelpLine(
-            {rect.width / 2 - 10, 36, rect.width, 32},
+            {rect.width / 2 - 6, 36, rect.width, 32},
             {0, 32, 32, 32}, texture);
     lines[HelpButton::B]->text->setString("BACK");
     add(lines[HelpButton::B]);

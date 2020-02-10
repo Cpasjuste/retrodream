@@ -12,6 +12,7 @@
 #include "preview.h"
 #include "optionmenu.h"
 #include "presetmenu.h"
+#include "filemenu.h"
 #include "statusbox.h"
 #include "utility.h"
 #include "helpbox.h"
@@ -52,6 +53,10 @@ public:
         return optionMenu;
     }
 
+    FileMenu *getFileMenu() {
+        return fileMenu;
+    }
+
     HelpBox *getHelpBox() {
         return helpBox;
     }
@@ -68,18 +73,13 @@ public:
         return messageBox;
     }
 
-    c2d::RectangleShape *getBlur() {
-        return blurLayer;
-    }
-
     void debugClockStart(const char *msg);
 
     void debugClockEnd(const char *msg);
 
     RetroConfig *getConfig();
 
-    void showStatus(const std::string &title, const std::string &msg,
-                    const c2d::Color &color = COL_RED);
+    void showStatus(const std::string &title, const std::string &msg, const c2d::Color &color = COL_RED);
 
     bool quit = false;
 
@@ -92,16 +92,16 @@ private:
     c2d::Renderer *render = nullptr;
     c2d::C2DClock timer;
     Filer *filer = nullptr;
-    Filer *filerLeft = nullptr;
     Header *header = nullptr;
     Preview *preview = nullptr;
     OptionMenu *optionMenu = nullptr;
     PresetMenu *presetMenu = nullptr;
+    FileMenu *fileMenu = nullptr;
     HelpBox *helpBox = nullptr;
     Credits *credits = nullptr;
     ProgressBox *progressBox = nullptr;
+    StatusBox *statusBox = nullptr;
     c2d::MessageBox *messageBox = nullptr;
-    c2d::RectangleShape *blurLayer = nullptr;
     int inputDelay;
     unsigned int oldKeys = 0;
     c2d::C2DClock debugClock;

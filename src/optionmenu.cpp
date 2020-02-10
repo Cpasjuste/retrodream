@@ -59,7 +59,10 @@ OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect)
 void OptionMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
     if (visibility == Visibility::Visible) {
-        // TODO: reload options if changed
+        configBox->reset();
+        retroDream->getFiler()->getBlur()->setVisibility(Visibility::Visible, true);
+    } else {
+        retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
     }
 
     RoundedRectangleShape::setVisibility(visibility, tweenPlay);
@@ -104,7 +107,6 @@ bool OptionMenu::onInput(c2d::Input::Player *players) {
         }
     } else if (keys & Input::Key::Fire2) {
         save();
-        retroDream->getBlur()->setVisibility(Visibility::Hidden, true);
         setVisibility(Visibility::Hidden, true);
     }
 

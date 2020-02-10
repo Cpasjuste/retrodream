@@ -81,7 +81,7 @@ bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
     int w, h, n;
     unsigned char *pixels = stbi_load((path + id + ".ppm").c_str(), &w, &h, &n, 3);
     if (pixels == nullptr) {
-        io->remove((path + id + ".ppm"));
+        io->removeFile((path + id + ".ppm"));
         return false;
     }
 
@@ -89,12 +89,12 @@ bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
     res = stbi_write_png((path + id + ".png").c_str(), w, h, n, pixels, w * n);
     // free resources, delete ppm
     free(pixels);
-    io->remove((path + id + ".ppm"));
+    io->removeFile((path + id + ".ppm"));
 
     if (res == 1) {
         retroDream->showStatus("SCREENSHOT SAVED...", (path + id + ".png"), COL_GREEN);
     } else {
-        retroDream->showStatus("SCREENSHOT PROBLEM...", (path + id + ".png"), COL_RED);
+        retroDream->showStatus("SCREENSHOT NOT SAVED...", (path + id + ".png"), COL_RED);
     }
 
     return res == 1;

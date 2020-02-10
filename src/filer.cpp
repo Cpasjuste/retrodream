@@ -77,9 +77,20 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
         FloatRect r = {1, (line_height * (float) i) + 1, rect.width - 2, line_height - 2};
         auto line = new Line(r, "", retroDream->getRender()->getFont(), FONT_SIZE);
+        line->setLayer(2);
         lines.push_back(line);
         add(line);
     }
+
+    // "hide main rect" layer
+    blurLayer = new RectangleShape({-rect.left - 16, -rect.top - 16,
+                                    retroDream->getRender()->getSize().x + 64,
+                                    retroDream->getRender()->getSize().y + 64});
+    blurLayer->setFillColor(Color::Gray);
+    blurLayer->setLayer(3);
+    blurLayer->add(new TweenAlpha(0, 230, 0.3));
+    blurLayer->setVisibility(Visibility::Hidden);
+    add(blurLayer);
 
     getDir(path);
 };
@@ -306,12 +317,7 @@ void Filer::down() {
 
 void Filer::setSelection(int new_index) {
 
-    if (new_index == 0 && files.size() > 1
-        && files.at(0).data.name == "..") {
-        new_index = 1;
-    }
-
-    if (new_index < max_lines / 2) {
+    if (new_index <= max_lines / 2) {
         file_index = 0;
         highlight_index = new_index < 0 ? 0 : new_index;
     } else if (new_index > (int) files.size() - max_lines / 2) {
@@ -329,6 +335,41 @@ void Filer::setSelection(int new_index) {
     updateLines();
 }
 
+Filer::RetroFile Filer::getSelection() {
+
+    if (!files.empty() && files.size() > (size_t) file_index + highlight_index) {
+        return files.at(file_index + highlight_index);
+    }
+
+    return Filer::RetroFile();
+}
+
+Line *Filer::getSelectionLine() {
+
+    if ((size_t) highlight_index < files.size()) {
+        return lines.at(highlight_index);
+    }
+
+    return nullptr;
+}
+
+void Filer::setSelectionFront() {
+    Line *line = getSelectionLine();
+    if (line != nullptr) {
+        highlight->setLayer(4);
+        line->setLayer(5);
+    }
+}
+
+void Filer::setSelectionBack() {
+    Line *line = getSelectionLine();
+    if (line != nullptr) {
+        // TODO: fix layers ?
+        highlight->setLayer(1);
+        line->setLayer(2);
+    }
+}
+
 void Filer::setSize(const Vector2f &size) {
     Filer::setSize(size.x, size.y);
 }
@@ -339,13 +380,6 @@ void Filer::setSize(float width, float height) {
     for (auto &line : lines) {
         line->setSize(width, line->getSize().y);
     }
-}
-
-Filer::RetroFile Filer::getSelection() {
-    if (!files.empty() && files.size() > (size_t) file_index + highlight_index) {
-        return files.at(file_index + highlight_index);
-    }
-    return Filer::RetroFile();
 }
 
 void Filer::setColor(const Color &dirColor, const Color &fileColor) {
@@ -385,7 +419,9 @@ void Filer::onUpdate() {
     if (!isVisible()
         || retroDream->getOptionMenu()->isVisible()
         || retroDream->getPresetMenu()->isVisible()
-        || retroDream->getCredits()->isVisible()) {
+        || retroDream->getFileMenu()->isVisible()
+        || retroDream->getCredits()->isVisible()
+        || retroDream->getProgressBox()->isVisible()) {
         return;
     }
 
@@ -396,7 +432,7 @@ void Filer::onUpdate() {
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
             bool loaded = retroDream->getPreview()->load(getSelection().preview);
             if (!loaded) {
-                retroDream->showStatus("PREVIEW NOT FOUND...", getSelection().preview, COL_RED);
+                retroDream->showStatus("PREVIEW NOT FOUND", getSelection().preview, COL_RED);
             }
         }
     }
@@ -408,6 +444,7 @@ bool Filer::onInput(c2d::Input::Player *players) {
 
     if (retroDream->getOptionMenu()->isVisible()
         || retroDream->getPresetMenu()->isVisible()
+        || retroDream->getFileMenu()->isVisible()
         || retroDream->getCredits()->isVisible()
         || retroDream->getProgressBox()->isVisible()) {
         return false;
@@ -444,7 +481,7 @@ bool Filer::onInput(c2d::Input::Player *players) {
         } else if (RetroUtility::isElf(getSelection().data.name)) {
             RetroUtility::exec(getSelection().data.path);
         } else if (Utility::endsWith(getSelection().data.name, ".bios", false)) {
-            retroDream->getBlur()->setVisibility(Visibility::Visible, true);
+            blurLayer->setVisibility(Visibility::Visible, true);
             RetroFile file = getSelection();
             int ret = retroDream->getMessageBox()->show("BIOS FLASH",
                                                         "YOU ARE ABOUT TO WRITE '" + file.upperName
@@ -455,28 +492,27 @@ bool Filer::onInput(c2d::Input::Player *players) {
                 retroDream->getProgressBox()->setTitle("BIOS FLASHING IN PROGRESS");
                 retroDream->getProgressBox()->setMessage(
                         "\n\nFLASHING BIOS TO FLASH ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
-                retroDream->getProgressBox()->setProgress("LOADING THING.... \n", 0.0f);
+                retroDream->getProgressBox()->setProgress("LOADING STUFF.... \n", 0.0f);
                 retroDream->getProgressBox()->setVisibility(Visibility::Visible);
-                retroDream->getProgressBox()->setVisibility(Visibility::Visible, true);
                 RetroDream *rd = retroDream;
                 BiosFlash::flash(file.data.path, [rd](const std::string &msg, float progress) {
                     if (progress < 0) {
                         rd->getProgressBox()->setVisibility(Visibility::Hidden);
                         rd->getMessageBox()->show("BIOS FLASH - ERROR", "\n\n\n" + msg, "OK");
-                        rd->getBlur()->setVisibility(Visibility::Hidden, true);
+                        rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
                     } else if (progress > 1) {
                         rd->getProgressBox()->setVisibility(Visibility::Hidden);
                         rd->getMessageBox()->getTitleText()->setFillColor(COL_GREEN);
                         rd->getMessageBox()->show("BIOS FLASH - SUCCESS", "\n\n\n" + msg, "OK");
                         rd->getMessageBox()->getTitleText()->setFillColor(COL_RED);
-                        rd->getBlur()->setVisibility(Visibility::Hidden, true);
+                        rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
                     } else {
                         rd->getProgressBox()->setProgress(msg, progress);
                         rd->getRender()->flip(true, false);
                     }
                 });
             } else {
-                retroDream->getBlur()->setVisibility(Visibility::Hidden, true);
+                retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
             }
         }
     } else if (keys & Input::Key::Fire2) {
@@ -487,3 +523,4 @@ bool Filer::onInput(c2d::Input::Player *players) {
 
     return true;
 }
+

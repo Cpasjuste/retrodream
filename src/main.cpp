@@ -112,30 +112,28 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     retroDebug("LOADING GAMES...");
     FloatRect filerRect = {
             PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
-            PERCENT(size.x, 50.0f), PERCENT(size.y, 88.0f)
+            PERCENT(size.x, 50.0f), PERCENT(size.y, 79.5f)
     };
-    filerLeft = new Filer(this, filerRect, retroConfig->get(RetroConfig::FilerPath), 10);
-    filerLeft->setFillColor(COL_BLUE_GRAY);
-    filerLeft->setOutlineColor(COL_BLUE_DARK);
-    filerLeft->setOutlineThickness(3);
-    filerLeft->setColor(COL_BLUE_DARK, COL_BLUE);
-    add(filerLeft);
-    filer = filerLeft;
+    filer = new Filer(this, filerRect, retroConfig->get(RetroConfig::FilerPath), 10);
+    filer->setFillColor(COL_BLUE_GRAY);
+    filer->setOutlineColor(COL_BLUE_DARK);
+    filer->setOutlineThickness(3);
+    filer->setColor(COL_BLUE_DARK, COL_BLUE);
+    add(filer);
 
-    // "hide main rect" layer
-    blurLayer = new RectangleShape(render->getSize());
-    blurLayer->setPosition(-outlineThickness, -outlineThickness);
-    blurLayer->setFillColor(Color::Gray);
-    blurLayer->add(new TweenAlpha(0, 230, 0.3));
-    blurLayer->setVisibility(Visibility::Hidden);
-    add(blurLayer);
-
-    retroDebug("LOADING FILE MENU...");
+    retroDebug("LOADING GAME MENU...");
     presetMenu = new PresetMenu(this, previewRect);
     presetMenu->setFillColor(COL_BLUE_GRAY);
     presetMenu->setOutlineColor(COL_BLUE_DARK);
     presetMenu->setOutlineThickness(3);
     add(presetMenu);
+
+    retroDebug("LOADING FILE MENU...");
+    fileMenu = new FileMenu(this, previewRect);
+    fileMenu->setFillColor(COL_BLUE_GRAY);
+    fileMenu->setOutlineColor(COL_BLUE_DARK);
+    fileMenu->setOutlineThickness(3);
+    add(fileMenu);
 
     retroDebug("LOADING OPTIONS MENU...");
     FloatRect optionMenuRect = {
@@ -177,6 +175,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     messageBox->getMessageText()->setFillColor(COL_BLUE_DARK);
     add(messageBox);
 
+    statusBox = new StatusBox({8, size.y - 14, size.x, FONT_SIZE * 2});
+    statusBox->setOrigin(Origin::BottomLeft);
+    add(statusBox);
+
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
     render->getInput()->setRepeatDelay(inputDelay);
     timer.restart();
@@ -188,27 +190,31 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (!credits->isVisible() && !progressBox->isVisible()) {
-        if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
-            std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
-            RetroUtility::screenshot(this, path);
-        } else if (keys & Input::Key::Fire4) {
-            Filer::RetroFile file = filer->getSelection();
-            if (file.isGame) {
-                optionMenu->setVisibility(Visibility::Hidden, true);
-                presetMenu->setTitle(file.isGame ? "LOADER OPTIONS" : "FILE OPTIONS");
-                presetMenu->setVisibility(presetMenu->isVisible() ?
-                                          Visibility::Hidden : Visibility::Visible, true);
-                presetMenu->save();
-                blurLayer->setVisibility(presetMenu->getVisibility(), true);
-            }
-        } else if (keys & Input::Key::Start) {
-            optionMenu->setVisibility(optionMenu->isVisible() ?
+    if (credits->isVisible() || progressBox->isVisible() || messageBox->isVisible()) {
+        return C2DObject::onInput(players);
+    }
+
+    if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
+        std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
+        RetroUtility::screenshot(this, path);
+    } else if (keys & Input::Key::Fire3) {
+        optionMenu->setVisibility(Visibility::Hidden, true);
+        presetMenu->setVisibility(Visibility::Hidden, true);
+        fileMenu->setVisibility(fileMenu->isVisible() ?
+                                Visibility::Hidden : Visibility::Visible, true);
+    } else if (keys & Input::Key::Fire4) {
+        Filer::RetroFile file = filer->getSelection();
+        if (file.isGame) {
+            optionMenu->setVisibility(Visibility::Hidden, true);
+            fileMenu->setVisibility(Visibility::Hidden, true);
+            presetMenu->setVisibility(presetMenu->isVisible() ?
                                       Visibility::Hidden : Visibility::Visible, true);
-            presetMenu->setVisibility(Visibility::Hidden, true);
-            presetMenu->save();
-            blurLayer->setVisibility(optionMenu->getVisibility(), true);
         }
+    } else if (keys & Input::Key::Start) {
+        fileMenu->setVisibility(Visibility::Hidden, true);
+        presetMenu->setVisibility(Visibility::Hidden, true);
+        optionMenu->setVisibility(optionMenu->isVisible() ?
+                                  Visibility::Hidden : Visibility::Visible, true);
     }
 
     if (keys & EV_QUIT) {
@@ -247,9 +253,10 @@ RetroConfig *RetroDream::getConfig() {
     return retroConfig;
 }
 
-void RetroDream::showStatus(const std::string &title, const std::string &msg,
-                            const c2d::Color &color) {
-    //statusBox->show(title, msg, color);
+void RetroDream::showStatus(const std::string &title, const std::string &msg, const c2d::Color &color) {
+    if (statusBox != nullptr) {
+        statusBox->show(title, msg, color);
+    }
 }
 
 void RetroDream::debugClockStart(const char *msg) {
