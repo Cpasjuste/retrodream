@@ -471,13 +471,15 @@ bool Filer::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Fire1) {
         Io::Type type = getSelection().data.type;
         if (type == Io::Type::Directory) {
-            retroDream->getPreview()->unload();
-            previewClock.restart();
-            enter(getIndex());
-        } else if (getSelection().isGame) {
-            // save last path
-            retroDream->getConfig()->set(RetroConfig::FilerPath, path);
-            IsoLoader::run(retroDream, getSelection().isoPath);
+            if (getSelection().isGame) {
+                // save last path
+                retroDream->getConfig()->set(RetroConfig::FilerPath, path);
+                IsoLoader::run(retroDream, getSelection().isoPath);
+            } else {
+                retroDream->getPreview()->unload();
+                previewClock.restart();
+                enter(getIndex());
+            }
         } else if (RetroUtility::isElf(getSelection().data.name)) {
             RetroUtility::exec(getSelection().data.path);
         } else if (Utility::endsWith(getSelection().data.name, ".bios", false)) {
