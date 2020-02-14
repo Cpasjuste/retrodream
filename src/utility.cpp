@@ -15,7 +15,7 @@ void RetroUtility::exec(const std::string &path) {
     void *elf;
 
     f = fs_open(path.c_str(), O_RDONLY);
-    if (f < 0) {
+    if (f == FILEHND_INVALID) {
         return;
     }
 
