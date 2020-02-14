@@ -525,4 +525,3 @@ bool Filer::onInput(c2d::Input::Player *players) {
 
     return true;
 }
-
