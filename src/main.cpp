@@ -325,11 +325,11 @@ int main() {
 
 #ifdef __DREAMCAST__
 #ifdef NDEBUG
+    retroDebug("MOUNTING HDD...");
+    InitIDE();
     retroDebug("MOUNTING SDCARD...");
     InitSDCard();
 #endif
-    retroDebug("MOUNTING HDD...");
-    InitIDE();
 #ifdef __EMBEDDED_MODULE_DEBUG__
     fs_iso_init();
 #endif

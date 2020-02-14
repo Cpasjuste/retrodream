@@ -63,38 +63,41 @@ std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
 
 bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
 #ifdef __DREAMCAST__
-    int i = 0, res;
-    std::string id = "0";
+    int i, res;
+    char shotPath[MAX_PATH];
     Io *io = retroDream->getRender()->getIo();
 
-    while (io->exist(path + id + ".png")) {
-        i++;
-        id = Utility::toString(i);
+    snprintf(shotPath, MAX_PATH, "%s001", path.c_str());
+    for (i = 2; i < 999; i++) {
+        if (!io->exist(std::string(shotPath) + ".png")) {
+            break;
+        }
+        snprintf(shotPath, MAX_PATH, "%s%03d", path.c_str(), i);
     }
 
-    res = vid_screen_shot((path + id + ".ppm").c_str());
+    res = vid_screen_shot((std::string(shotPath) + ".ppm").c_str());
     if (res != 0) {
         return false;
     }
 
     // convert to png, on requests.... (crap)
     int w, h, n;
-    unsigned char *pixels = stbi_load((path + id + ".ppm").c_str(), &w, &h, &n, 3);
+    unsigned char *pixels = stbi_load((std::string(shotPath) + ".ppm").c_str(), &w, &h, &n, 3);
     if (pixels == nullptr) {
-        io->removeFile((path + id + ".ppm"));
+        io->removeFile((std::string(shotPath) + ".ppm"));
         return false;
     }
 
     // convert!
-    res = stbi_write_png((path + id + ".png").c_str(), w, h, n, pixels, w * n);
+    res = stbi_write_png((std::string(shotPath) + ".png").c_str(), w, h, n, pixels, w * n);
     // free resources, delete ppm
     free(pixels);
-    io->removeFile((path + id + ".ppm"));
+    io->removeFile((std::string(shotPath) + ".ppm"));
 
     if (res == 1) {
-        retroDream->showStatus("SCREENSHOT SAVED...", (path + id + ".png"), COL_GREEN);
+        retroDream->showStatus("SCREENSHOT SAVED...", (std::string(shotPath) + ".png"), COL_GREEN);
     } else {
-        retroDream->showStatus("SCREENSHOT NOT SAVED...", (path + id + ".png"), COL_RED);
+        retroDream->showStatus("SCREENSHOT NOT SAVED...", (std::string(shotPath) + ".png"), COL_RED);
     }
 
     return res == 1;
