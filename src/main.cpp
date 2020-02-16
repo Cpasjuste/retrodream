@@ -14,6 +14,7 @@
 #include "utility.h"
 #include "isoloader.h"
 #include "retroio.h"
+#include "flashrom.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
@@ -194,6 +195,45 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
         return C2DObject::onInput(players);
     }
 
+    if (keys & Input::Key::Fire5) {
+        FlashRom::FactorySetting setting = FlashRom::getFactorySetting();
+        printf("setting: %02X%02X%02X\n",
+               setting.country, setting.language, setting.broadcast);
+    }
+
+    /*
+    if ((keys & Input::Key::Fire6)) {
+        std::string err;
+        if (FlashRom::writeFactoryFromFile("/ide/factory_cpas.bin", err) != 0) {
+            messageBox->show("FLASHROM: HOOO NOOO DRAGONCITY", err, "OK");
+        } else {
+            messageBox->show("FLASHROM: THERE'S SOME HOPE DRAGONCITY :)",
+                             "\nMAYBE IT WORKED! REBOOT NOW\n,AND DONT FORGET THE 20% CODE IF IT DOES :D",
+                             "OK");
+        }
+    }
+
+    if ((keys & Input::Key::Fire5)) {
+        std::string err;
+        if (FlashRom::readToFile("/ide/flashrom.bin", err) != 0) {
+            messageBox->show("FLASHROM: POOR DRAGONCITY", err, "OK");
+        } else {
+            messageBox->show("FLASHROM: THERE'S SOME HOPE DRAGONCITY :)",
+                             "\nSOME WORK STILL TO BE DONE MY FRIEND,\nBUT WE WERE ABLE TO READ YOUR FLASHROM,\nIT SEEMS...",
+                             "OK");
+        }
+    } else if ((keys & Input::Key::Fire6)) {
+        std::string err;
+        if (FlashRom::readFactoryToFile("/ide/factory.bin", err) != 0) {
+            messageBox->show("FACTORY: POOR DRAGONCITY", err, "OK");
+        } else {
+            messageBox->show("FACTORY: THERE'S SOME HOPE DRAGONCITY :)",
+                             "\nSOME WORK STILL TO BE DONE MY FRIEND,\nBUT WE WERE ABLE TO READ YOUR FLASHROM,\nIT SEEMS...",
+                             "OK");
+        }
+    }
+    */
+
     if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
         std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
         RetroUtility::screenshot(this, path);
@@ -324,12 +364,12 @@ int main() {
     render->add(debugText);
 
 #ifdef __DREAMCAST__
-#ifdef NDEBUG
+//#ifdef NDEBUG
     retroDebug("MOUNTING HDD...");
     InitIDE();
-    retroDebug("MOUNTING SDCARD...");
-    InitSDCard();
-#endif
+//    retroDebug("MOUNTING SDCARD...");
+//    InitSDCard();
+//#endif
 #ifdef __EMBEDDED_MODULE_DEBUG__
     fs_iso_init();
 #endif
