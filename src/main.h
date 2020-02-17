@@ -5,14 +5,17 @@
 #ifndef RETRODREAM_MAIN_H
 #define RETRODREAM_MAIN_H
 
+#include "flashrom.h"
 #include "colors.h"
 #include "cfg.h"
 #include "filer.h"
 #include "header.h"
 #include "preview.h"
-#include "optionmenu.h"
+#include "menu.h"
 #include "presetmenu.h"
 #include "filemenu.h"
+#include "regionfreemenu.h"
+#include "optionmenu.h"
 #include "statusbox.h"
 #include "utility.h"
 #include "helpbox.h"
@@ -45,16 +48,20 @@ public:
         return filer;
     }
 
-    PresetMenu *getPresetMenu() {
+    Menu *getPresetMenu() {
         return presetMenu;
     }
 
-    OptionMenu *getOptionMenu() {
-        return optionMenu;
+    Menu *getFileMenu() {
+        return fileMenu;
     }
 
-    FileMenu *getFileMenu() {
-        return fileMenu;
+    Menu *getRegionFreeMenu() {
+        return regionFreeMenu;
+    }
+
+    Menu *getOptionMenu() {
+        return optionMenu;
     }
 
     HelpBox *getHelpBox() {
@@ -94,9 +101,10 @@ private:
     Filer *filer = nullptr;
     Header *header = nullptr;
     Preview *preview = nullptr;
-    OptionMenu *optionMenu = nullptr;
-    PresetMenu *presetMenu = nullptr;
-    FileMenu *fileMenu = nullptr;
+    Menu *optionMenu = nullptr;
+    Menu *presetMenu = nullptr;
+    Menu *fileMenu = nullptr;
+    Menu *regionFreeMenu = nullptr;
     HelpBox *helpBox = nullptr;
     Credits *credits = nullptr;
     ProgressBox *progressBox = nullptr;

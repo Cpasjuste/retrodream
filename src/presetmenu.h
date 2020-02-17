@@ -7,7 +7,7 @@
 
 #include "isoloader.h"
 
-class PresetMenu : public c2d::RoundedRectangleShape {
+class PresetMenu : public Menu {
 
 public:
     enum GameOption {
@@ -22,11 +22,7 @@ public:
 
     explicit PresetMenu(RetroDream *rd, const c2d::FloatRect &rect);
 
-    void setTitle(const std::string &text);
-
     void setVisibility(c2d::Visibility visibility, bool tweenPlay = false) override;
-
-    bool onInput(c2d::Input::Player *players) override;
 
 private:
 
@@ -34,10 +30,6 @@ private:
 
     static std::vector<std::string> getAddresses();
 
-    RetroDream *retroDream = nullptr;
-    c2d::Text *title = nullptr;
-    c2d::ConfigBox *configBox = nullptr;
-    c2d::config::Group presetConfig;
     IsoLoader::Config isoLoaderConfig;
     bool dirty = false;
 };

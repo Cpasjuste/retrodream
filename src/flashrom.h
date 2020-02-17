@@ -2,8 +2,31 @@
 // Created by cpasjuste on 15/01/2020.
 //
 
+#ifndef RETRODREAM_FLASHROM_H
+#define RETRODREAM_FLASHROM_H
+
 #include <string>
+
+#ifdef __DREAMCAST__
 #include <arch/types.h>
+#include <dc/flashrom.h>
+#else
+#define FLASHROM_LANG_JAPANESE  0
+#define FLASHROM_LANG_ENGLISH   1
+#define FLASHROM_LANG_GERMAN    2
+#define FLASHROM_LANG_FRENCH    3
+#define FLASHROM_LANG_SPANISH   4
+#define FLASHROM_LANG_ITALIAN   5
+typedef unsigned short uint8;
+#endif
+
+#define FLASHROM_PT_ALL 10
+
+#define FLASHROM_ERR_DELETE_PART    -20
+#define FLASHROM_ERR_WRITE_PART     -21
+#define FLASHROM_ERR_READ_FILE      -22
+#define FLASHROM_ERR_WRITE_FILE     -23
+#define FLASHROM_ERR_OPEN_FILE      -24
 
 class FlashRom {
 
@@ -11,9 +34,9 @@ public:
 
     enum class Country {
         Unknown = 0x99,
-        Europe = 0x32,
+        Japan = 0x30,
         Usa = 0x31,
-        Japan = 0x30
+        Europe = 0x32,
     };
 
     enum class Broadcast {
@@ -34,28 +57,37 @@ public:
         Italian = FLASHROM_LANG_ITALIAN
     };
 
-    struct Settings {
+    class Settings {
+    public:
+        ~Settings() {
+            if (partitionSystem != nullptr) {
+                free(partitionSystem);
+            }
+            if (partitionBlock1 != nullptr) {
+                free(partitionBlock1);
+            }
+        }
+
         Country country = Country::Unknown;
         Broadcast broadcast = Broadcast::Unknown;
         Language language = Language::Unknown;
-        std::string error;
+        uint8 *partitionSystem = nullptr;
+        uint8 *partitionBlock1 = nullptr;
+        int partitionBlock1LanguageOffset = 0;
+        int error = 0;
     };
 
     static Settings getSettings();
 
     static int setSettings(const Settings &setting, std::string err);
 
-    static uint8 *read(int partition, unsigned int offset, int size, std::string err);
+    static uint8 *read(int *error, int partition);
 
-    static int write(int partition, unsigned int offset, int size, uint8 *data, std::string err);
+    static int write(int partition, uint8 *data);
 
-    static int backup(int partition, const std::string &path, std::string err);
+    static int backup(int partition, const std::string &path);
 
-    static int restore(int partition, const std::string &path, std::string err);
-
-    static int backupAll(const std::string &path, std::string err);
-
-    static int restoreAll(const std::string &path, std::string err);
+    static int restore(int partition, const std::string &path);
 
 private:
 
@@ -63,3 +95,5 @@ private:
 
     static int flashrom_calc_crc(const uint8 *buffer);
 };
+
+#endif // RETRODREAM_FLASHROM_H

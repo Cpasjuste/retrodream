@@ -54,6 +54,7 @@ bool Credits::onInput(c2d::Input::Player *players) {
     if (keys != Input::Key::Delay) {
         setVisibility(Visibility::Hidden, true);
         retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+        retroDream->getFiler()->setSelectionBack();
     }
 
     return true;

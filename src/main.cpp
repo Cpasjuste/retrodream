@@ -136,13 +136,15 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     fileMenu->setOutlineThickness(3);
     add(fileMenu);
 
+    retroDebug("LOADING REGION FREE MENU...");
+    regionFreeMenu = new RegionFreeMenu(this, previewRect);
+    regionFreeMenu->setFillColor(COL_BLUE_GRAY);
+    regionFreeMenu->setOutlineColor(COL_BLUE_DARK);
+    regionFreeMenu->setOutlineThickness(3);
+    add(regionFreeMenu);
+
     retroDebug("LOADING OPTIONS MENU...");
-    FloatRect optionMenuRect = {
-            size.x / 2, size.y,
-            PERCENT(size.x, 60), PERCENT(size.y, 70)
-    };
-    optionMenu = new OptionMenu(this, optionMenuRect);
-    optionMenu->setOrigin(Origin::Bottom);
+    optionMenu = new OptionMenu(this, previewRect);
     optionMenu->setFillColor(COL_BLUE_GRAY);
     optionMenu->setOutlineColor(COL_BLUE_DARK);
     optionMenu->setOutlineThickness(3);
@@ -191,19 +193,20 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (credits->isVisible() || progressBox->isVisible() || messageBox->isVisible()) {
+    if (regionFreeMenu->isVisible() || credits->isVisible()
+        || progressBox->isVisible() || messageBox->isVisible()) {
         return C2DObject::onInput(players);
     }
 
     if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
         std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
         RetroUtility::screenshot(this, path);
-    } else if (keys & Input::Key::Fire3) {
+    } else if (keys & Input::Key::Fire3 && !optionMenu->isVisible()) {
         optionMenu->setVisibility(Visibility::Hidden, true);
         presetMenu->setVisibility(Visibility::Hidden, true);
         fileMenu->setVisibility(fileMenu->isVisible() ?
                                 Visibility::Hidden : Visibility::Visible, true);
-    } else if (keys & Input::Key::Fire4) {
+    } else if (keys & Input::Key::Fire4 && !optionMenu->isVisible()) {
         Filer::RetroFile file = filer->getSelection();
         if (file.isGame) {
             optionMenu->setVisibility(Visibility::Hidden, true);
@@ -325,12 +328,12 @@ int main() {
     render->add(debugText);
 
 #ifdef __DREAMCAST__
-//#ifdef NDEBUG
+#ifdef NDEBUG
     retroDebug("MOUNTING HDD...");
     InitIDE();
-    //retroDebug("MOUNTING SDCARD...");
-    //InitSDCard();
-//#endif
+    retroDebug("MOUNTING SDCARD...");
+    InitSDCard();
+#endif
 #ifdef __EMBEDDED_MODULE_DEBUG__
     fs_iso_init();
 #endif
