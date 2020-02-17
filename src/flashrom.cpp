@@ -38,15 +38,25 @@ FlashRom::Settings FlashRom::getSettings() {
     return settings;
 }
 
-int FlashRom::setSettings(const FlashRom::Settings &setting, std::string err) {
+int FlashRom::saveSettings(const FlashRom::Settings &settings) {
 
-    // TODO
-    /*
-    uint8 data[3] = {(uint8) setting.country, (uint8) setting.language, (uint8) setting.broadcast};
-    if (write(FLASHROM_PT_SYSTEM, 2, 3, data, std::move(err)) != 0) {
-        return -1;
+    if (settings.partitionSystem == nullptr || settings.partitionBlock1 == nullptr) {
+        return FLASHROM_ERR_NOMEM;
     }
-    */
+
+    settings.partitionSystem[2] = (uint8) settings.country;
+    settings.partitionSystem[4] = (uint8) settings.broadcast;
+    settings.partitionBlock1[settings.partitionBlock1LanguageOffset] = (uint8) settings.language;
+
+    int res = write(FLASHROM_PT_SYSTEM, settings.partitionSystem);
+    if (res != 0) {
+        return res;
+    }
+
+    res = write(FLASHROM_PT_BLOCK_1, settings.partitionBlock1);
+    if (res != 0) {
+        return res;
+    }
 
     return 0;
 }
@@ -202,8 +212,8 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
         return FLASHROM_ERR_READ_PART;
     }
 
-    if (strncmp(magic, "KATANA_FLASH____", 16) != 0 || *((uint16 * )(magic + 16)) != partid) {
-        bmcnt = *((uint16 * )(magic + 16));
+    if (strncmp(magic, "KATANA_FLASH____", 16) != 0 || *((uint16 *) (magic + 16)) != partid) {
+        bmcnt = *((uint16 *) (magic + 16));
         magic[16] = 0;
         dbglog(DBG_ERROR, "flashrom_get_block: invalid magic '%s' or id %d in part %d\n", magic, bmcnt, partid);
         return FLASHROM_ERR_BAD_MAGIC;
@@ -273,10 +283,10 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
         /* Check the checksum to make sure it's valid */
         bmcnt = flashrom_calc_crc(buffer);
 
-        if (bmcnt != *((uint16 * )(buffer + FLASHROM_OFFSET_CRC))) {
+        if (bmcnt != *((uint16 *) (buffer + FLASHROM_OFFSET_CRC))) {
             dbglog(DBG_WARNING,
                    "flashrom_get_block: part %d phys block %d has invalid checksum %04x (should be %04x)\n",
-                   partid, i + 1, *((uint16 * )(buffer + FLASHROM_OFFSET_CRC)), bmcnt);
+                   partid, i + 1, *((uint16 *) (buffer + FLASHROM_OFFSET_CRC)), bmcnt);
             continue;
         }
 

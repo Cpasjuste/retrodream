@@ -79,7 +79,7 @@ public:
 
     static Settings getSettings();
 
-    static int setSettings(const Settings &setting, std::string err);
+    static int saveSettings(const Settings &settings);
 
     static uint8 *read(int *error, int partition);
 
