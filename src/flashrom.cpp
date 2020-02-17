@@ -9,7 +9,6 @@
 
 int FlashRom::getSettings(Settings *settings) {
 
-    //Settings settings;
     uint8 md5[16];
 
     // read factory partition
