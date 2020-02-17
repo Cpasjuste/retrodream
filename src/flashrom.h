@@ -8,8 +8,10 @@
 #include <string>
 
 #ifdef __DREAMCAST__
+
 #include <arch/types.h>
 #include <dc/flashrom.h>
+
 #else
 #define FLASHROM_LANG_JAPANESE  0
 #define FLASHROM_LANG_ENGLISH   1
@@ -33,14 +35,12 @@ class FlashRom {
 public:
 
     enum class Country {
-        Unknown = 0x99,
         Japan = 0x30,
         Usa = 0x31,
         Europe = 0x32,
     };
 
     enum class Broadcast {
-        Unknown = 0x99,
         Ntsc = 0x30,
         Pal = 0x31,
         PalM = 0x32,
@@ -48,7 +48,6 @@ public:
     };
 
     enum class Language {
-        Unknown = 0x99,
         Japan = FLASHROM_LANG_JAPANESE,
         English = FLASHROM_LANG_ENGLISH,
         German = FLASHROM_LANG_GERMAN,
@@ -68,18 +67,19 @@ public:
             }
         }
 
-        Country country = Country::Unknown;
-        Broadcast broadcast = Broadcast::Unknown;
-        Language language = Language::Unknown;
+        Country country = Country::Japan;
+        Broadcast broadcast = Broadcast::Ntsc;
+        Language language = Language::Japan;
         uint8 *partitionSystem = nullptr;
         uint8 *partitionBlock1 = nullptr;
-        int partitionBlock1LanguageOffset = 0;
+        int partitionBlock1SysCfg = 0;
+        int partitionBlock1SysCfgLanguage = 0;
         int error = 0;
     };
 
-    static Settings getSettings();
+    static int getSettings(Settings *settings);
 
-    static int saveSettings(const Settings &settings);
+    static int saveSettings(Settings *settings);
 
     static uint8 *read(int *error, int partition);
 

@@ -4,56 +4,79 @@
 #ifdef __DREAMCAST__
 
 #include <kos.h>
+#include <kos/md5.h>
 #include "flashrom.h"
 
-FlashRom::Settings FlashRom::getSettings() {
+int FlashRom::getSettings(Settings *settings) {
 
-    Settings settings{};
+    //Settings settings;
+    uint8 md5[16];
 
     // read factory partition
-    settings.partitionSystem = read(&settings.error, FLASHROM_PT_SYSTEM);
-    if (settings.error != 0 || settings.partitionSystem == nullptr) {
-        return settings;
+    settings->partitionSystem = read(&settings->error, FLASHROM_PT_SYSTEM);
+    if (settings->error != 0 || settings->partitionSystem == nullptr) {
+        return settings->error;
     }
+#ifndef NDEBUG
+    kos_md5(settings->partitionSystem, 0x00002000, md5);
+    printf("partitionSystem md5: %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x, magic: %.14s\n",
+           md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
+           md5[9], md5[10], md5[11], md5[12], md5[13], md5[14], md5[15], settings->partitionSystem);
+#endif
     // set country and broadcast
-    settings.country = (Country) settings.partitionSystem[2];
-    settings.broadcast = (Broadcast) settings.partitionSystem[4];
+    settings->country = (Country) settings->partitionSystem[2];
+    settings->broadcast = (Broadcast) settings->partitionSystem[4];
 
     // read block 1 partition
-    settings.partitionBlock1 = read(&settings.error, FLASHROM_PT_BLOCK_1);
-    if (settings.error != 0 || settings.partitionBlock1 == nullptr) {
-        return settings;
+    settings->partitionBlock1 = read(&settings->error, FLASHROM_PT_BLOCK_1);
+    if (settings->error != 0 || settings->partitionBlock1 == nullptr) {
+        return settings->error;
     }
+#ifndef NDEBUG
+    kos_md5(settings->partitionBlock1, 0x00004000, md5);
+    printf("partitionBlock1 md5: %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x, magic: %.14s\n",
+           md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
+           md5[9], md5[10], md5[11], md5[12], md5[13], md5[14], md5[15], settings->partitionBlock1);
+#endif
+
     // find FLASHROM_B1_SYSCFG block address
-    settings.partitionBlock1LanguageOffset = findBlockAddress(FLASHROM_PT_BLOCK_1, FLASHROM_B1_SYSCFG);
-    if (settings.partitionBlock1LanguageOffset < 0) {
-        settings.error = settings.partitionBlock1LanguageOffset;
-        return settings;
+    settings->partitionBlock1SysCfg = findBlockAddress(FLASHROM_PT_BLOCK_1, FLASHROM_B1_SYSCFG);
+    if (settings->partitionBlock1SysCfg < 0) {
+        settings->error = settings->partitionBlock1SysCfg;
+        return settings->error;
     }
     // set language offset in FLASHROM_B1_SYSCFG
-    settings.partitionBlock1LanguageOffset += 7;
+    settings->partitionBlock1SysCfgLanguage = settings->partitionBlock1SysCfg + 7;
     // set language
-    settings.language = (Language) settings.partitionBlock1[settings.partitionBlock1LanguageOffset];
+    settings->language = (Language) settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage];
 
-    return settings;
+    return 0;
 }
 
-int FlashRom::saveSettings(const FlashRom::Settings &settings) {
+int FlashRom::saveSettings(Settings *settings) {
 
-    if (settings.partitionSystem == nullptr || settings.partitionBlock1 == nullptr) {
+    if (settings == nullptr
+        || settings->partitionSystem == nullptr
+        || settings->partitionBlock1 == nullptr) {
         return FLASHROM_ERR_NOMEM;
     }
 
-    settings.partitionSystem[2] = (uint8) settings.country;
-    settings.partitionSystem[4] = (uint8) settings.broadcast;
-    settings.partitionBlock1[settings.partitionBlock1LanguageOffset] = (uint8) settings.language;
+    // update system partition data
+    settings->partitionSystem[2] = (uint8) settings->country;
+    settings->partitionSystem[4] = (uint8) settings->broadcast;
 
-    int res = write(FLASHROM_PT_SYSTEM, settings.partitionSystem);
+    // update block1 partition data
+    settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage] = (uint8) settings->language;
+    // update block1 SysCfg block crc
+    *((uint16 *) (settings->partitionBlock1 + settings->partitionBlock1SysCfg + FLASHROM_OFFSET_CRC))
+            = (uint16) flashrom_calc_crc(settings->partitionBlock1 + settings->partitionBlock1SysCfg);
+
+    int res = write(FLASHROM_PT_SYSTEM, settings->partitionSystem);
     if (res != 0) {
         return res;
     }
 
-    res = write(FLASHROM_PT_BLOCK_1, settings.partitionBlock1);
+    res = write(FLASHROM_PT_BLOCK_1, settings->partitionBlock1);
     if (res != 0) {
         return res;
     }
@@ -70,14 +93,19 @@ uint8 *FlashRom::read(int *error, int partition) {
         if (error != nullptr) {
             *error = FLASHROM_ERR_NO_PARTITION;
         }
+        printf("FlashRom::read: FLASHROM_ERR_NO_PARTITION\n");
         return nullptr;
     }
+
+    printf("FlashRom::read(%i): start = 0x%08X, size = 0x%08X\n",
+           partition, start, size);
 
     data = (uint8 *) malloc(size);
     if (data == nullptr) {
         if (error != nullptr) {
             *error = FLASHROM_ERR_NOMEM;
         }
+        printf("FlashRom::read: FLASHROM_ERR_NOMEM\n");
         return nullptr;
     }
 
@@ -86,6 +114,7 @@ uint8 *FlashRom::read(int *error, int partition) {
         if (error != nullptr) {
             *error = FLASHROM_ERR_READ_PART;
         }
+        printf("FlashRom::read: FLASHROM_ERR_READ_PART\n");
         return nullptr;
     }
 
@@ -95,18 +124,28 @@ uint8 *FlashRom::read(int *error, int partition) {
 int FlashRom::write(int partition, uint8 *data) {
 
     int start, size;
+    char wrote_magic[15];
 
     if (flashrom_info(partition, &start, &size) != 0) {
+        printf("FlashRom::write: FLASHROM_ERR_NO_PARTITION\n");
         return FLASHROM_ERR_NO_PARTITION;
     }
 
     if (flashrom_delete(start) != 0) {
+        printf("FlashRom::write: FLASHROM_ERR_DELETE_PART\n");
         return FLASHROM_ERR_DELETE_PART;
     }
 
     if (flashrom_write(start, data, size) < 0) {
+        printf("FlashRom::write: FLASHROM_ERR_WRITE_PART\n");
         return FLASHROM_ERR_WRITE_PART;
     }
+
+#ifndef NDEBUG
+    flashrom_read(start, wrote_magic, 15);
+    printf("FlashRom::write(%i): start = 0x%08X, size = 0x%08X, data magic: %.14s, wrote magic: %.14s\n",
+           partition, start, size, data, wrote_magic);
+#endif
 
     return 0;
 }
@@ -119,30 +158,35 @@ int FlashRom::backup(int partition, const std::string &path) {
 
     if (partition != FLASHROM_PT_ALL) {
         if (flashrom_info(partition, &start, &size) < 0) {
+            printf("FlashRom::backup: FLASHROM_ERR_NO_PARTITION\n");
             return FLASHROM_ERR_NO_PARTITION;
         }
     }
 
     fd = fs_open(path.c_str(), O_WRONLY);
     if (fd == FILEHND_INVALID) {
+        printf("FlashRom::backup: FLASHROM_ERR_OPEN_FILE\n");
         return FLASHROM_ERR_OPEN_FILE;
     }
 
     data = (uint8 *) memalign(32, size);
     if (data == nullptr) {
         fs_close(fd);
+        printf("FlashRom::backup: FLASHROM_ERR_NOMEM\n");
         return FLASHROM_ERR_NOMEM;
     }
 
     if (flashrom_read(start, data, size) < 0) {
         fs_close(fd);
         free(data);
+        printf("FlashRom::backup: FLASHROM_ERR_READ_PART\n");
         return FLASHROM_ERR_READ_PART;
     }
 
     if (fs_write(fd, data, size) < 0) {
         fs_close(fd);
         free(data);
+        printf("FlashRom::backup: FLASHROM_ERR_WRITE_FILE\n");
         return FLASHROM_ERR_WRITE_FILE;
     }
 
@@ -160,30 +204,35 @@ int FlashRom::restore(int partition, const std::string &path) {
 
     if (partition != FLASHROM_PT_ALL) {
         if (flashrom_info(partition, &start, &size) < 0) {
+            printf("FlashRom::restore: FLASHROM_ERR_NO_PARTITION\n");
             return FLASHROM_ERR_NO_PARTITION;
         }
     }
 
     fd = fs_open(path.c_str(), O_RDONLY);
     if (fd == FILEHND_INVALID) {
+        printf("FlashRom::restore: FLASHROM_ERR_OPEN_FILE\n");
         return FLASHROM_ERR_OPEN_FILE;
     }
 
     data = (uint8 *) memalign(32, size);
     if (data == nullptr) {
         fs_close(fd);
+        printf("FlashRom::restore: FLASHROM_ERR_NOMEM\n");
         return FLASHROM_ERR_NOMEM;
     }
 
     if (fs_read(fd, data, size) < 0) {
         fs_close(fd);
         free(data);
+        printf("FlashRom::restore: FLASHROM_ERR_READ_FILE\n");
         return FLASHROM_ERR_READ_FILE;
     }
 
     if (flashrom_write(start, data, size) < 0) {
         fs_close(fd);
         free(data);
+        printf("FlashRom::restore: FLASHROM_ERR_WRITE_PART\n");
         return FLASHROM_ERR_WRITE_PART;
     }
 
@@ -203,19 +252,21 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
     int i;
 
     /* First, figure out where the partition is located. */
-    if (flashrom_info(partid, &start, &size) != 0)
+    if (flashrom_info(partid, &start, &size) != 0) {
+        printf("FlashRom::findBlockAddress: FLASHROM_ERR_NO_PARTITION\n");
         return FLASHROM_ERR_NO_PARTITION;
+    }
 
     /* Verify the partition */
     if (flashrom_read(start, magic, 18) < 0) {
-        dbglog(DBG_ERROR, "flashrom_get_block: can't read part %d magic\n", partid);
+        printf("FlashRom::findBlockAddress: can't read part %d magic\n", partid);
         return FLASHROM_ERR_READ_PART;
     }
 
     if (strncmp(magic, "KATANA_FLASH____", 16) != 0 || *((uint16 *) (magic + 16)) != partid) {
         bmcnt = *((uint16 *) (magic + 16));
         magic[16] = 0;
-        dbglog(DBG_ERROR, "flashrom_get_block: invalid magic '%s' or id %d in part %d\n", magic, bmcnt, partid);
+        printf("FlashRom::findBlockAddress: invalid magic '%s' or id %d in part %d\n", magic, bmcnt, partid);
         return FLASHROM_ERR_BAD_MAGIC;
     }
 
@@ -232,15 +283,17 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
 
     /* This is messy but simple and safe... */
     if (bmcnt > 65536) {
-        dbglog(DBG_ERROR, "flashrom_get_block: bogus part %p/%d\n", (void *) start, size);
+        printf("FlashRom::findBlockAddress: bogus part %p/%d\n", (void *) start, size);
         return FLASHROM_ERR_BOGUS_PART;
     }
 
-    if ((bitmap = (uint8 *) malloc(bmcnt)) == nullptr)
+    if ((bitmap = (uint8 *) malloc(bmcnt)) == nullptr) {
+        printf("FlashRom::findBlockAddress: FLASHROM_ERR_NOMEM\n");
         return FLASHROM_ERR_NOMEM;
+    }
 
     if (flashrom_read(start + size - bmcnt, bitmap, bmcnt) < 0) {
-        dbglog(DBG_ERROR, "flashrom_get_block: can't read part %d bitmap\n", partid);
+        printf("FlashRom::findBlockAddress: can't read part %d bitmap\n", partid);
         free(bitmap);
         return FLASHROM_ERR_READ_BITMAP;
     }
@@ -263,8 +316,10 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
 
     /* All blocks unused -> file not found. Note that this is probably
        a very unusual condition. */
-    if (i == 0)
+    if (i == 0) {
+        printf("FlashRom::findBlockAddress: FLASHROM_ERR_EMPTY_PART\n");
         return FLASHROM_ERR_EMPTY_PART;
+    }
 
     i--;    /* 'i' was the first unused block, so back up one */
 
@@ -272,7 +327,7 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
         /* Read the block; +1 because bitmap block zero is actually
            _user_ block zero, which is physical block 1. */
         if (flashrom_read(start + (i + 1) * 64, buffer, 64) < 0) {
-            dbglog(DBG_ERROR, "flashrom_get_block: can't read part %d phys block %d\n", partid, i + 1);
+            printf("FlashRom::findBlockAddress: can't read part %d phys block %d\n", partid, i + 1);
             return FLASHROM_ERR_READ_BLOCK;
         }
 
@@ -291,10 +346,12 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
         }
 
         /* Ok, looks like we got it! */
+        printf("FlashRom::findBlockAddress: block found, crc: %04x\n", bmcnt);
         return (i + 1) * 64;
     }
 
     /* Didn't find anything */
+    printf("FlashRom::findBlockAddress: FLASHROM_ERR_NOT_FOUND\n");
     return FLASHROM_ERR_NOT_FOUND;
 }
 

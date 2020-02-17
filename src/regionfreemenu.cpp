@@ -27,7 +27,7 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     if (visibility == Visibility::Visible) {
         retroDream->getFiler()->setSelectionBack();
 #ifdef __DREAMCAST__
-        settings = FlashRom::getSettings();
+        FlashRom::getSettings(&settings);
 #else
         settings.country = FlashRom::Country::Usa;
         settings.broadcast = FlashRom::Broadcast::Ntsc;
@@ -86,9 +86,9 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             }
             // language
             settings.language = (FlashRom::Language) config.getOption(Language)->getChoiceIndex();
-            // TODO: try write !
-            /*
-            int res = FlashRom::saveSettings(settings);
+
+            // write
+            int res = FlashRom::saveSettings(&settings);
             if (res != 0) {
                 retroDream->getMessageBox()->show("REGION FREE ERROR",
                                                   "\n\nAN ERROR OCCURRED WHILE TRYING TO WRITE YOUR FLASHROM."
@@ -96,7 +96,6 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
                 setVisibility(Visibility::Hidden, true);
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
             }
-            */
         }
     }
 }
