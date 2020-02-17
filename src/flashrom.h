@@ -10,14 +10,14 @@ class FlashRom {
 public:
 
     enum class Country {
-        Unknown = 0,
+        Unknown = 0x99,
         Europe = 0x32,
         Usa = 0x31,
         Japan = 0x30
     };
 
     enum class Broadcast {
-        Unknown = 0,
+        Unknown = 0x99,
         Ntsc = 0x30,
         Pal = 0x31,
         PalM = 0x32,
@@ -25,37 +25,41 @@ public:
     };
 
     enum class Language {
-        Unknown = 0,
-        Japan = 0x30,
-        English = 0x31,
-        German = 0x32,
-        French = 0x33,
-        Spanish = 0x34,
-        Italian = 0x35
+        Unknown = 0x99,
+        Japan = FLASHROM_LANG_JAPANESE,
+        English = FLASHROM_LANG_ENGLISH,
+        German = FLASHROM_LANG_GERMAN,
+        French = FLASHROM_LANG_FRENCH,
+        Spanish = FLASHROM_LANG_SPANISH,
+        Italian = FLASHROM_LANG_ITALIAN
     };
 
-    struct FactorySetting {
+    struct Settings {
         Country country = Country::Unknown;
         Broadcast broadcast = Broadcast::Unknown;
         Language language = Language::Unknown;
         std::string error;
     };
 
-    static FactorySetting getFactorySetting();
+    static Settings getSettings();
 
-    static int setFactorySetting(const FactorySetting &setting, std::string err);
+    static int setSettings(const Settings &setting, std::string err);
 
-    static uint8 *read(unsigned int offset, int size, std::string err);
+    static uint8 *read(int partition, unsigned int offset, int size, std::string err);
 
-    static int write(unsigned int offset, int size, uint8 *data, std::string err);
+    static int write(int partition, unsigned int offset, int size, uint8 *data, std::string err);
 
-    static int backup(const std::string &path, std::string err);
+    static int backup(int partition, const std::string &path, std::string err);
 
-    static int restore(const std::string &path, std::string err);
+    static int restore(int partition, const std::string &path, std::string err);
+
+    static int backupAll(const std::string &path, std::string err);
+
+    static int restoreAll(const std::string &path, std::string err);
 
 private:
 
-    //static int erase(int block, std::string err);
-    //static int writeFromFile(const std::string &path, std::string err);
-    //static int readToFile(const std::string &path, std::string err);
+    static int findBlockAddress(int partid, int blockid);
+
+    static int flashrom_calc_crc(const uint8 *buffer);
 };
