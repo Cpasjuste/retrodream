@@ -47,6 +47,7 @@ public:
         std::string preset;
         std::string upperName;
         bool isGame = false;
+        bool isVmu = false;
     };
 
     enum FilerMode {

@@ -9,14 +9,13 @@
 
 int FlashRom::getSettings(Settings *settings) {
 
-    uint8 md5[16];
-
     // read factory partition
     settings->partitionSystem = read(&settings->error, FLASHROM_PT_SYSTEM);
     if (settings->error != 0 || settings->partitionSystem == nullptr) {
         return settings->error;
     }
 #ifndef NDEBUG
+    uint8 md5[16];
     kos_md5(settings->partitionSystem, 0x00002000, md5);
     printf("partitionSystem md5: %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x, magic: %.14s\n",
            md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
@@ -63,18 +62,16 @@ int FlashRom::saveSettings(Settings *settings) {
     // update system partition data
     settings->partitionSystem[2] = (uint8) settings->country;
     settings->partitionSystem[4] = (uint8) settings->broadcast;
+    int res = write(FLASHROM_PT_SYSTEM, settings->partitionSystem);
+    if (res != 0) {
+        return res;
+    }
 
     // update block1 partition data
     settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage] = (uint8) settings->language;
     // update block1 SysCfg block crc
     *((uint16 *) (settings->partitionBlock1 + settings->partitionBlock1SysCfg + FLASHROM_OFFSET_CRC))
             = (uint16) flashrom_calc_crc(settings->partitionBlock1 + settings->partitionBlock1SysCfg);
-
-    int res = write(FLASHROM_PT_SYSTEM, settings->partitionSystem);
-    if (res != 0) {
-        return res;
-    }
-
     res = write(FLASHROM_PT_BLOCK_1, settings->partitionBlock1);
     if (res != 0) {
         return res;
@@ -123,7 +120,6 @@ uint8 *FlashRom::read(int *error, int partition) {
 int FlashRom::write(int partition, uint8 *data) {
 
     int start, size;
-    char wrote_magic[15];
 
     if (flashrom_info(partition, &start, &size) != 0) {
         printf("FlashRom::write: FLASHROM_ERR_NO_PARTITION\n");
@@ -141,6 +137,7 @@ int FlashRom::write(int partition, uint8 *data) {
     }
 
 #ifndef NDEBUG
+    char wrote_magic[15];
     flashrom_read(start, wrote_magic, 15);
     printf("FlashRom::write(%i): start = 0x%08X, size = 0x%08X, data magic: %.14s, wrote magic: %.14s\n",
            partition, start, size, data, wrote_magic);

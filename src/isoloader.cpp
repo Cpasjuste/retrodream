@@ -46,12 +46,13 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
 
     // find loader path
     std::string loaderPath;
+    std::string loader = retroDream->getConfig()->isSdRoot() ? "sd" : "ide";
     if (cfg.device == std::string("auto")) {
         std::string p = retroDream->getConfig()->get(RetroConfig::DsPath)
-                        + "firmware/isoldr/ide.bin";
+                        + "firmware/isoldr/" + loader + ".bin";
         printf("IsoLoader::run: loaderPath: %s\n", p.c_str());
-        loaderPath = Utility::remove(p, "/firmware/isoldr/ide.bin");
-        strncpy(isoLdr->fs_dev, "ide", 7);
+        loaderPath = Utility::remove(p, "/firmware/isoldr/" + loader + ".bin");
+        strncpy(isoLdr->fs_dev, loader.c_str(), 7);
     } else {
         std::string p = retroDream->getConfig()->get(RetroConfig::DsPath)
                         + "firmware/isoldr/" + cfg.device + ".bin";

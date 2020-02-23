@@ -471,22 +471,20 @@ bool Filer::onInput(c2d::Input::Player *players) {
         previewClock.restart();
         setSelection(getIndex() - getMaxLines());
     } else if (keys & Input::Key::Fire1) {
-        Io::Type type = getSelection().data.type;
-        if (type == Io::Type::Directory) {
-            if (getSelection().isGame) {
-                // save last path
-                retroDream->getConfig()->set(RetroConfig::FilerPath, path);
-                IsoLoader::run(retroDream, getSelection().isoPath);
-            } else {
-                retroDream->getPreview()->unload();
-                previewClock.restart();
-                enter(getIndex());
-            }
-        } else if (RetroUtility::isElf(getSelection().data.name)) {
-            RetroUtility::exec(getSelection().data.path);
-        } else if (Utility::endsWith(getSelection().data.name, ".bios", false)) {
+        RetroFile file = getSelection();
+        Io::Type type = file.data.type;
+        if (file.isGame) {
+            // save last path
+            retroDream->getConfig()->set(RetroConfig::FilerPath, path);
+            IsoLoader::run(retroDream, file.isoPath);
+        } else if (type == Io::Type::Directory) {
+            retroDream->getPreview()->unload();
+            previewClock.restart();
+            enter(getIndex());
+        } else if (RetroUtility::isElf(file.data.name)) {
+            RetroUtility::exec(file.data.path);
+        } else if (Utility::endsWith(file.data.name, ".bios", false)) {
             blurLayer->setVisibility(Visibility::Visible, true);
-            RetroFile file = getSelection();
             int ret = retroDream->getMessageBox()->show("BIOS FLASH",
                                                         "YOU ARE ABOUT TO WRITE '" + file.upperName
                                                         + "' TO YOUR ROM CHIP.\n\n"

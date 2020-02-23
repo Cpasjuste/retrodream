@@ -81,6 +81,10 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         save();
     }
 
+    if (!io->exist("/ide")) {
+        isRootSDCard = true;
+    }
+
     printf("retrodream_path: %s\n", rdPath.c_str());
     printf("dreamshell_path: %s\n", dsPath.c_str());
     printf("filer_path: %s\n", filerPath.c_str());
@@ -118,4 +122,8 @@ void RetroConfig::setRect(const OptionId &id, const c2d::FloatRect &rect, bool s
     if (s) {
         save();
     }
+}
+
+bool RetroConfig::isSdRoot() {
+    return isRootSDCard;
 }

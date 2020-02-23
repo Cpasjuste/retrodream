@@ -37,9 +37,11 @@ public:
 
     void setRect(const OptionId &id, const c2d::FloatRect &rect, bool save = true);
 
+    bool isSdRoot();
 
 private:
     RetroIo *io = nullptr;
+    bool isRootSDCard = false;
 };
 
 #endif //RETRODREAM_CFG_H

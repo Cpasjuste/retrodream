@@ -1,9 +1,13 @@
 TODO:
 --------------
+> Ajout de "Language" dans Options pour juste changer la langue.
+> Message de réussite à la fin.
+> Copy VMU direct : On se positionne sur VMU,on peut choisir de faire Extract VMU ou Import VMU.
+> Voir DUMP VA0 > VA1.
 
 TODO, SOMEDAY:
 --------------
-- improve font generation time (boot time)
+- add video preview
 
 DONE:
 ------------------
@@ -14,3 +18,8 @@ DONE:
 - add credits
 - add screenshot option
 - fix root directory highlight position
+- improve font generation time (boot time)
+-----------------------------------
+- fix cdi and iso loader outside a directory
+- rename "Region Free" to "Region changer"
+- fix sd card iso loader when no hdd connected

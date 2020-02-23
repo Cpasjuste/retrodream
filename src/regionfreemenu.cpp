@@ -12,7 +12,7 @@ RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Men
 
     retroDream = rd;
 
-    title->setString("REGION FREE OPTIONS");
+    title->setString("REGION CHANGER OPTIONS");
 
     config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE"}, 0, Country});
     config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N"}, 0, Broadcast});

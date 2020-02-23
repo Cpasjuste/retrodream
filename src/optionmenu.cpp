@@ -15,7 +15,7 @@ OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, re
     title->setString("RETRODREAM OPTIONS");
 
     config.addOption({"LAUNCH DS", "GO", LaunchDs});
-    config.addOption({"REGION FREE", "GO", RegionFree});
+    config.addOption({"REGION CHANGER", "GO", RegionFree});
     config.addOption({"REBOOT", "GO", Reboot});
     config.addOption({"CREDITS", "GO", Credits});
     configBox->load(&config);
