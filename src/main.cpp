@@ -201,7 +201,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (regionFreeMenu->isVisible() || credits->isVisible()
+    if (systemMenu->isVisible() || regionFreeMenu->isVisible() || credits->isVisible()
         || progressBox->isVisible() || messageBox->isVisible()) {
         return C2DObject::onInput(players);
     }
