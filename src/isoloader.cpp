@@ -46,7 +46,7 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
 
     // find loader path
     std::string loaderPath;
-    std::string loader = retroDream->getConfig()->isSdRoot() ? "sd" : "ide";
+    std::string loader = Utility::startWith(path, "/sd") ? "sd" : "ide";
     if (cfg.device == std::string("auto")) {
         std::string p = retroDream->getConfig()->get(RetroConfig::DsPath)
                         + "firmware/isoldr/" + loader + ".bin";

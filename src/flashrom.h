@@ -56,30 +56,54 @@ public:
         Italian = FLASHROM_LANG_ITALIAN
     };
 
-    class Settings {
+    enum class Audio {
+        Stereo = 0,
+        Mono = 1
+    };
+
+    enum class AutoStart {
+        On = 0,
+        Off = 1
+    };
+
+    class RegionSettings {
     public:
-        ~Settings() {
+        ~RegionSettings() {
             if (partitionSystem != nullptr) {
                 free(partitionSystem);
-            }
-            if (partitionBlock1 != nullptr) {
-                free(partitionBlock1);
             }
         }
 
         Country country = Country::Japan;
         Broadcast broadcast = Broadcast::Ntsc;
-        Language language = Language::Japan;
         uint8 *partitionSystem = nullptr;
+        int error = 0;
+    };
+
+    class SystemSettings {
+    public:
+        ~SystemSettings() {
+            if (partitionBlock1 != nullptr) {
+                free(partitionBlock1);
+            }
+        }
+
+        Language language = Language::Japan;
+        Audio audio = Audio::Stereo;
+        AutoStart autoStart = AutoStart::Off;
         uint8 *partitionBlock1 = nullptr;
         int partitionBlock1SysCfg = 0;
         int partitionBlock1SysCfgLanguage = 0;
         int error = 0;
     };
 
-    static int getSettings(Settings *settings);
+    static int getRegionSettings(RegionSettings *settings);
 
-    static int saveSettings(Settings *settings);
+    static int saveRegionSettings(RegionSettings *settings);
+
+    static int getSystemSettings(SystemSettings *settings);
+
+    static int saveSystemSettings(SystemSettings *settings);
 
     static uint8 *read(int *error, int partition);
 

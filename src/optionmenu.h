@@ -11,7 +11,8 @@ public:
 
     enum MainOption {
         LaunchDs = 0,
-        RegionFree,
+        SystemConfig,
+        RegionChanger,
         Reboot,
         Credits
     };

@@ -37,9 +37,13 @@ std::string RetroIo::getDataPath() {
         } else {
             // default value for data directory creation...
             if (exist("/ide")) {
+                create("/ide/RD");
                 dataPath = "/ide/RD/";
-            } else {
+            } else if (exist("/sd")) {
+                create("/sd/RD");
                 dataPath = "/sd/RD/";
+            } else {
+                dataPath = "/cd/RD/";
             }
         }
     }

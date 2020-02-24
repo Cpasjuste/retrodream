@@ -37,6 +37,7 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
     // ensure all paths exists
     bool saveNeeded = false;
 
+    // check RetroDream data directory
     std::string rdPath = getGroup("main")->getOption(RdPath)->getString();
     if (!Utility::endsWith(rdPath, "/")) {
         rdPath += "/";
@@ -49,11 +50,13 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         set(RdPath, rdPath, false);
         saveNeeded = true;
     }
-    // check screenshots directory too
+
+    // check screenshots directory
     if (!io->exist(rdPath + "screenshots")) {
         io->create(rdPath + "screenshots");
     }
 
+    // check DreamShell directories
     std::string dsPath = getGroup("main")->getOption(DsPath)->getString();
     if (!Utility::endsWith(dsPath, "/")) {
         dsPath += "/";
@@ -68,6 +71,7 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         saveNeeded = true;
     }
 
+    // check default filer data directory
     std::string filerPath = getGroup("main")->getOption(FilerPath)->getString();
     if (!io->exist(filerPath)) {
         printf("RetroConfig: FilerPath '%s' doesn't exist, restoring default: '%s'\n",
@@ -77,12 +81,10 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         saveNeeded = true;
     }
 
+
+
     if (saveNeeded) {
         save();
-    }
-
-    if (!io->exist("/ide")) {
-        isRootSDCard = true;
     }
 
     printf("retrodream_path: %s\n", rdPath.c_str());
@@ -122,8 +124,4 @@ void RetroConfig::setRect(const OptionId &id, const c2d::FloatRect &rect, bool s
     if (s) {
         save();
     }
-}
-
-bool RetroConfig::isSdRoot() {
-    return isRootSDCard;
 }

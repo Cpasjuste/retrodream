@@ -22,7 +22,7 @@ public:
     bool onInput(c2d::Input::Player *players) override;
 
 private:
-    FlashRom::Settings settings;
+    FlashRom::RegionSettings settings;
 };
 
 #endif //RETRODREAM_REGIONFREEMENU_H

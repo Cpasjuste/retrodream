@@ -16,7 +16,6 @@ RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Men
 
     config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE"}, 0, Country});
     config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N"}, 0, Broadcast});
-    config.addOption({"LANGUAGE", {"JAPANESE", "ENGLISH", "GERMAN", "FRENCH", "SPANISH", "ITALIAN"}, 0, Language});
     configBox->load(&config);
 }
 
@@ -27,11 +26,10 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     if (visibility == Visibility::Visible) {
         retroDream->getFiler()->setSelectionBack();
 #ifdef __DREAMCAST__
-        FlashRom::getSettings(&settings);
+        FlashRom::getRegionSettings(&settings);
 #else
         settings.country = FlashRom::Country::Usa;
         settings.broadcast = FlashRom::Broadcast::Ntsc;
-        settings.language = FlashRom::Language::English;
         settings.error = -1;
 #endif
         if (settings.error != 0) {
@@ -59,8 +57,6 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         } else if (settings.broadcast == FlashRom::Broadcast::PalN) {
             config.getOption(Broadcast)->setChoicesIndex(3);
         }
-        // language
-        config.getOption(Language)->setChoicesIndex((int) settings.language);
         configBox->load(&config);
     } else {
         if (dirty) {
@@ -84,11 +80,9 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             } else if (index == 3) {
                 settings.broadcast = FlashRom::Broadcast::PalN;
             }
-            // language
-            settings.language = (FlashRom::Language) config.getOption(Language)->getChoiceIndex();
-
+#ifdef __DREAMCAST__
             // write
-            int res = FlashRom::saveSettings(&settings);
+            int res = FlashRom::saveRegionSettings(&settings);
             if (res != 0) {
                 retroDream->getMessageBox()->show("REGION FREE ERROR",
                                                   "\n\nAN ERROR OCCURRED WHILE TRYING TO WRITE YOUR FLASHROM."
@@ -96,6 +90,7 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
                 setVisibility(Visibility::Hidden, true);
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
             }
+#endif
         }
     }
 }

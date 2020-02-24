@@ -15,7 +15,8 @@ OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, re
     title->setString("RETRODREAM OPTIONS");
 
     config.addOption({"LAUNCH DS", "GO", LaunchDs});
-    config.addOption({"REGION CHANGER", "GO", RegionFree});
+    config.addOption({"SYSTEM OPTIONS", "GO", SystemConfig});
+    config.addOption({"REGION CHANGER", "GO", RegionChanger});
     config.addOption({"REBOOT", "GO", Reboot});
     config.addOption({"CREDITS", "GO", Credits});
     configBox->load(&config);
@@ -40,7 +41,11 @@ bool OptionMenu::onInput(c2d::Input::Player *players) {
             if (option->getId() == LaunchDs) {
                 retroDream->getConfig()->set(RetroConfig::FilerPath, retroDream->getFiler()->getPath());
                 RetroUtility::exec(retroDream->getConfig()->get(RetroConfig::DsBinPath));
-            } else if (option->getId() == RegionFree) {
+            } else if (option->getId() == SystemConfig) {
+                setVisibility(Visibility::Hidden, true);
+                retroDream->getSystemMenu()->setVisibility(Visibility::Visible, true);
+                retroDream->getFiler()->getBlur()->setVisibility(Visibility::Visible, true);
+            } else if (option->getId() == RegionChanger) {
                 setVisibility(Visibility::Hidden, true);
                 retroDream->getRegionFreeMenu()->setVisibility(Visibility::Visible, true);
                 retroDream->getFiler()->getBlur()->setVisibility(Visibility::Visible, true);

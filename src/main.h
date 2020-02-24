@@ -56,6 +56,10 @@ public:
         return fileMenu;
     }
 
+    Menu *getSystemMenu() {
+        return systemMenu;
+    }
+
     Menu *getRegionFreeMenu() {
         return regionFreeMenu;
     }
@@ -104,6 +108,7 @@ private:
     Menu *optionMenu = nullptr;
     Menu *presetMenu = nullptr;
     Menu *fileMenu = nullptr;
+    Menu *systemMenu = nullptr;
     Menu *regionFreeMenu = nullptr;
     HelpBox *helpBox = nullptr;
     Credits *credits = nullptr;

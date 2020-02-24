@@ -15,6 +15,7 @@
 #include "isoloader.h"
 #include "retroio.h"
 #include "flashrom.h"
+#include "systemmenu.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
@@ -135,6 +136,13 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     fileMenu->setOutlineColor(COL_BLUE_DARK);
     fileMenu->setOutlineThickness(3);
     add(fileMenu);
+
+    retroDebug("LOADING SYSTEM MENU...");
+    systemMenu = new SystemMenu(this, previewRect);
+    systemMenu->setFillColor(COL_BLUE_GRAY);
+    systemMenu->setOutlineColor(COL_BLUE_DARK);
+    systemMenu->setOutlineThickness(3);
+    add(systemMenu);
 
     retroDebug("LOADING REGION FREE MENU...");
     regionFreeMenu = new RegionFreeMenu(this, previewRect);
@@ -360,6 +368,10 @@ int main() {
     delete (splashSprite);
     delete (debugText);
     debugText = nullptr;
+
+#ifdef __DREAMCAST__
+    cdrom_spin_down();
+#endif
 
     // let's go
     while (!retroDream->quit) {

@@ -7,7 +7,7 @@
 #include <kos/md5.h>
 #include "flashrom.h"
 
-int FlashRom::getSettings(Settings *settings) {
+int FlashRom::getRegionSettings(RegionSettings *settings) {
 
     // read factory partition
     settings->partitionSystem = read(&settings->error, FLASHROM_PT_SYSTEM);
@@ -25,12 +25,35 @@ int FlashRom::getSettings(Settings *settings) {
     settings->country = (Country) settings->partitionSystem[2];
     settings->broadcast = (Broadcast) settings->partitionSystem[4];
 
+    return 0;
+}
+
+int FlashRom::saveRegionSettings(RegionSettings *settings) {
+
+    if (settings == nullptr || settings->partitionSystem == nullptr) {
+        return FLASHROM_ERR_NOMEM;
+    }
+
+    // update system partition data
+    settings->partitionSystem[2] = (uint8) settings->country;
+    settings->partitionSystem[4] = (uint8) settings->broadcast;
+    int res = write(FLASHROM_PT_SYSTEM, settings->partitionSystem);
+    if (res != 0) {
+        return res;
+    }
+
+    return 0;
+}
+
+int FlashRom::getSystemSettings(SystemSettings *settings) {
+
     // read block 1 partition
     settings->partitionBlock1 = read(&settings->error, FLASHROM_PT_BLOCK_1);
     if (settings->error != 0 || settings->partitionBlock1 == nullptr) {
         return settings->error;
     }
 #ifndef NDEBUG
+    uint8 md5[16];
     kos_md5(settings->partitionBlock1, 0x00004000, md5);
     printf("partitionBlock1 md5: %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x, magic: %.14s\n",
            md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
@@ -45,34 +68,28 @@ int FlashRom::getSettings(Settings *settings) {
     }
     // set language offset in FLASHROM_B1_SYSCFG
     settings->partitionBlock1SysCfgLanguage = settings->partitionBlock1SysCfg + 7;
-    // set language
+    // set options
     settings->language = (Language) settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage];
+    settings->audio = (Audio) settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage + 1];
+    settings->autoStart = (AutoStart) settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage + 2];
 
     return 0;
 }
 
-int FlashRom::saveSettings(Settings *settings) {
+int FlashRom::saveSystemSettings(SystemSettings *settings) {
 
-    if (settings == nullptr
-        || settings->partitionSystem == nullptr
-        || settings->partitionBlock1 == nullptr) {
+    if (settings == nullptr || settings->partitionBlock1 == nullptr) {
         return FLASHROM_ERR_NOMEM;
-    }
-
-    // update system partition data
-    settings->partitionSystem[2] = (uint8) settings->country;
-    settings->partitionSystem[4] = (uint8) settings->broadcast;
-    int res = write(FLASHROM_PT_SYSTEM, settings->partitionSystem);
-    if (res != 0) {
-        return res;
     }
 
     // update block1 partition data
     settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage] = (uint8) settings->language;
+    settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage + 1] = (uint8) settings->audio;
+    settings->partitionBlock1[settings->partitionBlock1SysCfgLanguage + 2] = (uint8) settings->autoStart;
     // update block1 SysCfg block crc
     *((uint16 *) (settings->partitionBlock1 + settings->partitionBlock1SysCfg + FLASHROM_OFFSET_CRC))
             = (uint16) flashrom_calc_crc(settings->partitionBlock1 + settings->partitionBlock1SysCfg);
-    res = write(FLASHROM_PT_BLOCK_1, settings->partitionBlock1);
+    int res = write(FLASHROM_PT_BLOCK_1, settings->partitionBlock1);
     if (res != 0) {
         return res;
     }

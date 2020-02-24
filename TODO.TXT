@@ -23,3 +23,7 @@ DONE:
 - fix cdi and iso loader outside a directory
 - rename "Region Free" to "Region changer"
 - fix sd card iso loader when no hdd connected
+---------------------------------------------
+- fix sd card iso loader when no hdd connected (v2)
+- add system options menu
+- release gdrom on startup

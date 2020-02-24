@@ -53,6 +53,8 @@ std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
         return "/ide/" + path;
     } else if (io->exist("/sd/" + path)) {
         return "/sd/" + path;
+    } else if (io->exist("/cd/" + path)) {
+        return "/cd/" + path;
     }
 
     return "";
