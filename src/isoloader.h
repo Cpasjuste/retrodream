@@ -41,7 +41,7 @@ public:
 #endif
 
 private:
-    static void getConfigInfo(RetroDream *retroDream, Config *config, const std::string &isoPath);
+    static bool getConfigInfo(RetroDream *retroDream, Config *config, const std::string &isoPath);
 
 };
 

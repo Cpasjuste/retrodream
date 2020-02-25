@@ -84,11 +84,14 @@ IsoLoader::Config IsoLoader::loadConfig(RetroDream *retroDream, const std::strin
 
     IsoLoader::Config config{};
 
-    getConfigInfo(retroDream, &config, isoPath);
+    if (!getConfigInfo(retroDream, &config, isoPath)) {
+        return config;
+    }
 
     char *buf = retroDream->getRender()->getIo()->read(config.path);
     if (buf == nullptr) {
         printf("IsoLoader::loadConfig: preset not found: %s\n", config.path.c_str());
+        retroDream->showStatus("PRESET ERROR", "PRESET DOES NOT EXIST");
         return config;
     }
 
@@ -143,10 +146,10 @@ void IsoLoader::saveConfig(RetroDream *retroDream, const Config &config) {
     retroDream->getRender()->getIo()->write(config.path, str);
 }
 
-void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std::string &isoPath) {
+bool IsoLoader::getConfigInfo(RetroDream *retroDream, Config *config, const std::string &isoPath) {
 
     if (config == nullptr || isoPath.empty()) {
-        return;
+        return false;
     }
 
 #ifdef __DREAMCAST__
@@ -158,7 +161,8 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
     printf("IsoLoader::getConfigInfo: fs_iso_mount\n");
     if (fs_iso_mount("/iso", isoPath.c_str()) != 0) {
         printf("IsoLoader::getConfigInfo: could not mound iso: %s\n", isoPath.c_str());
-        return;
+        retroDream->showStatus("PRESET ERROR", "COULD NOT MOUNT ISO, FILE MAY BE CORRUPTED");
+        return false;
     }
 
     printf("IsoLoader::getConfigInfo: fs_iso_first_file\n");
@@ -189,7 +193,7 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
              md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
              md5[9], md5[10], md5[11], md5[12], md5[13], md5[14], md5[15]);
 
-    config->path = retroDreamn->getConfig()->get(RetroConfig::DsPath)
+    config->path = retroDream->getConfig()->get(RetroConfig::DsPath)
                    + "apps/iso_loader/presets" + device + "_" + _md5 + ".cfg";
 
     printf("IsoLoader::getConfigInfo: config->path: %s\n", config->path.c_str());
@@ -197,6 +201,8 @@ void IsoLoader::getConfigInfo(RetroDream *retroDreamn, Config *config, const std
     config->title = "test";
     config->path = c2d_renderer->getIo()->getDataPath() + "RD/test.cfg";
 #endif
+
+    return true;
 }
 
 #if defined (__EMBEDDED_MODULE_DEBUG__)

@@ -336,9 +336,9 @@ int main() {
     render->add(debugText);
 
 #ifdef __DREAMCAST__
-#ifdef NDEBUG
     retroDebug("MOUNTING HDD...");
     InitIDE();
+#ifdef NDEBUG
     retroDebug("MOUNTING SDCARD...");
     InitSDCard();
 #endif
