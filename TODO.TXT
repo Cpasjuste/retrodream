@@ -1,7 +1,5 @@
 TODO:
 --------------
-> Ajout de "Language" dans Options pour juste changer la langue.
-> Message de réussite à la fin.
 > Copy VMU direct : On se positionne sur VMU,on peut choisir de faire Extract VMU ou Import VMU.
 > Voir DUMP VA0 > VA1.
 

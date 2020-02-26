@@ -32,7 +32,7 @@ public:
 
     static Config loadConfig(RetroDream *retroDream, const std::string &isoPath);
 
-    static void saveConfig(RetroDream *retroDream, const Config &config);
+    static bool saveConfig(RetroDream *retroDream, const Config &config);
 
 #if defined (__EMBEDDED_MODULE_DEBUG__)
 

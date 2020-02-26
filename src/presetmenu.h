@@ -31,7 +31,6 @@ private:
     static std::vector<std::string> getAddresses();
 
     IsoLoader::Config isoLoaderConfig;
-    bool dirty = false;
 };
 
 #endif //RETRODREAM_PRESETMENU_H

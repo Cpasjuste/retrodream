@@ -66,7 +66,10 @@ void PresetMenu::save() {
         } else {
             isoLoaderConfig.async = Utility::parseInt(config.getOption(Async)->getString());
         }
-        IsoLoader::saveConfig(retroDream, isoLoaderConfig);
+        if (!IsoLoader::saveConfig(retroDream, isoLoaderConfig)) {
+            retroDream->showStatus("PRESET ERROR",
+                                   "COULD NOT WRITE TO " + Utility::toUpper(isoLoaderConfig.path));
+        }
         dirty = false;
     }
 }

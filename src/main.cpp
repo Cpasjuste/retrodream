@@ -14,7 +14,6 @@
 #include "utility.h"
 #include "isoloader.h"
 #include "retroio.h"
-#include "flashrom.h"
 #include "systemmenu.h"
 
 #ifdef __DREAMCAST__
