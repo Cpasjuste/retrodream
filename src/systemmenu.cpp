@@ -32,11 +32,9 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         settings.error = -1;
 #endif
         if (settings.error != 0) {
-            retroDream->getMessageBox()->show("SYSTEM CONFIG ERROR",
-                                              "\n\nAN ERROR OCCURRED WHILE TRYING TO READ YOUR FLASHROM."
-                                              "\n\nCHANGING FLASHROM SETTINGS IS NOT POSSIBLE...", "OK");
-            setVisibility(Visibility::Hidden, true);
+            Menu::setVisibility(Visibility::Hidden, true);
             retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+            retroDream->showStatus("SYSTEM CONFIG ERROR", "AN ERROR OCCURRED WHILE TRYING TO READ YOUR FLASHROM");
         }
         // system options
         config.getOption(Language)->setChoicesIndex((int) settings.language);
@@ -46,6 +44,7 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         configBox->load(&config);
     } else {
         if (dirty) {
+            dirty = false;
             // system options
             settings.language = (FlashRom::Language) config.getOption(Language)->getChoiceIndex();
             settings.audio = (FlashRom::Audio) config.getOption(Audio)->getChoiceIndex();
@@ -54,11 +53,18 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             // write
             int res = FlashRom::saveSystemSettings(&settings);
             if (res != 0) {
-                retroDream->getMessageBox()->show("SYSTEM CONFIG ERROR",
-                                                  "\n\nAN ERROR OCCURRED WHILE TRYING TO WRITE YOUR FLASHROM."
-                                                  "\n\nCHANGING FLASHROM SETTINGS IS NOT POSSIBLE...", "OK");
-                setVisibility(Visibility::Hidden, true);
+                std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
+                if (res == FLASHROM_ERR_NO_PARTITION) {
+                    err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
+                } else if (res == FLASHROM_ERR_DELETE_PART) {
+                    err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+                } else if (res == FLASHROM_ERR_WRITE_PART) {
+                    err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+                }
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+                retroDream->showStatus("REGION CHANGER ERROR", err);
+            } else {
+                retroDream->showStatus("SYSTEM CONFIG", "FLASHROM SETTINGS UPDATED SUCCESSFULLY", COL_GREEN);
             }
 #endif
         }

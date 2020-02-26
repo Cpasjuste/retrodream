@@ -20,6 +20,7 @@ private:
     c2d::Text *titleText = nullptr;
     c2d::Text *messageText = nullptr;
     c2d::C2DClock clock;
+    float timer = 5.0f;
 };
 
 #endif //STATUS_BOX_H

@@ -27,3 +27,4 @@ DONE:
 - fix sd card iso loader when no hdd connected (v2)
 - add system options menu
 - release gdrom on startup
+- show status messages on flashrom write success/error

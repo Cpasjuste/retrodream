@@ -54,7 +54,7 @@ void StatusBox::show(const std::string &title, const std::string &msg, const c2d
 
 void StatusBox::onUpdate() {
 
-    if (isVisible() && clock.getElapsedTime().asSeconds() > 2) {
+    if (isVisible() && clock.getElapsedTime().asSeconds() > timer) {
         setVisibility(Visibility::Hidden);
     }
 
