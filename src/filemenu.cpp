@@ -12,11 +12,23 @@ using namespace c2d;
 FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
 
     title->setString("FILE OPTIONS");
+}
 
-    config.addOption({"COPY", "GO", Copy});
-    config.addOption({"PASTE", "GO", Paste});
-    config.addOption({"DELETE", "GO", Delete});
-    configBox->load(&config);
+void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
+
+    if (visibility == Visibility::Visible) {
+        config.getOptions()->clear();
+        Filer::RetroFile f = retroDream->getFiler()->getSelection();
+        if (f.data.type == Io::Type::Directory && f.isGame) {
+            config.addOption({"BROWSE", "GO", Browse});
+        }
+        config.addOption({"COPY", "GO", Copy});
+        config.addOption({"PASTE", "GO", Paste});
+        config.addOption({"DELETE", "GO", Delete});
+        configBox->load(&config);
+    }
+
+    Menu::setVisibility(visibility, tweenPlay);
 }
 
 bool FileMenu::onInput(c2d::Input::Player *players) {
@@ -26,7 +38,10 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
     if (keys & Input::Key::Fire1) {
         auto option = configBox->getSelection();
         if (option != nullptr) {
-            if (option->getId() == Copy) {
+            if (option->getId() == Browse) {
+                retroDream->getFiler()->getDir(retroDream->getFiler()->getSelection().data.path);
+                setVisibility(Visibility::Hidden, true);
+            } else if (option->getId() == Copy) {
                 file = retroDream->getFiler()->getSelection();
                 if (file.data.name != "..") {
                     setVisibility(Visibility::Hidden, true);

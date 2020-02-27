@@ -10,12 +10,15 @@ class FileMenu : public Menu {
 public:
 
     enum MainOption {
-        Copy = 0,
+        Browse,
+        Copy,
         Paste,
         Delete,
     };
 
     explicit FileMenu(RetroDream *rd, const c2d::FloatRect &rect);
+
+    void setVisibility(c2d::Visibility visibility, bool tweenPlay = false) override;
 
     bool onInput(c2d::Input::Player *players) override;
 
