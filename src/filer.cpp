@@ -486,38 +486,9 @@ bool Filer::onInput(c2d::Input::Player *players) {
         } else if (RetroUtility::isElf(file.data.name)) {
             RetroUtility::exec(file.data.path);
         } else if (Utility::endsWith(file.data.name, ".bios", false)) {
-            blurLayer->setVisibility(Visibility::Visible, true);
-            int ret = retroDream->getMessageBox()->show("BIOS FLASH",
-                                                        "YOU ARE ABOUT TO WRITE '" + file.upperName
-                                                        + "' TO YOUR ROM CHIP.\n\n"
-                                                          "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
-                                                        "CANCEL", "CONFIRM");
-            if (ret == MessageBox::RIGHT) {
-                retroDream->getProgressBox()->setTitle("BIOS FLASHING IN PROGRESS");
-                retroDream->getProgressBox()->setMessage(
-                        "\n\nFLASHING BIOS TO FLASH ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
-                retroDream->getProgressBox()->setProgress("LOADING STUFF.... \n", 0.0f);
-                retroDream->getProgressBox()->setVisibility(Visibility::Visible);
-                RetroDream *rd = retroDream;
-                BiosFlash::flash(file.data.path, [rd](const std::string &msg, float progress) {
-                    if (progress < 0) {
-                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
-                        rd->getMessageBox()->show("BIOS FLASH - ERROR", "\n\n\n" + msg, "OK");
-                        rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
-                    } else if (progress > 1) {
-                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
-                        rd->getMessageBox()->getTitleText()->setFillColor(COL_GREEN);
-                        rd->getMessageBox()->show("BIOS FLASH - SUCCESS", "\n\n\n" + msg, "OK");
-                        rd->getMessageBox()->getTitleText()->setFillColor(COL_RED);
-                        rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
-                    } else {
-                        rd->getProgressBox()->setProgress(msg, progress);
-                        rd->getRender()->flip(true, false);
-                    }
-                });
-            } else {
-                retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
-            }
+            flashBios(file);
+        } else if (Utility::endsWith(file.data.name, ".rom", false)) {
+            flashRom(file);
         }
     } else if (keys & Input::Key::Fire2) {
         retroDream->getPreview()->unload();
@@ -526,4 +497,67 @@ bool Filer::onInput(c2d::Input::Player *players) {
     }
 
     return true;
+}
+
+void Filer::flashBios(const RetroFile &file) {
+    blurLayer->setVisibility(Visibility::Visible, true);
+    int ret = retroDream->getMessageBox()->show("BIOS FLASH",
+                                                "YOU ARE ABOUT TO WRITE '" + file.upperName
+                                                + "' TO YOUR ROM CHIP.\n\n"
+                                                  "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
+                                                "CANCEL", "CONFIRM");
+    if (ret == MessageBox::RIGHT) {
+        retroDream->getProgressBox()->setTitle("BIOS FLASHING IN PROGRESS");
+        retroDream->getProgressBox()->setMessage(
+                "\n\nFLASHING BIOS TO FLASH ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
+        retroDream->getProgressBox()->setProgress("LOADING STUFF.... \n", 0.0f);
+        retroDream->getProgressBox()->setVisibility(Visibility::Visible);
+        RetroDream *rd = retroDream;
+        BiosFlash::flash(file.data.path, [rd](const std::string &msg, float progress) {
+            if (progress < 0) {
+                rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                rd->getMessageBox()->show("BIOS FLASH - ERROR", "\n\n\n" + msg, "OK");
+                rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
+            } else if (progress > 1) {
+                rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                rd->getMessageBox()->getTitleText()->setFillColor(COL_GREEN);
+                rd->getMessageBox()->show("BIOS FLASH - SUCCESS", "\n\n\n" + msg, "OK");
+                rd->getMessageBox()->getTitleText()->setFillColor(COL_RED);
+                rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
+            } else {
+                rd->getProgressBox()->setProgress(msg, progress);
+                rd->getRender()->flip(true, false);
+            }
+        });
+    }
+    retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
+}
+
+void Filer::flashRom(const RetroFile &file) {
+    blurLayer->setVisibility(Visibility::Visible, true);
+    int ret = retroDream->getMessageBox()->show("ROM FLASH",
+                                                "YOU ARE ABOUT TO WRITE '" + file.upperName
+                                                + "' TO YOUR FLASH CHIP.\n\n"
+                                                  "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
+                                                "CANCEL", "CONFIRM");
+    if (ret == MessageBox::RIGHT) {
+        retroDream->getProgressBox()->setTitle("ROM FLASHING IN PROGRESS");
+        retroDream->getProgressBox()->setMessage(
+                "\n\nFLASHING ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
+        int res = RomFlash::restore(FLASHROM_PT_ALL, file.data.path);
+        if (res != 0) {
+            std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
+            if (res == FLASHROM_ERR_NO_PARTITION) {
+                err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
+            } else if (res == FLASHROM_ERR_DELETE_PART) {
+                err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+            } else if (res == FLASHROM_ERR_WRITE_PART) {
+                err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+            }
+            retroDream->showStatus("FLASH ROM ERROR", err);
+        } else {
+            retroDream->showStatus("FLASH ROM", "FLASHROM BACKUP SUCCESSFULLY RESTORED", COL_GREEN);
+        }
+    }
+    retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
 }

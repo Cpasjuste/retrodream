@@ -2,8 +2,8 @@
 // Created by cpasjuste on 15/01/2020.
 //
 
-#ifndef RETRODREAM_FLASHROM_H
-#define RETRODREAM_FLASHROM_H
+#ifndef RETRODREAM_ROMFLASH_H
+#define RETRODREAM_ROMFLASH_H
 
 #include <string>
 
@@ -30,7 +30,7 @@ typedef unsigned short uint8;
 #define FLASHROM_ERR_WRITE_FILE     -23
 #define FLASHROM_ERR_OPEN_FILE      -24
 
-class FlashRom {
+class RomFlash {
 
 public:
 
@@ -120,4 +120,4 @@ private:
     static int flashrom_calc_crc(const uint8 *buffer);
 };
 
-#endif // RETRODREAM_FLASHROM_H
+#endif //RETRODREAM_ROMFLASH_H

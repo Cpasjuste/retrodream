@@ -22,7 +22,7 @@ public:
     bool onInput(c2d::Input::Player *players) override;
 
 private:
-    FlashRom::SystemSettings settings;
+    RomFlash::SystemSettings settings;
 };
 
 #endif //RETRODREAM_SYSTEMMENU_H

@@ -81,7 +81,11 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         saveNeeded = true;
     }
 
-
+    if (io->exist("/ide/RD")) {
+        bootDevice = Hdd;
+    } else if (io->exist("/sd/RD")) {
+        bootDevice = Sd;
+    }
 
     if (saveNeeded) {
         save();
@@ -124,4 +128,13 @@ void RetroConfig::setRect(const OptionId &id, const c2d::FloatRect &rect, bool s
     if (s) {
         save();
     }
+}
+
+std::string RetroConfig::getBootDevice() {
+    if (bootDevice == Hdd) {
+        return "/ide/";
+    } else if (bootDevice == Sd) {
+        return "/sd/";
+    } else
+        return "/cd/";
 }

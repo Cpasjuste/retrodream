@@ -25,9 +25,15 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     Menu::setVisibility(visibility, tweenPlay);
 
     if (visibility == Visibility::Visible) {
+        // backup flashrom if needed, this is fast enough to not show any message
+        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/flash.rom";
+        if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
+            RomFlash::backup(FLASHROM_PT_ALL, flashBackup);
+        }
+
         retroDream->getFiler()->setSelectionBack();
 #ifdef __DREAMCAST__
-        FlashRom::getSystemSettings(&settings);
+        RomFlash::getSystemSettings(&settings);
 #else
         settings.error = -1;
 #endif
@@ -46,12 +52,12 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         if (dirty) {
             dirty = false;
             // system options
-            settings.language = (FlashRom::Language) config.getOption(Language)->getChoiceIndex();
-            settings.audio = (FlashRom::Audio) config.getOption(Audio)->getChoiceIndex();
-            settings.autoStart = (FlashRom::AutoStart) config.getOption(AutoStart)->getChoiceIndex();
+            settings.language = (RomFlash::Language) config.getOption(Language)->getChoiceIndex();
+            settings.audio = (RomFlash::Audio) config.getOption(Audio)->getChoiceIndex();
+            settings.autoStart = (RomFlash::AutoStart) config.getOption(AutoStart)->getChoiceIndex();
 #ifdef __DREAMCAST__
             // write
-            int res = FlashRom::saveSystemSettings(&settings);
+            int res = RomFlash::saveSystemSettings(&settings);
             if (res != 0) {
                 std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
                 if (res == FLASHROM_ERR_NO_PARTITION) {

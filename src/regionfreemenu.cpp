@@ -24,9 +24,15 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     Menu::setVisibility(visibility, tweenPlay);
 
     if (visibility == Visibility::Visible) {
+        // backup flashrom if needed, this is fast enough to not show any message
+        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/flash.rom";
+        if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
+            RomFlash::backup(FLASHROM_PT_ALL, flashBackup);
+        }
+
         retroDream->getFiler()->setSelectionBack();
 #ifdef __DREAMCAST__
-        FlashRom::getRegionSettings(&settings);
+        RomFlash::getRegionSettings(&settings);
 #else
         settings.country = FlashRom::Country::Usa;
         settings.broadcast = FlashRom::Broadcast::Ntsc;
@@ -38,21 +44,21 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             retroDream->showStatus("REGION CHANGER ERROR", "AN ERROR OCCURRED WHILE TRYING TO READ YOUR FLASHROM");
         }
         // country
-        if (settings.country == FlashRom::Country::Japan) {
+        if (settings.country == RomFlash::Country::Japan) {
             config.getOption(Country)->setChoicesIndex(0);
-        } else if (settings.country == FlashRom::Country::Usa) {
+        } else if (settings.country == RomFlash::Country::Usa) {
             config.getOption(Country)->setChoicesIndex(1);
-        } else if (settings.country == FlashRom::Country::Europe) {
+        } else if (settings.country == RomFlash::Country::Europe) {
             config.getOption(Country)->setChoicesIndex(2);
         }
         // broadcast
-        if (settings.broadcast == FlashRom::Broadcast::Ntsc) {
+        if (settings.broadcast == RomFlash::Broadcast::Ntsc) {
             config.getOption(Broadcast)->setChoicesIndex(0);
-        } else if (settings.broadcast == FlashRom::Broadcast::Pal) {
+        } else if (settings.broadcast == RomFlash::Broadcast::Pal) {
             config.getOption(Broadcast)->setChoicesIndex(1);
-        } else if (settings.broadcast == FlashRom::Broadcast::PalM) {
+        } else if (settings.broadcast == RomFlash::Broadcast::PalM) {
             config.getOption(Broadcast)->setChoicesIndex(2);
-        } else if (settings.broadcast == FlashRom::Broadcast::PalN) {
+        } else if (settings.broadcast == RomFlash::Broadcast::PalN) {
             config.getOption(Broadcast)->setChoicesIndex(3);
         }
         configBox->load(&config);
@@ -62,26 +68,26 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             // country
             int index = config.getOption(Country)->getChoiceIndex();
             if (index == 0) {
-                settings.country = FlashRom::Country::Japan;
+                settings.country = RomFlash::Country::Japan;
             } else if (index == 1) {
-                settings.country = FlashRom::Country::Usa;
+                settings.country = RomFlash::Country::Usa;
             } else if (index == 2) {
-                settings.country = FlashRom::Country::Europe;
+                settings.country = RomFlash::Country::Europe;
             }
             // broadcast
             index = config.getOption(Broadcast)->getChoiceIndex();
             if (index == 0) {
-                settings.broadcast = FlashRom::Broadcast::Ntsc;
+                settings.broadcast = RomFlash::Broadcast::Ntsc;
             } else if (index == 1) {
-                settings.broadcast = FlashRom::Broadcast::Pal;
+                settings.broadcast = RomFlash::Broadcast::Pal;
             } else if (index == 2) {
-                settings.broadcast = FlashRom::Broadcast::PalM;
+                settings.broadcast = RomFlash::Broadcast::PalM;
             } else if (index == 3) {
-                settings.broadcast = FlashRom::Broadcast::PalN;
+                settings.broadcast = RomFlash::Broadcast::PalN;
             }
 #ifdef __DREAMCAST__
             // write
-            int res = FlashRom::saveRegionSettings(&settings);
+            int res = RomFlash::saveRegionSettings(&settings);
             if (res != 0) {
                 std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
                 if (res == FLASHROM_ERR_NO_PARTITION) {

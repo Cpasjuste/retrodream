@@ -5,7 +5,7 @@
 #ifndef RETRODREAM_MAIN_H
 #define RETRODREAM_MAIN_H
 
-#include "flashrom.h"
+#include "romflash.h"
 #include "colors.h"
 #include "cfg.h"
 #include "filer.h"

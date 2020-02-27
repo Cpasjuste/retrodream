@@ -5,9 +5,9 @@
 
 #include <kos.h>
 #include <kos/md5.h>
-#include "flashrom.h"
+#include "romflash.h"
 
-int FlashRom::getRegionSettings(RegionSettings *settings) {
+int RomFlash::getRegionSettings(RegionSettings *settings) {
 
     // read factory partition
     settings->partitionSystem = read(&settings->error, FLASHROM_PT_SYSTEM);
@@ -28,7 +28,7 @@ int FlashRom::getRegionSettings(RegionSettings *settings) {
     return 0;
 }
 
-int FlashRom::saveRegionSettings(RegionSettings *settings) {
+int RomFlash::saveRegionSettings(RegionSettings *settings) {
 
     if (settings == nullptr || settings->partitionSystem == nullptr) {
         return FLASHROM_ERR_NOMEM;
@@ -45,7 +45,7 @@ int FlashRom::saveRegionSettings(RegionSettings *settings) {
     return 0;
 }
 
-int FlashRom::getSystemSettings(SystemSettings *settings) {
+int RomFlash::getSystemSettings(SystemSettings *settings) {
 
     // read block 1 partition
     settings->partitionBlock1 = read(&settings->error, FLASHROM_PT_BLOCK_1);
@@ -76,7 +76,7 @@ int FlashRom::getSystemSettings(SystemSettings *settings) {
     return 0;
 }
 
-int FlashRom::saveSystemSettings(SystemSettings *settings) {
+int RomFlash::saveSystemSettings(SystemSettings *settings) {
 
     if (settings == nullptr || settings->partitionBlock1 == nullptr) {
         return FLASHROM_ERR_NOMEM;
@@ -97,7 +97,7 @@ int FlashRom::saveSystemSettings(SystemSettings *settings) {
     return 0;
 }
 
-uint8 *FlashRom::read(int *error, int partition) {
+uint8 *RomFlash::read(int *error, int partition) {
 
     int start, size;
     uint8 *data = nullptr;
@@ -134,7 +134,7 @@ uint8 *FlashRom::read(int *error, int partition) {
     return data;
 }
 
-int FlashRom::write(int partition, uint8 *data) {
+int RomFlash::write(int partition, uint8 *data) {
 
     int start, size;
 
@@ -163,7 +163,7 @@ int FlashRom::write(int partition, uint8 *data) {
     return 0;
 }
 
-int FlashRom::backup(int partition, const std::string &path) {
+int RomFlash::backup(int partition, const std::string &path) {
 
     file_t fd;
     uint8 *data = nullptr;
@@ -209,7 +209,7 @@ int FlashRom::backup(int partition, const std::string &path) {
     return 0;
 }
 
-int FlashRom::restore(int partition, const std::string &path) {
+int RomFlash::restore(int partition, const std::string &path) {
 
     file_t fd;
     uint8 *data = nullptr;
@@ -255,7 +255,7 @@ int FlashRom::restore(int partition, const std::string &path) {
     return 0;
 }
 
-int FlashRom::findBlockAddress(int partid, int blockid) {
+int RomFlash::findBlockAddress(int partid, int blockid) {
 
     int start, size;
     int bmcnt;
@@ -370,7 +370,7 @@ int FlashRom::findBlockAddress(int partid, int blockid) {
 
 /* Internal function calculates the checksum of a flashrom block. Thanks
    to Marcus Comstedt for this code. */
-int FlashRom::flashrom_calc_crc(const uint8 *buffer) {
+int RomFlash::flashrom_calc_crc(const uint8 *buffer) {
     int i, c, n = 0xffff;
 
     for (i = 0; i < FLASHROM_OFFSET_CRC; i++) {

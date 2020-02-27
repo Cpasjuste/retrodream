@@ -103,6 +103,10 @@ private:
 
     bool onInput(c2d::Input::Player *players) override;
 
+    void flashBios(const RetroFile &file);
+
+    void flashRom(const RetroFile &file);
+
     std::string path;
     std::vector<RetroFile> files;
     std::vector<Line *> lines;

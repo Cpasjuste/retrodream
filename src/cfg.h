@@ -23,6 +23,12 @@ public:
         InputDelay = 5
     };
 
+    enum BootDevice {
+        Hdd,
+        Sd,
+        Cd
+    };
+
     explicit RetroConfig(c2d::Io *io);
 
     std::string get(const OptionId &id);
@@ -37,8 +43,11 @@ public:
 
     void setRect(const OptionId &id, const c2d::FloatRect &rect, bool save = true);
 
+    std::string getBootDevice();
+
 private:
     RetroIo *io = nullptr;
+    BootDevice bootDevice = Cd;
 };
 
 #endif //RETRODREAM_CFG_H
