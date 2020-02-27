@@ -26,3 +26,4 @@ DONE:
 - add system options menu
 - release gdrom on startup
 - show status messages on flashrom write success/error
+- file menu: add browse option to games directories

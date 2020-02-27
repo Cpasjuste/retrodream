@@ -14,6 +14,11 @@ OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, re
 
     title->setString("RETRODREAM OPTIONS");
 
+    configBox->getListBoxLeft()->setSize(
+            configBox->getListBoxLeft()->getSize().x + 32,
+            configBox->getListBoxLeft()->getSize().y);
+    configBox->getListBoxRight()->move(32, 0);
+
     config.addOption({"LAUNCH DS", "GO", LaunchDs});
     config.addOption({"SYSTEM OPTIONS", "GO", SystemConfig});
     config.addOption({"REGION CHANGER", "GO", RegionChanger});
