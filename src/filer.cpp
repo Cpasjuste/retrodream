@@ -541,9 +541,6 @@ void Filer::flashRom(const RetroFile &file) {
                                                   "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
                                                 "CANCEL", "CONFIRM");
     if (ret == MessageBox::RIGHT) {
-        retroDream->getProgressBox()->setTitle("ROM FLASHING IN PROGRESS");
-        retroDream->getProgressBox()->setMessage(
-                "\n\nFLASHING ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
         int res = RomFlash::restore(FLASHROM_PT_ALL, file.data.path);
         if (res != 0) {
             std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
