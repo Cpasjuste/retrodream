@@ -25,12 +25,32 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     Menu::setVisibility(visibility, tweenPlay);
 
     if (visibility == Visibility::Visible) {
+#ifdef NDEBUG
         // backup flashrom if needed, this is fast enough to not show any message
-        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/settings.rom"; // block1 partition
+        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/block1.rom";
         if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
             RomFlash::backup(FLASHROM_PT_BLOCK_1, flashBackup);
+            // verify backup
+            char *magic = retroDream->getRender()->getIo()->read(flashBackup, 0, 17);
+            if (magic == nullptr) {
+                Menu::setVisibility(Visibility::Hidden, true);
+                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+                retroDream->showStatus("SYSTEM CONFIG ERROR", "YOUR BLOCK1 FLASHROM PARTITION CAN'T BE READ");
+                retroDream->getRender()->getIo()->removeFile(flashBackup);
+                return;
+            }
+            magic[16] = '\0';
+            if (magic != std::string("KATANA_FLASH____")) {
+                Menu::setVisibility(Visibility::Hidden, true);
+                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+                retroDream->showStatus("SYSTEM CONFIG ERROR", "YOUR BLOCK1 FLASHROM PARTITION IS CORRUPTED");
+                free(magic);
+                retroDream->getRender()->getIo()->removeFile(flashBackup);
+                return;
+            }
+            free(magic);
         }
-
+#endif
         retroDream->getFiler()->setSelectionBack();
 #ifdef __DREAMCAST__
         RomFlash::getSystemSettings(&settings);
@@ -41,12 +61,12 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             Menu::setVisibility(Visibility::Hidden, true);
             retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
             retroDream->showStatus("SYSTEM CONFIG ERROR", "AN ERROR OCCURRED WHILE TRYING TO READ YOUR FLASHROM");
+            return;
         }
         // system options
         config.getOption(Language)->setChoicesIndex((int) settings.language);
         config.getOption(Audio)->setChoicesIndex((int) settings.audio);
         config.getOption(AutoStart)->setChoicesIndex((int) settings.autoStart);
-
         configBox->load(&config);
     } else {
         if (dirty) {
@@ -68,7 +88,7 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
                     err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
                 }
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-                retroDream->showStatus("REGION CHANGER ERROR", err);
+                retroDream->showStatus("SYSTEM CONFIG ERROR", err);
             } else {
                 retroDream->showStatus("SYSTEM CONFIG", "FLASHROM SETTINGS UPDATED SUCCESSFULLY", COL_GREEN);
             }

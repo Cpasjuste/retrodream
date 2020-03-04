@@ -486,9 +486,13 @@ bool Filer::onInput(c2d::Input::Player *players) {
         } else if (RetroUtility::isElf(file.data.name)) {
             RetroUtility::exec(file.data.path);
         } else if (Utility::endsWith(file.data.name, ".bios", false)) {
+            blurLayer->setVisibility(Visibility::Visible, true);
             flashBios(file);
-        } else if (file.data.name == "region.rom" || file.data.name == "settings.rom") {
+            blurLayer->setVisibility(Visibility::Hidden, true);
+        } else if (file.data.name == "system.rom" || file.data.name == "block1.rom") {
+            blurLayer->setVisibility(Visibility::Visible, true);
             flashRom(file);
+            blurLayer->setVisibility(Visibility::Hidden, true);
         }
     } else if (keys & Input::Key::Fire2) {
         retroDream->getPreview()->unload();
@@ -500,7 +504,7 @@ bool Filer::onInput(c2d::Input::Player *players) {
 }
 
 void Filer::flashBios(const RetroFile &file) {
-    blurLayer->setVisibility(Visibility::Visible, true);
+
     int ret = retroDream->getMessageBox()->show("BIOS FLASH",
                                                 "YOU ARE ABOUT TO WRITE '" + file.upperName
                                                 + "' TO YOUR ROM CHIP.\n\n"
@@ -530,38 +534,68 @@ void Filer::flashBios(const RetroFile &file) {
             }
         });
     }
-    retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
 }
 
 void Filer::flashRom(const RetroFile &file) {
-    blurLayer->setVisibility(Visibility::Visible, true);
+
     int ret = retroDream->getMessageBox()->show("ROM FLASH",
                                                 "YOU ARE ABOUT TO WRITE '" + file.upperName
-                                                + "' TO YOUR FLASH CHIP.\n\n"
+                                                + "' TO YOUR FLASH ROM.\n\n"
                                                   "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
                                                 "CANCEL", "CONFIRM");
     if (ret == MessageBox::RIGHT) {
-        int partition = file.data.name == "region.rom" ? FLASHROM_PT_SYSTEM : FLASHROM_PT_BLOCK_1;
-        if (partition == FLASHROM_PT_SYSTEM && file.data.size != 0x00002000) {
-            retroDream->showStatus("FLASH ROM ERROR", "YOUR SYSTEM.ROM BACKUP IS CORRUPTED");
-        } else if (partition == FLASHROM_PT_BLOCK_1 && file.data.size != 0x00004000) {
-            retroDream->showStatus("FLASH ROM ERROR", "YOUR BLOCK1.ROM BACKUP IS CORRUPTED");
-        } else {
-            int res = RomFlash::restore(partition, file.data.path);
-            if (res != 0) {
-                std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
-                if (res == FLASHROM_ERR_NO_PARTITION) {
-                    err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
-                } else if (res == FLASHROM_ERR_DELETE_PART) {
-                    err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-                } else if (res == FLASHROM_ERR_WRITE_PART) {
-                    err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-                }
-                retroDream->showStatus("FLASH ROM ERROR", err);
-            } else {
-                retroDream->showStatus("FLASH ROM", "FLASHROM BACKUP SUCCESSFULLY RESTORED", COL_GREEN);
+        // set partition
+        int partition = file.data.name == "system.rom" ? FLASHROM_PT_SYSTEM : FLASHROM_PT_BLOCK_1;
+        // verify dump integrity
+        if (partition == FLASHROM_PT_SYSTEM) {
+            if (file.data.size != 0x00002000) {
+                retroDream->showStatus("FLASH ROM ERROR", "YOUR SYSTEM.ROM DUMP IS CORRUPTED (WRONG SIZE)");
+                return;
             }
+            char *magic = io->read(file.data.path, 5, 10);
+            if (magic == nullptr) {
+                retroDream->showStatus("FLASH ROM ERROR", "YOUR SYSTEM.ROM DUMP CAN'T BE READ");
+                return;
+            }
+            magic[9] = '\0';
+            if (magic != std::string("Dreamcast")) {
+                retroDream->showStatus("FLASH ROM ERROR", "YOUR SYSTEM.ROM DUMP IS CORRUPTED (WRONG MAGIC)");
+                free(magic);
+                return;
+            }
+            free(magic);
+        } else if (partition == FLASHROM_PT_BLOCK_1) {
+            if (file.data.size != 0x00004000) {
+                retroDream->showStatus("FLASH ROM ERROR", "YOUR BLOCK1.ROM DUMP IS CORRUPTED (WRONG SIZE)");
+                return;
+            }
+            char *magic = io->read(file.data.path, 0, 17);
+            if (magic == nullptr) {
+                retroDream->showStatus("FLASH ROM ERROR", "YOUR BLOCK1.ROM DUMP CAN'T BE READ");
+                return;
+            }
+            magic[16] = '\0';
+            if (magic != std::string("KATANA_FLASH____")) {
+                retroDream->showStatus("FLASH ROM ERROR", "YOUR BLOCK1.ROM DUMP IS CORRUPTED (WRONG MAGIC)");
+                free(magic);
+                return;
+            }
+            free(magic);
+        }
+        // restore partition
+        int res = RomFlash::restore(partition, file.data.path);
+        if (res != 0) {
+            std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
+            if (res == FLASHROM_ERR_NO_PARTITION) {
+                err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
+            } else if (res == FLASHROM_ERR_DELETE_PART) {
+                err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+            } else if (res == FLASHROM_ERR_WRITE_PART) {
+                err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+            }
+            retroDream->showStatus("FLASH ROM ERROR", err);
+        } else {
+            retroDream->showStatus("FLASH ROM", "FLASHROM BACKUP SUCCESSFULLY RESTORED", COL_GREEN);
         }
     }
-    retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
 }

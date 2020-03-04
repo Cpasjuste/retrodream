@@ -24,12 +24,32 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     Menu::setVisibility(visibility, tweenPlay);
 
     if (visibility == Visibility::Visible) {
+#ifdef NDEBUG
         // backup flashrom if needed, this is fast enough to not show any message
-        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/region.rom"; // system partition
+        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/system.rom";
         if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
             RomFlash::backup(FLASHROM_PT_SYSTEM, flashBackup);
+            // verify backup
+            char *magic = retroDream->getRender()->getIo()->read(flashBackup, 5, 10);
+            if (magic == nullptr) {
+                Menu::setVisibility(Visibility::Hidden, true);
+                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+                retroDream->showStatus("REGION CHANGER ERROR", "YOUR SYSTEM FLASHROM PARTITION CAN'T BE READ");
+                retroDream->getRender()->getIo()->removeFile(flashBackup);
+                return;
+            }
+            magic[9] = '\0';
+            if (magic != std::string("Dreamcast")) {
+                Menu::setVisibility(Visibility::Hidden, true);
+                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+                retroDream->showStatus("REGION CHANGER ERROR", "YOUR SYSTEM FLASHROM PARTITION IS CORRUPTED");
+                free(magic);
+                retroDream->getRender()->getIo()->removeFile(flashBackup);
+                return;
+            }
+            free(magic);
         }
-
+#endif
         retroDream->getFiler()->setSelectionBack();
 #ifdef __DREAMCAST__
         RomFlash::getRegionSettings(&settings);
@@ -42,6 +62,7 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             Menu::setVisibility(Visibility::Hidden, true);
             retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
             retroDream->showStatus("REGION CHANGER ERROR", "AN ERROR OCCURRED WHILE TRYING TO READ YOUR FLASHROM");
+            return;
         }
         // country
         if (settings.country == RomFlash::Country::Japan) {

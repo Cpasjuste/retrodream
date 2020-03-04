@@ -71,6 +71,7 @@ public:
         ~RegionSettings() {
             if (partitionSystem != nullptr) {
                 free(partitionSystem);
+                partitionSystem = nullptr;
             }
         }
 
