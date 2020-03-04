@@ -487,7 +487,7 @@ bool Filer::onInput(c2d::Input::Player *players) {
             RetroUtility::exec(file.data.path);
         } else if (Utility::endsWith(file.data.name, ".bios", false)) {
             flashBios(file);
-        } else if (Utility::endsWith(file.data.name, ".rom", false)) {
+        } else if (file.data.name == "region.rom" || file.data.name == "settings.rom") {
             flashRom(file);
         }
     } else if (keys & Input::Key::Fire2) {
@@ -541,19 +541,26 @@ void Filer::flashRom(const RetroFile &file) {
                                                   "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
                                                 "CANCEL", "CONFIRM");
     if (ret == MessageBox::RIGHT) {
-        int res = RomFlash::restore(FLASHROM_PT_ALL, file.data.path);
-        if (res != 0) {
-            std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
-            if (res == FLASHROM_ERR_NO_PARTITION) {
-                err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
-            } else if (res == FLASHROM_ERR_DELETE_PART) {
-                err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-            } else if (res == FLASHROM_ERR_WRITE_PART) {
-                err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-            }
-            retroDream->showStatus("FLASH ROM ERROR", err);
+        int partition = file.data.name == "region.rom" ? FLASHROM_PT_SYSTEM : FLASHROM_PT_BLOCK_1;
+        if (partition == FLASHROM_PT_SYSTEM && file.data.size != 0x00002000) {
+            retroDream->showStatus("FLASH ROM ERROR", "YOUR SYSTEM.ROM BACKUP IS CORRUPTED");
+        } else if (partition == FLASHROM_PT_BLOCK_1 && file.data.size != 0x00004000) {
+            retroDream->showStatus("FLASH ROM ERROR", "YOUR BLOCK1.ROM BACKUP IS CORRUPTED");
         } else {
-            retroDream->showStatus("FLASH ROM", "FLASHROM BACKUP SUCCESSFULLY RESTORED", COL_GREEN);
+            int res = RomFlash::restore(partition, file.data.path);
+            if (res != 0) {
+                std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
+                if (res == FLASHROM_ERR_NO_PARTITION) {
+                    err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
+                } else if (res == FLASHROM_ERR_DELETE_PART) {
+                    err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+                } else if (res == FLASHROM_ERR_WRITE_PART) {
+                    err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
+                }
+                retroDream->showStatus("FLASH ROM ERROR", err);
+            } else {
+                retroDream->showStatus("FLASH ROM", "FLASHROM BACKUP SUCCESSFULLY RESTORED", COL_GREEN);
+            }
         }
     }
     retroDream->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);

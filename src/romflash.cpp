@@ -215,16 +215,13 @@ int RomFlash::restore(int partition, const std::string &path) {
     uint8 *data = nullptr;
     int start = 0, size = 0x20000;
 
-    printf("flashrom restore\n");
     if (partition != FLASHROM_PT_ALL) {
-        printf("flashrom_info\n");
         if (flashrom_info(partition, &start, &size) < 0) {
             printf("FlashRom::restore: FLASHROM_ERR_NO_PARTITION\n");
             return FLASHROM_ERR_NO_PARTITION;
         }
     }
 
-    printf("flashrom open\n");
     fd = fs_open(path.c_str(), O_RDONLY);
     if (fd == FILEHND_INVALID) {
         printf("FlashRom::restore: FLASHROM_ERR_OPEN_FILE\n");
@@ -238,7 +235,6 @@ int RomFlash::restore(int partition, const std::string &path) {
         return FLASHROM_ERR_NOMEM;
     }
 
-    printf("flashrom read\n");
     if (fs_read(fd, data, size) < 0) {
         fs_close(fd);
         free(data);
@@ -246,13 +242,11 @@ int RomFlash::restore(int partition, const std::string &path) {
         return FLASHROM_ERR_READ_FILE;
     }
 
-    printf("flashrom delete\n");
     if (flashrom_delete(start) != 0) {
         printf("FlashRom::restore: FLASHROM_ERR_DELETE_PART\n");
         return FLASHROM_ERR_DELETE_PART;
     }
 
-    printf("flashrom write\n");
     if (flashrom_write(start, data, size) < 0) {
         fs_close(fd);
         free(data);

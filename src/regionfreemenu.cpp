@@ -25,9 +25,9 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
     if (visibility == Visibility::Visible) {
         // backup flashrom if needed, this is fast enough to not show any message
-        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/flash.rom";
+        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/region.rom"; // system partition
         if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
-            RomFlash::backup(FLASHROM_PT_ALL, flashBackup);
+            RomFlash::backup(FLASHROM_PT_SYSTEM, flashBackup);
         }
 
         retroDream->getFiler()->setSelectionBack();
