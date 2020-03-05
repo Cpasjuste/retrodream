@@ -143,7 +143,7 @@ bool IsoLoader::saveConfig(RetroDream *retroDream, const Config &config) {
              "cdda = %d\nfastboot = %d\ntype = %d\nmode = %d\nmemory = %s\n",
              config.title.c_str(), config.device.c_str(), config.dma, config.async,
              config.cdda, config.fastboot, config.type, config.mode, config.memory.c_str());
-    return retroDream->getRender()->getIo()->write(config.path, str);
+    return retroDream->getRender()->getIo()->write(config.path, str, strlen(str));
 }
 
 bool IsoLoader::getConfigInfo(RetroDream *retroDream, Config *config, const std::string &isoPath) {

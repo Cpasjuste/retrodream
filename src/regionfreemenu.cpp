@@ -14,8 +14,8 @@ RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Men
 
     title->setString("REGION CHANGER OPTIONS");
 
-    config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE"}, 0, Country});
-    config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N"}, 0, Broadcast});
+    config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE", "UNKNOWN"}, 0, Country});
+    config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N", "UNKNOWN"}, 0, Broadcast});
     configBox->load(&config);
 }
 
@@ -24,104 +24,80 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     Menu::setVisibility(visibility, tweenPlay);
 
     if (visibility == Visibility::Visible) {
-#ifdef NDEBUG
+
+        retroDream->getFiler()->setSelectionBack();
+
+        // read flashrom partition
+        if (!partition.read()) {
+            Menu::setVisibility(Visibility::Hidden, true);
+            retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+            retroDream->showStatus("REGION CHANGER ERROR", partition.getErrorString());
+            return;
+        }
+
         // backup flashrom if needed, this is fast enough to not show any message
         std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/system.rom";
         if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
-            RomFlash::backup(FLASHROM_PT_SYSTEM, flashBackup);
-            // verify backup
-            char *magic = retroDream->getRender()->getIo()->read(flashBackup, 5, 10);
-            if (magic == nullptr) {
-                Menu::setVisibility(Visibility::Hidden, true);
-                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-                retroDream->showStatus("REGION CHANGER ERROR", "YOUR SYSTEM FLASHROM PARTITION CAN'T BE READ");
-                retroDream->getRender()->getIo()->removeFile(flashBackup);
-                return;
-            }
-            magic[9] = '\0';
-            if (magic != std::string("Dreamcast")) {
-                Menu::setVisibility(Visibility::Hidden, true);
-                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-                retroDream->showStatus("REGION CHANGER ERROR", "YOUR SYSTEM FLASHROM PARTITION IS CORRUPTED");
-                free(magic);
-                retroDream->getRender()->getIo()->removeFile(flashBackup);
-                return;
-            }
-            free(magic);
+            partition.write(retroDream->getRender()->getIo(), flashBackup);
         }
-#endif
-        retroDream->getFiler()->setSelectionBack();
-#ifdef __DREAMCAST__
-        RomFlash::getRegionSettings(&settings);
-#else
-        settings.country = FlashRom::Country::Usa;
-        settings.broadcast = FlashRom::Broadcast::Ntsc;
-        settings.error = -1;
-#endif
-        if (settings.error != 0) {
-            Menu::setVisibility(Visibility::Hidden, true);
-            retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-            retroDream->showStatus("REGION CHANGER ERROR", "AN ERROR OCCURRED WHILE TRYING TO READ YOUR FLASHROM");
-            return;
-        }
+
         // country
-        if (settings.country == RomFlash::Country::Japan) {
+        if (partition.getCountry() == SystemPartition::Country::Japan) {
             config.getOption(Country)->setChoicesIndex(0);
-        } else if (settings.country == RomFlash::Country::Usa) {
+        } else if (partition.getCountry() == SystemPartition::Country::Usa) {
             config.getOption(Country)->setChoicesIndex(1);
-        } else if (settings.country == RomFlash::Country::Europe) {
+        } else if (partition.getCountry() == SystemPartition::Country::Europe) {
             config.getOption(Country)->setChoicesIndex(2);
+        } else {
+            config.getOption(Country)->setChoicesIndex(3);
         }
+
         // broadcast
-        if (settings.broadcast == RomFlash::Broadcast::Ntsc) {
+        if (partition.getBroadcast() == SystemPartition::Broadcast::Ntsc) {
             config.getOption(Broadcast)->setChoicesIndex(0);
-        } else if (settings.broadcast == RomFlash::Broadcast::Pal) {
+        } else if (partition.getBroadcast() == SystemPartition::Broadcast::Pal) {
             config.getOption(Broadcast)->setChoicesIndex(1);
-        } else if (settings.broadcast == RomFlash::Broadcast::PalM) {
+        } else if (partition.getBroadcast() == SystemPartition::Broadcast::PalM) {
             config.getOption(Broadcast)->setChoicesIndex(2);
-        } else if (settings.broadcast == RomFlash::Broadcast::PalN) {
+        } else if (partition.getBroadcast() == SystemPartition::Broadcast::PalN) {
             config.getOption(Broadcast)->setChoicesIndex(3);
+        } else {
+            config.getOption(Broadcast)->setChoicesIndex(4);
         }
+
         configBox->load(&config);
     } else {
         if (dirty) {
+
             dirty = false;
+
             // country
             int index = config.getOption(Country)->getChoiceIndex();
             if (index == 0) {
-                settings.country = RomFlash::Country::Japan;
+                partition.setCountry(SystemPartition::Country::Japan);
             } else if (index == 1) {
-                settings.country = RomFlash::Country::Usa;
+                partition.setCountry(SystemPartition::Country::Usa);
             } else if (index == 2) {
-                settings.country = RomFlash::Country::Europe;
+                partition.setCountry(SystemPartition::Country::Europe);
             }
+
             // broadcast
             index = config.getOption(Broadcast)->getChoiceIndex();
             if (index == 0) {
-                settings.broadcast = RomFlash::Broadcast::Ntsc;
+                partition.setBroadcast(SystemPartition::Broadcast::Ntsc);
             } else if (index == 1) {
-                settings.broadcast = RomFlash::Broadcast::Pal;
+                partition.setBroadcast(SystemPartition::Broadcast::Pal);
             } else if (index == 2) {
-                settings.broadcast = RomFlash::Broadcast::PalM;
+                partition.setBroadcast(SystemPartition::Broadcast::PalM);
             } else if (index == 3) {
-                settings.broadcast = RomFlash::Broadcast::PalN;
+                partition.setBroadcast(SystemPartition::Broadcast::PalN);
             }
 #ifdef __DREAMCAST__
-            // write
-            int res = RomFlash::saveRegionSettings(&settings);
-            if (res != 0) {
-                std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
-                if (res == FLASHROM_ERR_NO_PARTITION) {
-                    err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
-                } else if (res == FLASHROM_ERR_DELETE_PART) {
-                    err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-                } else if (res == FLASHROM_ERR_WRITE_PART) {
-                    err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-                }
+            if (!partition.write()) {
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-                retroDream->showStatus("REGION CHANGER ERROR", err);
+                retroDream->showStatus("REGION CHANGER ERROR", partition.getErrorString());
             } else {
-                retroDream->showStatus("REGION CHANGER", "FLASHROM SETTINGS UPDATED SUCCESSFULLY", COL_GREEN);
+                retroDream->showStatus("REGION CHANGER", "FLASHROM UPDATED SUCCESSFULLY", COL_GREEN);
             }
 #endif
         }

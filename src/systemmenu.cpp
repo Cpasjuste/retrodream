@@ -14,9 +14,10 @@ SystemMenu::SystemMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, re
 
     title->setString("SYSTEM OPTIONS");
 
-    config.addOption({"LANGUAGE", {"JAPANESE", "ENGLISH", "GERMAN", "FRENCH", "SPANISH", "ITALIAN"}, 0, Language});
-    config.addOption({"AUDIO", {"STEREO", "MONO"}, 0, Audio});
-    config.addOption({"AUTO START", {"ON", "OFF"}, 0, AutoStart});
+    config.addOption({"LANGUAGE",
+                      {"JAPANESE", "ENGLISH", "GERMAN", "FRENCH", "SPANISH", "ITALIAN", "UNKNOWN"}, 0, Language});
+    config.addOption({"AUDIO", {"STEREO", "MONO", "UNKNOWN"}, 0, Audio});
+    config.addOption({"AUTO START", {"ON", "OFF", "UNKNOWN"}, 0, AutoStart});
     configBox->load(&config);
 }
 
@@ -25,72 +26,45 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     Menu::setVisibility(visibility, tweenPlay);
 
     if (visibility == Visibility::Visible) {
-#ifdef NDEBUG
+
+        retroDream->getFiler()->setSelectionBack();
+
+        // read flashrom partition
+        if (!partition.read()) {
+            Menu::setVisibility(Visibility::Hidden, true);
+            retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+            retroDream->showStatus("SYSTEM CONFIG ERROR", partition.getErrorString());
+            return;
+        }
+
         // backup flashrom if needed, this is fast enough to not show any message
         std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/block1.rom";
         if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
-            RomFlash::backup(FLASHROM_PT_BLOCK_1, flashBackup);
-            // verify backup
-            char *magic = retroDream->getRender()->getIo()->read(flashBackup, 0, 17);
-            if (magic == nullptr) {
-                Menu::setVisibility(Visibility::Hidden, true);
-                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-                retroDream->showStatus("SYSTEM CONFIG ERROR", "YOUR BLOCK1 FLASHROM PARTITION CAN'T BE READ");
-                retroDream->getRender()->getIo()->removeFile(flashBackup);
-                return;
-            }
-            magic[16] = '\0';
-            if (magic != std::string("KATANA_FLASH____")) {
-                Menu::setVisibility(Visibility::Hidden, true);
-                retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-                retroDream->showStatus("SYSTEM CONFIG ERROR", "YOUR BLOCK1 FLASHROM PARTITION IS CORRUPTED");
-                free(magic);
-                retroDream->getRender()->getIo()->removeFile(flashBackup);
-                return;
-            }
-            free(magic);
+            partition.write(retroDream->getRender()->getIo(), flashBackup);
         }
-#endif
-        retroDream->getFiler()->setSelectionBack();
-#ifdef __DREAMCAST__
-        RomFlash::getSystemSettings(&settings);
-#else
-        settings.error = -1;
-#endif
-        if (settings.error != 0) {
-            Menu::setVisibility(Visibility::Hidden, true);
-            retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-            retroDream->showStatus("SYSTEM CONFIG ERROR", "AN ERROR OCCURRED WHILE TRYING TO READ YOUR FLASHROM");
-            return;
-        }
+
         // system options
-        config.getOption(Language)->setChoicesIndex((int) settings.language);
-        config.getOption(Audio)->setChoicesIndex((int) settings.audio);
-        config.getOption(AutoStart)->setChoicesIndex((int) settings.autoStart);
+        config.getOption(Language)->setChoicesIndex((int) partition.getLanguage());
+        config.getOption(Audio)->setChoicesIndex((int) partition.getAudio());
+        config.getOption(AutoStart)->setChoicesIndex((int) partition.getAutoStart());
+
         configBox->load(&config);
+
     } else {
         if (dirty) {
+
             dirty = false;
+
             // system options
-            settings.language = (RomFlash::Language) config.getOption(Language)->getChoiceIndex();
-            settings.audio = (RomFlash::Audio) config.getOption(Audio)->getChoiceIndex();
-            settings.autoStart = (RomFlash::AutoStart) config.getOption(AutoStart)->getChoiceIndex();
+            partition.setLanguage((Block1Partition::Language) config.getOption(Language)->getChoiceIndex());
+            partition.setAudio((Block1Partition::Audio) config.getOption(Audio)->getChoiceIndex());
+            partition.setAutoStart((Block1Partition::AutoStart) config.getOption(AutoStart)->getChoiceIndex());
 #ifdef __DREAMCAST__
-            // write
-            int res = RomFlash::saveSystemSettings(&settings);
-            if (res != 0) {
-                std::string err = "AN ERROR OCCURRED WITH YOUR FLASHROM";
-                if (res == FLASHROM_ERR_NO_PARTITION) {
-                    err = "COULD NOT GET PARTITION INFORMATION FROM YOUR FLASHROM";
-                } else if (res == FLASHROM_ERR_DELETE_PART) {
-                    err = "COULD NOT ERASE PARTITION FROM FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-                } else if (res == FLASHROM_ERR_WRITE_PART) {
-                    err = "COULD NOT WRITE PARTITION TO FLASHROM. MAKE SURE YOU PROVIDE 12V TO R512";
-                }
+            if (!partition.write()) {
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
-                retroDream->showStatus("SYSTEM CONFIG ERROR", err);
+                retroDream->showStatus("SYSTEM CONFIG ERROR", partition.getErrorString());
             } else {
-                retroDream->showStatus("SYSTEM CONFIG", "FLASHROM SETTINGS UPDATED SUCCESSFULLY", COL_GREEN);
+                retroDream->showStatus("SYSTEM CONFIG", "FLASHROM UPDATED SUCCESSFULLY", COL_GREEN);
             }
 #endif
         }

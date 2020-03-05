@@ -5,6 +5,8 @@
 #ifndef RETRODREAM_SYSTEMMENU_H
 #define RETRODREAM_SYSTEMMENU_H
 
+#include "flash/block1partition.h"
+
 class SystemMenu : public Menu {
 
 public:
@@ -22,7 +24,8 @@ public:
     bool onInput(c2d::Input::Player *players) override;
 
 private:
-    RomFlash::SystemSettings settings;
+
+    Block1Partition partition;
 };
 
 #endif //RETRODREAM_SYSTEMMENU_H

@@ -18,7 +18,7 @@ set(VERSION_MINOR "0")
 #############
 # code
 #############
-file(GLOB SOURCES src/*)
+file(GLOB SOURCES src/* src/flash/*)
 set(INCLUDES src)
 set(CFLAGS
         -DVERSION_MAJOR="${VERSION_MAJOR}"

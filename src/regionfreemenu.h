@@ -5,6 +5,8 @@
 #ifndef RETRODREAM_REGIONFREEMENU_H
 #define RETRODREAM_REGIONFREEMENU_H
 
+#include "flash/systempartition.h"
+
 class RegionFreeMenu : public Menu {
 
 public:
@@ -22,7 +24,7 @@ public:
     bool onInput(c2d::Input::Player *players) override;
 
 private:
-    RomFlash::RegionSettings settings;
+    SystemPartition partition;
 };
 
 #endif //RETRODREAM_REGIONFREEMENU_H
