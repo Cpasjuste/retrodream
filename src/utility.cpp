@@ -134,7 +134,7 @@ bool RetroUtility::vmuBackup(RetroDream *retroDream, const std::string &vmuPath,
 
     file_t fd = fs_open(dstPath, O_WRONLY | O_CREAT | O_TRUNC);
     if (fd == FILEHND_INVALID) {
-        callback("COULD NOT OPEN VMU FILE: " + std::string(dstPath), -1);
+        callback("COULD NOT OPEN VMU BACKUP FILE: " + std::string(dstPath), -1);
         return false;
     }
 
@@ -169,21 +169,21 @@ void *RetroUtility::getVmuDevice(const std::string &path) {
 
     maple_device_t *device = nullptr;
 
-    if (path == "/vmu/A1") {
+    if (path == "/vmu/a1") {
         device = maple_enum_dev(0, 1);
-    } else if (path == "/vmu/A2") {
+    } else if (path == "/vmu/a2") {
         device = maple_enum_dev(0, 2);
-    } else if (path == "/vmu/B1") {
+    } else if (path == "/vmu/b1") {
         device = maple_enum_dev(1, 1);
-    } else if (path == "/vmu/B2") {
+    } else if (path == "/vmu/b2") {
         device = maple_enum_dev(1, 2);
-    } else if (path == "/vmu/C1") {
+    } else if (path == "/vmu/c1") {
         device = maple_enum_dev(2, 1);
-    } else if (path == "/vmu/C2") {
+    } else if (path == "/vmu/c2") {
         device = maple_enum_dev(2, 2);
-    } else if (path == "/vmu/D1") {
+    } else if (path == "/vmu/d1") {
         device = maple_enum_dev(3, 1);
-    } else if (path == "/vmu/D2") {
+    } else if (path == "/vmu/d2") {
         device = maple_enum_dev(3, 2);
     } else {
         return nullptr;

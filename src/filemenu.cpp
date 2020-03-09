@@ -52,7 +52,8 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                 retroDream->getProgressBox()->setProgress("PLEASE WAIT.... \n", 0.0f);
                 retroDream->getProgressBox()->setVisibility(Visibility::Visible);
                 RetroDream *rd = retroDream;
-                RetroUtility::vmuBackup(rd, file.data.path, [rd](const std::string &msg, float progress) {
+                Filer::RetroFile f = retroDream->getFiler()->getSelection();
+                RetroUtility::vmuBackup(rd, f.data.path, [rd](const std::string &msg, float progress) {
                     if (progress < 0) {
                         rd->getProgressBox()->setVisibility(Visibility::Hidden);
                         rd->showStatus("VMU BACKUP ERROR", msg);
