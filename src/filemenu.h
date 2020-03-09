@@ -14,6 +14,7 @@ public:
         Copy,
         Paste,
         Delete,
+        VmuBackup
     };
 
     explicit FileMenu(RetroDream *rd, const c2d::FloatRect &rect);

@@ -99,7 +99,7 @@ bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
     if (res == 1) {
         retroDream->showStatus("SCREENSHOT SAVED...", std::string(shotPath) + ".png", COL_GREEN);
     } else {
-        retroDream->showStatus("SCREENSHOT NOT SAVED...", std::string(shotPath) + ".png", COL_RED);
+        retroDream->showStatus("SCREENSHOT NOT SAVED...", std::string(shotPath) + ".png");
     }
 
     return res == 1;
@@ -107,4 +107,87 @@ bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
     printf("RetroUtility::screenshot: not supported on linux\n");
     return false;
 #endif
+}
+
+bool RetroUtility::vmuBackup(RetroDream *retroDream, const std::string &vmuPath,
+                             const std::function<void(const std::string, float)> &callback) {
+
+    char dstPath[MAX_PATH];
+    uint8 *data = nullptr;
+    Io *io = retroDream->getRender()->getIo();
+
+    callback("DETECTING VMU DEVICE...", 0);
+    auto dev = (maple_device_t *) getVmuDevice(vmuPath);
+    if (dev == nullptr) {
+        callback("VMU DETECTION FAILED", -1);
+        return false;
+    }
+
+    std::string rdPath = retroDream->getConfig()->getBootDevice() + "RD/";
+    snprintf(dstPath, MAX_PATH, "%s001.vmu", rdPath.c_str());
+    for (int i = 2; i < 999; i++) {
+        if (!io->exist(dstPath)) {
+            break;
+        }
+        snprintf(dstPath, MAX_PATH, "%s%03d.vmu", rdPath.c_str(), i);
+    }
+
+    file_t fd = fs_open(dstPath, O_WRONLY | O_CREAT | O_TRUNC);
+    if (fd == FILEHND_INVALID) {
+        callback("COULD NOT OPEN VMU FILE: " + std::string(dstPath), -1);
+        return false;
+    }
+
+    callback("SAVING VMU...", 0);
+    data = (uint8 *) calloc(1, 512);
+    for (int i = 0; i < 256; i++) {
+        if (vmu_block_read(dev, i, data) < 0) {
+            fs_close(fd);
+            free(data);
+            callback("COULD NOT READ VMU DEVICE", -1);
+            return false;
+        }
+        callback("SAVING VMU...", (float) i / 256);
+        fs_write(fd, data, 512);
+    }
+
+    fs_close(fd);
+    free(data);
+
+    callback(dstPath, 2);
+
+    return true;
+}
+
+bool RetroUtility::vmuRestore(RetroDream *retroDream, const std::string &path,
+                              const std::function<void(const std::string, float)> &callback) {
+
+    return true;
+}
+
+void *RetroUtility::getVmuDevice(const std::string &path) {
+
+    maple_device_t *device = nullptr;
+
+    if (path == "/vmu/A1") {
+        device = maple_enum_dev(0, 1);
+    } else if (path == "/vmu/A2") {
+        device = maple_enum_dev(0, 2);
+    } else if (path == "/vmu/B1") {
+        device = maple_enum_dev(1, 1);
+    } else if (path == "/vmu/B2") {
+        device = maple_enum_dev(1, 2);
+    } else if (path == "/vmu/C1") {
+        device = maple_enum_dev(2, 1);
+    } else if (path == "/vmu/C2") {
+        device = maple_enum_dev(2, 2);
+    } else if (path == "/vmu/D1") {
+        device = maple_enum_dev(3, 1);
+    } else if (path == "/vmu/D2") {
+        device = maple_enum_dev(3, 2);
+    } else {
+        return nullptr;
+    }
+
+    return device;
 }

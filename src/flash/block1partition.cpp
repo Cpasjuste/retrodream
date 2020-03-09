@@ -15,7 +15,12 @@ Block1Partition::Language Block1Partition::getLanguage() {
         return Language::Unknown;
     }
 
-    return (Language) data[sysCfgAddr + 7];
+    uint8 language = data[sysCfgAddr + 7];
+    if (language < 0 || language > 5) {
+        return Language::Unknown;
+    }
+
+    return (Language) language;
 }
 
 bool Block1Partition::setLanguage(const Block1Partition::Language &language) {
@@ -35,7 +40,12 @@ Block1Partition::Audio Block1Partition::getAudio() {
         return Audio::Unknown;
     }
 
-    return (Audio) data[sysCfgAddr + 8];
+    uint8 audio = data[sysCfgAddr + 8];
+    if (audio < 0 || audio > 1) {
+        return Audio::Unknown;
+    }
+
+    return (Audio) audio;
 }
 
 bool Block1Partition::setAudio(const Block1Partition::Audio &audio) {
@@ -55,7 +65,12 @@ Block1Partition::AutoStart Block1Partition::getAutoStart() {
         return AutoStart::Unknown;
     }
 
-    return (AutoStart) data[sysCfgAddr + 9];
+    uint8 autoStart = data[sysCfgAddr + 9];
+    if (autoStart < 0 || autoStart > 1) {
+        return AutoStart::Unknown;
+    }
+
+    return (AutoStart) autoStart;
 }
 
 bool Block1Partition::setAutoStart(const Block1Partition::AutoStart &autoStart) {

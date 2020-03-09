@@ -19,8 +19,12 @@ void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     if (visibility == Visibility::Visible) {
         config.getOptions()->clear();
         Filer::RetroFile f = retroDream->getFiler()->getSelection();
-        if (f.data.type == Io::Type::Directory && f.isGame) {
-            config.addOption({"BROWSE", "GO", Browse});
+        if (f.data.type == Io::Type::Directory) {
+            if (f.isGame) {
+                config.addOption({"BROWSE", "GO", Browse});
+            } else if (RetroUtility::getVmuDevice(f.data.path) != nullptr) {
+                config.addOption({"BACKUP VMU", "GO", VmuBackup});
+            }
         }
         config.addOption({"COPY", "GO", Copy});
         config.addOption({"PASTE", "GO", Paste});
@@ -41,6 +45,25 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
             if (option->getId() == Browse) {
                 retroDream->getFiler()->getDir(retroDream->getFiler()->getSelection().data.path);
                 setVisibility(Visibility::Hidden, true);
+            } else if (option->getId() == VmuBackup) {
+                retroDream->getProgressBox()->setTitle("VMU BACKUP IN PROGRESS");
+                retroDream->getProgressBox()->setMessage(
+                        "\n\nDOING RAW VMU BACKUP...");
+                retroDream->getProgressBox()->setProgress("PLEASE WAIT.... \n", 0.0f);
+                retroDream->getProgressBox()->setVisibility(Visibility::Visible);
+                RetroDream *rd = retroDream;
+                RetroUtility::vmuBackup(rd, file.data.path, [rd](const std::string &msg, float progress) {
+                    if (progress < 0) {
+                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                        rd->showStatus("VMU BACKUP ERROR", msg);
+                    } else if (progress > 1) {
+                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                        rd->showStatus("VMU BACKUP SUCCESS", "VMU SAVED TO " + msg, COL_GREEN);
+                    } else {
+                        rd->getProgressBox()->setProgress(msg, progress);
+                        rd->getRender()->flip(true, false);
+                    }
+                });
             } else if (option->getId() == Copy) {
                 file = retroDream->getFiler()->getSelection();
                 if (file.data.name != "..") {

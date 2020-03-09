@@ -15,7 +15,12 @@ SystemPartition::Country SystemPartition::getCountry() {
         return Country::Unknown;
     }
 
-    return (Country) data[2];
+    uint8 country = data[2];
+    if (country < 0x30 || country > 0x32) {
+        return Country::Unknown;
+    }
+
+    return (Country) country;
 }
 
 bool SystemPartition::setCountry(const SystemPartition::Country &country) {
@@ -35,7 +40,12 @@ SystemPartition::Broadcast SystemPartition::getBroadcast() {
         return Broadcast::Unknown;
     }
 
-    return (Broadcast) data[4];
+    uint8 broadcast = data[4];
+    if (broadcast < 0x30 || broadcast > 0x33) {
+        return Broadcast::Unknown;
+    }
+
+    return (Broadcast) broadcast;
 }
 
 bool SystemPartition::setBroadcast(const SystemPartition::Broadcast &broadcast) {

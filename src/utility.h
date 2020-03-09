@@ -23,6 +23,14 @@ public:
     static std::string findPath(c2d::Io *io, const std::string &path);
 
     static bool screenshot(RetroDream *retroDream, const std::string &path);
+
+    static void *getVmuDevice(const std::string &path);
+
+    static bool vmuBackup(RetroDream *retroDream, const std::string &vmuPath,
+                          const std::function<void(const std::string, float)> &callback = nullptr);
+
+    static bool vmuRestore(RetroDream *retroDream, const std::string &path,
+                           const std::function<void(const std::string, float)> &callback = nullptr);
 };
 
 #define PERCENT(x1, x2) RetroUtility::percentSize(x1, x2)
