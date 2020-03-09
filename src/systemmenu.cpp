@@ -15,9 +15,9 @@ SystemMenu::SystemMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, re
     title->setString("SYSTEM OPTIONS");
 
     config.addOption({"LANGUAGE",
-                      {"JAPANESE", "ENGLISH", "GERMAN", "FRENCH", "SPANISH", "ITALIAN", "UNKNOWN"}, 0, Language});
-    config.addOption({"AUDIO", {"STEREO", "MONO", "UNKNOWN"}, 0, Audio});
-    config.addOption({"AUTO START", {"ON", "OFF", "UNKNOWN"}, 0, AutoStart});
+                      {"JAPANESE", "ENGLISH", "GERMAN", "FRENCH", "SPANISH", "ITALIAN"}, 0, Language});
+    config.addOption({"AUDIO", {"STEREO", "MONO"}, 0, Audio});
+    config.addOption({"AUTO START", {"ON", "OFF"}, 0, AutoStart});
     configBox->load(&config);
 }
 
@@ -34,6 +34,16 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             Menu::setVisibility(Visibility::Hidden, true);
             retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
             retroDream->showStatus("SYSTEM CONFIG ERROR", partition.getErrorString());
+            return;
+        }
+
+        // verify flash values
+        if (partition.getLanguage() == Block1Partition::Language::Unknown
+            || partition.getAudio() == Block1Partition::Audio::Unknown
+            || partition.getAutoStart() == Block1Partition::AutoStart::Unknown) {
+            Menu::setVisibility(Visibility::Hidden, true);
+            retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+            retroDream->showStatus("SYSTEM CONFIG ERROR", "BLOCK1 PARTITION IS CORRUPTED");
             return;
         }
 

@@ -14,8 +14,8 @@ RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Men
 
     title->setString("REGION CHANGER OPTIONS");
 
-    config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE", "UNKNOWN"}, 0, Country});
-    config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N", "UNKNOWN"}, 0, Broadcast});
+    config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE"}, 0, Country});
+    config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N"}, 0, Broadcast});
     configBox->load(&config);
 }
 
@@ -35,6 +35,15 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             return;
         }
 
+        // verify flash values
+        if (partition.getCountry() == SystemPartition::Country::Unknown
+            || partition.getBroadcast() == SystemPartition::Broadcast::Unknown) {
+            Menu::setVisibility(Visibility::Hidden, true);
+            retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
+            retroDream->showStatus("REGION CHANGER ERROR", "SYSTEM PARTITION IS CORRUPTED");
+            return;
+        }
+
         // backup flashrom if needed, this is fast enough to not show any message
         std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/system.rom";
         if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
@@ -48,8 +57,6 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             config.getOption(Country)->setChoicesIndex(1);
         } else if (partition.getCountry() == SystemPartition::Country::Europe) {
             config.getOption(Country)->setChoicesIndex(2);
-        } else {
-            config.getOption(Country)->setChoicesIndex(3);
         }
 
         // broadcast
@@ -61,8 +68,6 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             config.getOption(Broadcast)->setChoicesIndex(2);
         } else if (partition.getBroadcast() == SystemPartition::Broadcast::PalN) {
             config.getOption(Broadcast)->setChoicesIndex(3);
-        } else {
-            config.getOption(Broadcast)->setChoicesIndex(4);
         }
 
         configBox->load(&config);
