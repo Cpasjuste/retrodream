@@ -87,18 +87,6 @@ bool Partition::read(c2d::Io *io, const std::string &path) {
         return false;
     }
 
-    if (type == FLASHROM_PT_BLOCK_1) {
-        // find FLASHROM_B1_SYSCFG block address
-        sysCfgAddr = RomFlash::findBlockAddress(FLASHROM_PT_BLOCK_1, FLASHROM_B1_SYSCFG);
-        if (sysCfgAddr < 0) {
-            error = sysCfgAddr;
-            free(data);
-            data = nullptr;
-            printf("Partition::read: %s\n", getErrorString().c_str());
-            return false;
-        }
-    }
-
     return true;
 }
 

@@ -555,13 +555,13 @@ void Filer::flashRom(const RetroFile &file) {
         }
 
         if (!partition->read(io, file.data.path)) {
-            retroDream->showStatus("FLASH ROM ERROR", partition->getErrorString());
+            retroDream->showStatus("FLASH ROM READ ERROR", partition->getErrorString());
             delete (partition);
             return;
         }
 
         if (!partition->write()) {
-            retroDream->showStatus("FLASH ROM ERROR", partition->getErrorString());
+            retroDream->showStatus("FLASH ROM WRITE ERROR", partition->getErrorString());
             delete (partition);
             return;
         }
