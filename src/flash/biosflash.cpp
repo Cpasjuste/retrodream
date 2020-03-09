@@ -100,7 +100,7 @@ bool BiosFlash::flash(const std::string &biosFile,
         }
     }
 
-    callback("BIOS SUCCESSFULLY FLASHED TO CHIP!\nENJOY YOU NEW BIOS", 2);
+    callback("BIOS SUCCESSFULLY FLASHED TO CHIP!\nENJOY YOUR NEW BIOS", 2);
     free(data);
 
     return true;
