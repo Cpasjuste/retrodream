@@ -7,6 +7,8 @@
 
 bool Partition::read() {
 
+    error = FLASHROM_ERR_NONE;
+
     if (data != nullptr) {
         free(data);
     }
@@ -54,6 +56,8 @@ bool Partition::read() {
 
 bool Partition::read(c2d::Io *io, const std::string &path) {
 
+    error = FLASHROM_ERR_NONE;
+
     if (data != nullptr) {
         free(data);
     }
@@ -100,6 +104,8 @@ bool Partition::read(c2d::Io *io, const std::string &path) {
 
 bool Partition::write() {
 
+    error = FLASHROM_ERR_NONE;
+
     if (data == nullptr) {
         error = FLASHROM_ERR_NOMEM;
         printf("Partition::read: %s\n", getErrorString().c_str());
@@ -121,6 +127,8 @@ bool Partition::write() {
 }
 
 bool Partition::write(c2d::Io *io, const std::string &path) {
+
+    error = FLASHROM_ERR_NONE;
 
     if (data == nullptr) {
         error = FLASHROM_ERR_NOMEM;
