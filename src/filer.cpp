@@ -595,7 +595,7 @@ void Filer::restoreVmu(const Filer::RetroFile &file) {
                         rd->showStatus("VMU RESTORE ERROR", msg);
                     } else if (progress > 1) {
                         rd->getProgressBox()->setVisibility(Visibility::Hidden);
-                        rd->showStatus("VMU RESTORE SUCCESS", "VMU SAVED TO " + msg, COL_GREEN);
+                        rd->showStatus("VMU RESTORE SUCCESS", "VMU RESTORED FROM " + msg, COL_GREEN);
                     } else {
                         rd->getProgressBox()->setProgress(msg, progress);
                         rd->getRender()->flip(true, false);
