@@ -47,24 +47,25 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                 setVisibility(Visibility::Hidden, true);
             } else if (option->getId() == VmuBackup) {
                 retroDream->getProgressBox()->setTitle("VMU BACKUP IN PROGRESS");
-                retroDream->getProgressBox()->setMessage(
-                        "\n\nDOING RAW VMU BACKUP...");
+                retroDream->getProgressBox()->setMessage("\n\nDOING RAW VMU BACKUP...");
                 retroDream->getProgressBox()->setProgress("PLEASE WAIT.... \n", 0.0f);
                 retroDream->getProgressBox()->setVisibility(Visibility::Visible);
                 RetroDream *rd = retroDream;
                 Filer::RetroFile f = retroDream->getFiler()->getSelection();
-                RetroUtility::vmuBackup(rd, f.data.path, [rd](const std::string &msg, float progress) {
-                    if (progress < 0) {
-                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
-                        rd->showStatus("VMU BACKUP ERROR", msg);
-                    } else if (progress > 1) {
-                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
-                        rd->showStatus("VMU BACKUP SUCCESS", "VMU SAVED TO " + msg, COL_GREEN);
-                    } else {
-                        rd->getProgressBox()->setProgress(msg, progress);
-                        rd->getRender()->flip(true, false);
-                    }
-                });
+                RetroUtility::vmuBackup(
+                        f.data.path, rd->getConfig()->getBootDevice() + "RD/",
+                        [rd](const std::string &msg, float progress) {
+                            if (progress < 0) {
+                                rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                                rd->showStatus("VMU BACKUP ERROR", msg);
+                            } else if (progress > 1) {
+                                rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                                rd->showStatus("VMU BACKUP SUCCESS", "VMU SAVED TO " + msg, COL_GREEN);
+                            } else {
+                                rd->getProgressBox()->setProgress(msg, progress);
+                                rd->getRender()->flip(true, false);
+                            }
+                        });
             } else if (option->getId() == Copy) {
                 file = retroDream->getFiler()->getSelection();
                 if (file.data.name != "..") {

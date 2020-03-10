@@ -107,6 +107,8 @@ private:
 
     void flashRom(const RetroFile &file);
 
+    void restoreVmu(const RetroFile &file);
+
     std::string path;
     std::vector<RetroFile> files;
     std::vector<Line *> lines;

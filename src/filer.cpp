@@ -494,6 +494,10 @@ bool Filer::onInput(c2d::Input::Player *players) {
             blurLayer->setVisibility(Visibility::Visible, true);
             flashRom(file);
             blurLayer->setVisibility(Visibility::Hidden, true);
+        } else if (Utility::endsWith(file.data.name, ".vmu", false)) {
+            blurLayer->setVisibility(Visibility::Visible, true);
+            restoreVmu(file);
+            blurLayer->setVisibility(Visibility::Hidden, true);
         }
     } else if (keys & Input::Key::Fire2) {
         retroDream->getPreview()->unload();
@@ -568,5 +572,34 @@ void Filer::flashRom(const RetroFile &file) {
 
         delete (partition);
         retroDream->showStatus("FLASH ROM", "FLASHROM BACKUP SUCCESSFULLY RESTORED", COL_GREEN);
+    }
+}
+
+void Filer::restoreVmu(const Filer::RetroFile &file) {
+
+    int ret = retroDream->getMessageBox()->show("VMU RESTORE",
+                                                "YOU ARE ABOUT TO RESTORE '" + file.upperName
+                                                + "' TO YOUR SLOT ONE VMU.\n\n", "CANCEL", "CONFIRM");
+    if (ret == MessageBox::RIGHT) {
+
+        retroDream->getProgressBox()->setTitle("VMU RESTORE IN PROGRESS");
+        retroDream->getProgressBox()->setMessage("\n\nDOING RAW VMU RESTORE...");
+        retroDream->getProgressBox()->setProgress("PLEASE WAIT.... \n", 0.0f);
+        retroDream->getProgressBox()->setVisibility(Visibility::Visible);
+
+        RetroDream *rd = retroDream;
+        RetroUtility::vmuRestore(
+                file.data.path, [rd](const std::string &msg, float progress) {
+                    if (progress < 0) {
+                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                        rd->showStatus("VMU RESTORE ERROR", msg);
+                    } else if (progress > 1) {
+                        rd->getProgressBox()->setVisibility(Visibility::Hidden);
+                        rd->showStatus("VMU RESTORE SUCCESS", "VMU SAVED TO " + msg, COL_GREEN);
+                    } else {
+                        rd->getProgressBox()->setProgress(msg, progress);
+                        rd->getRender()->flip(true, false);
+                    }
+                });
     }
 }

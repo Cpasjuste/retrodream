@@ -26,10 +26,10 @@ public:
 
     static void *getVmuDevice(const std::string &path);
 
-    static bool vmuBackup(RetroDream *retroDream, const std::string &vmuPath,
+    static bool vmuBackup(const std::string &vmuDevice, const std::string &vmuBackupPath,
                           const std::function<void(const std::string, float)> &callback = nullptr);
 
-    static bool vmuRestore(RetroDream *retroDream, const std::string &path,
+    static bool vmuRestore(const std::string &vmuBackupFile,
                            const std::function<void(const std::string, float)> &callback = nullptr);
 };
 
