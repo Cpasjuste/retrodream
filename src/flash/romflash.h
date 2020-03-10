@@ -23,8 +23,6 @@
 typedef unsigned short uint8;
 #endif
 
-#define FLASHROM_PT_ALL 10
-
 #define FLASHROM_ERR_DELETE_PART    -20
 #define FLASHROM_ERR_WRITE_PART     -21
 #define FLASHROM_ERR_READ_FILE      -22
@@ -38,10 +36,6 @@ public:
     static uint8 *read(int *error, int partition);
 
     static int write(int partition, uint8 *data);
-
-    static int backup(int partition, const std::string &path);
-
-    static int restore(int partition, const std::string &path);
 
     static int findBlockAddress(int partid, int blockid);
 

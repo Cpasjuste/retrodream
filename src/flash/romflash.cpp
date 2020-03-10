@@ -20,8 +20,9 @@ uint8 *RomFlash::read(int *error, int partition) {
         return nullptr;
     }
 
-    printf("FlashRom::read(%i): start = 0x%08X, size = 0x%08X\n",
-           partition, start, size);
+#ifndef NDEBUG
+    printf("FlashRom::read(%i): start = 0x%08X, size = 0x%08X\n", partition, start, size);
+#endif
 
     data = (uint8 *) malloc(size);
     if (data == nullptr) {
@@ -53,6 +54,10 @@ int RomFlash::write(int partition, uint8 *data) {
         return FLASHROM_ERR_NO_PARTITION;
     }
 
+#ifndef NDEBUG
+    printf("FlashRom::write(%i): start = 0x%08X, size = 0x%08X\n", partition, start, size);
+#endif
+
     if (flashrom_delete(start) != 0) {
         printf("FlashRom::write: FLASHROM_ERR_DELETE_PART\n");
         return FLASHROM_ERR_DELETE_PART;
@@ -62,110 +67,6 @@ int RomFlash::write(int partition, uint8 *data) {
         printf("FlashRom::write: FLASHROM_ERR_WRITE_PART\n");
         return FLASHROM_ERR_WRITE_PART;
     }
-
-#ifndef NDEBUG
-    char wrote_magic[15];
-    flashrom_read(start, wrote_magic, 15);
-    printf("FlashRom::write(%i): start = 0x%08X, size = 0x%08X, data magic: %.14s, wrote magic: %.14s\n",
-           partition, start, size, data, wrote_magic);
-#endif
-
-    return 0;
-}
-
-int RomFlash::backup(int partition, const std::string &path) {
-
-    file_t fd;
-    uint8 *data = nullptr;
-    int start = 0, size = 0x20000;
-
-    if (partition != FLASHROM_PT_ALL) {
-        if (flashrom_info(partition, &start, &size) < 0) {
-            printf("FlashRom::backup: FLASHROM_ERR_NO_PARTITION\n");
-            return FLASHROM_ERR_NO_PARTITION;
-        }
-    }
-
-    fd = fs_open(path.c_str(), O_WRONLY);
-    if (fd == FILEHND_INVALID) {
-        printf("FlashRom::backup: FLASHROM_ERR_OPEN_FILE\n");
-        return FLASHROM_ERR_OPEN_FILE;
-    }
-
-    data = (uint8 *) memalign(32, size);
-    if (data == nullptr) {
-        fs_close(fd);
-        printf("FlashRom::backup: FLASHROM_ERR_NOMEM\n");
-        return FLASHROM_ERR_NOMEM;
-    }
-
-    if (flashrom_read(start, data, size) < 0) {
-        fs_close(fd);
-        free(data);
-        printf("FlashRom::backup: FLASHROM_ERR_READ_PART\n");
-        return FLASHROM_ERR_READ_PART;
-    }
-
-    if (fs_write(fd, data, size) < 0) {
-        fs_close(fd);
-        free(data);
-        printf("FlashRom::backup: FLASHROM_ERR_WRITE_FILE\n");
-        return FLASHROM_ERR_WRITE_FILE;
-    }
-
-    fs_close(fd);
-    free(data);
-
-    return 0;
-}
-
-int RomFlash::restore(int partition, const std::string &path) {
-
-    file_t fd;
-    uint8 *data = nullptr;
-    int start = 0, size = 0x20000;
-
-    if (partition != FLASHROM_PT_ALL) {
-        if (flashrom_info(partition, &start, &size) < 0) {
-            printf("FlashRom::restore: FLASHROM_ERR_NO_PARTITION\n");
-            return FLASHROM_ERR_NO_PARTITION;
-        }
-    }
-
-    fd = fs_open(path.c_str(), O_RDONLY);
-    if (fd == FILEHND_INVALID) {
-        printf("FlashRom::restore: FLASHROM_ERR_OPEN_FILE\n");
-        return FLASHROM_ERR_OPEN_FILE;
-    }
-
-    data = (uint8 *) memalign(32, size);
-    if (data == nullptr) {
-        fs_close(fd);
-        printf("FlashRom::restore: FLASHROM_ERR_NOMEM\n");
-        return FLASHROM_ERR_NOMEM;
-    }
-
-    if (fs_read(fd, data, size) < 0) {
-        fs_close(fd);
-        free(data);
-        printf("FlashRom::restore: FLASHROM_ERR_READ_FILE\n");
-        return FLASHROM_ERR_READ_FILE;
-    }
-
-    if (flashrom_delete(start) != 0) {
-        printf("FlashRom::restore: FLASHROM_ERR_DELETE_PART\n");
-        return FLASHROM_ERR_DELETE_PART;
-    }
-
-    if (flashrom_write(start, data, size) < 0) {
-        fs_close(fd);
-        free(data);
-        printf("FlashRom::restore: FLASHROM_ERR_WRITE_PART\n");
-        return FLASHROM_ERR_WRITE_PART;
-    }
-
-    fs_close(fd);
-    free(data);
 
     return 0;
 }
