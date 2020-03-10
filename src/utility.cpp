@@ -148,7 +148,12 @@ bool RetroUtility::vmuBackup(const std::string &vmuDevice, const std::string &vm
             callback("COULD NOT READ VMU DEVICE", -1);
             return false;
         }
-        fs_write(fd, data, 512);
+        if (fs_write(fd, data, 512) < 0) {
+            fs_close(fd);
+            free(data);
+            callback("COULD NOT READ VMU DEVICE", -1);
+            return false;
+        }
     }
 
     fs_close(fd);
