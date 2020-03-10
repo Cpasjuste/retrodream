@@ -10,8 +10,6 @@ using namespace c2d;
 
 RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
 
-    retroDream = rd;
-
     title->setString("REGION CHANGER OPTIONS");
 
     config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE"}, 0, Country});

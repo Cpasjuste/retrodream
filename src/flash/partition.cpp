@@ -11,6 +11,7 @@ bool Partition::read() {
 
     if (data != nullptr) {
         free(data);
+        data = nullptr;
     }
 
     data = RomFlash::read(&error, type);
@@ -60,6 +61,7 @@ bool Partition::read(c2d::Io *io, const std::string &path) {
 
     if (data != nullptr) {
         free(data);
+        data = nullptr;
     }
 
     c2d::Io::File file = io->getFile(path);
@@ -135,6 +137,12 @@ bool Partition::write(c2d::Io *io, const std::string &path) {
 
 bool Partition::checkMagic() {
 
+    if (data == nullptr) {
+        error = FLASHROM_ERR_NOMEM;
+        printf("Partition::checkMagic: %s\n", getErrorString().c_str());
+        return false;
+    }
+
     if (type == FLASHROM_PT_SYSTEM) {
         std::string magic = std::string((char *) data + 5, 9);
         if (magic != "Dreamcast") {
@@ -157,7 +165,6 @@ bool Partition::checkMagic() {
 }
 
 Partition::~Partition() {
-
     if (data != nullptr) {
         free(data);
         data = nullptr;

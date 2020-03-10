@@ -10,8 +10,6 @@ using namespace c2d;
 
 SystemMenu::SystemMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
 
-    retroDream = rd;
-
     title->setString("SYSTEM OPTIONS");
 
     config.addOption({"LANGUAGE",
