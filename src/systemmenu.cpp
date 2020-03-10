@@ -72,7 +72,7 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
                 retroDream->showStatus("SYSTEM CONFIG ERROR", partition.getErrorString());
             } else {
-                retroDream->showStatus("SYSTEM CONFIG", "FLASHROM UPDATED SUCCESSFULLY", COL_GREEN);
+                retroDream->showStatus("SYSTEM CONFIG", "FLASHROM SUCCESSFULLY UPDATED", COL_GREEN);
             }
 #endif
         }

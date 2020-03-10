@@ -44,14 +44,6 @@ bool Partition::read() {
         }
     }
 
-#if 0
-    uint8 md5[16];
-    kos_md5(data, 0x00002000, md5);
-    printf("partition md5: %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x, magic: %.14s\n",
-           md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
-           md5[9], md5[10], md5[11], md5[12], md5[13], md5[14], md5[15], data);
-#endif
-
     return true;
 }
 

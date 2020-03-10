@@ -100,7 +100,7 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
                 retroDream->showStatus("REGION CHANGER ERROR", partition.getErrorString());
             } else {
-                retroDream->showStatus("REGION CHANGER", "FLASHROM UPDATED SUCCESSFULLY", COL_GREEN);
+                retroDream->showStatus("REGION CHANGER", "FLASHROM SUCCESSFULLY UPDATED", COL_GREEN);
             }
 #endif
         }
