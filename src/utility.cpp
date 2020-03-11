@@ -125,7 +125,7 @@ bool RetroUtility::vmuBackup(const std::string &vmuDevice, const std::string &vm
     snprintf(dstPath, MAX_PATH, "%s001.vmu", vmuBackupPath.c_str());
     for (int i = 2; i < 999; i++) {
         file_t f = fs_open(dstPath, O_RDONLY);
-        if (f != FILEHND_INVALID) {
+        if (f == FILEHND_INVALID) {
             fs_close(f);
             break;
         }
