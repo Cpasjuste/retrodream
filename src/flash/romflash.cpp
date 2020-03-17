@@ -5,6 +5,10 @@
 
 #include <kos.h>
 #include <kos/md5.h>
+
+#endif
+
+#include <cstring>
 #include "romflash.h"
 
 uint8 *RomFlash::read(int *error, int partition) {
@@ -168,8 +172,7 @@ int RomFlash::findBlockAddress(int partid, int blockid) {
         bmcnt = flashrom_calc_crc(buffer);
 
         if (bmcnt != *((uint16 *) (buffer + FLASHROM_OFFSET_CRC))) {
-            dbglog(DBG_WARNING,
-                   "flashrom_get_block: part %d phys block %d has invalid checksum %04x (should be %04x)\n",
+            printf("flashrom_get_block: part %d phys block %d has invalid checksum %04x (should be %04x)\n",
                    partid, i + 1, *((uint16 *) (buffer + FLASHROM_OFFSET_CRC)), bmcnt);
             continue;
         }
@@ -203,4 +206,3 @@ int RomFlash::flashrom_calc_crc(const uint8 *buffer) {
     return (~n) & 0xffff;
 }
 
-#endif

@@ -111,7 +111,7 @@ bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
 
 bool RetroUtility::vmuBackup(const std::string &vmuDevice, const std::string &vmuBackupPath,
                              const std::function<void(const std::string, float)> &callback) {
-
+#ifdef __DREAMCAST__
     char dstPath[MAX_PATH];
     uint8 *data = nullptr;
 
@@ -162,11 +162,15 @@ bool RetroUtility::vmuBackup(const std::string &vmuDevice, const std::string &vm
     callback(dstPath, 2);
 
     return true;
+#else
+    printf("RetroUtility::vmuBackup: not supported on linux\n");
+    return false;
+#endif
 }
 
 bool RetroUtility::vmuRestore(const std::string &vmuBackupFile,
                               const std::function<void(const std::string, float)> &callback) {
-
+#ifdef __DREAMCAST__
     uint8 *data = nullptr;
 
     callback("DETECTING VMU DEVICE...", 0);
@@ -206,10 +210,15 @@ bool RetroUtility::vmuRestore(const std::string &vmuBackupFile,
     callback(vmuBackupFile, 2);
 
     return true;
+#else
+    printf("RetroUtility::vmuRestore: not supported on linux\n");
+    return false;
+#endif
 }
 
 void *RetroUtility::getVmuDevice(const std::string &path) {
 
+#ifdef __DREAMCAST__
     maple_device_t *device = nullptr;
 
     if (path == "/vmu/a1") {
@@ -233,4 +242,7 @@ void *RetroUtility::getVmuDevice(const std::string &path) {
     }
 
     return device;
+#else
+    return nullptr;
+#endif
 }
