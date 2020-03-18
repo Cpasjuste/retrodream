@@ -365,7 +365,6 @@ void Filer::setSelectionFront() {
 void Filer::setSelectionBack() {
     Line *line = getSelectionLine();
     if (line != nullptr) {
-        // TODO: fix layers ?
         highlight->setLayer(1);
         line->setLayer(2);
     }

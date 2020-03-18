@@ -19,7 +19,7 @@ Menu::Menu(RetroDream *rd, const c2d::FloatRect &rect)
     title->setPosition(16, 0);
     title->setOutlineThickness(3);
     title->setOutlineColor(COL_BLUE_DARK);
-    add(title);
+    Menu::add(title);
 
     FloatRect configRect = {16, 16, rect.width - 28, rect.height - 64};
     configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect, FONT_SIZE + 10);
@@ -36,10 +36,10 @@ Menu::Menu(RetroDream *rd, const c2d::FloatRect &rect)
     configBox->getListBoxRight()->getHighlight()->setOutlineColor(COL_BLUE_DARK);
     configBox->getListBoxRight()->getHighlight()->setOutlineThickness(1);
 
-    add(configBox);
+    Menu::add(configBox);
 
-    add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.2f));
-    setVisibility(Visibility::Hidden);
+    Menu::add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.2f));
+    Menu::setVisibility(Visibility::Hidden);
 }
 
 void Menu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {

@@ -10,11 +10,13 @@ using namespace c2d;
 
 RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
 
+    io = rd->getRender()->getIo();
+    backupPath = retroDream->getConfig()->getBootDevice() + "RD/system.rom";
+
     title->setString("REGION CHANGER OPTIONS");
 
     config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE"}, 0, Country});
     config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N"}, 0, Broadcast});
-    configBox->load(&config);
 }
 
 void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
@@ -43,9 +45,8 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         }
 
         // backup flashrom if needed, this is fast enough to not show any message
-        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/system.rom";
-        if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
-            partition.write(retroDream->getRender()->getIo(), flashBackup);
+        if (!io->exist(backupPath)) {
+            partition.write(io, backupPath);
         }
 
         // country

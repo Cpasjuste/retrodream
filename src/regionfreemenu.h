@@ -25,6 +25,8 @@ public:
 
 private:
     SystemPartition partition;
+    c2d::Io *io = nullptr;
+    std::string backupPath;
 };
 
 #endif //RETRODREAM_REGIONFREEMENU_H

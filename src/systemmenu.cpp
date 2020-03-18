@@ -10,13 +10,15 @@ using namespace c2d;
 
 SystemMenu::SystemMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
 
+    io = rd->getRender()->getIo();
+    backupPath = rd->getConfig()->getBootDevice() + "RD/block1.rom";
+
     title->setString("SYSTEM OPTIONS");
 
     config.addOption({"LANGUAGE",
                       {"JAPANESE", "ENGLISH", "GERMAN", "FRENCH", "SPANISH", "ITALIAN"}, 0, Language});
     config.addOption({"AUDIO", {"STEREO", "MONO"}, 0, Audio});
     config.addOption({"AUTO START", {"ON", "OFF"}, 0, AutoStart});
-    configBox->load(&config);
 }
 
 void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
@@ -46,9 +48,8 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         }
 
         // backup flashrom if needed, this is fast enough to not show any message
-        std::string flashBackup = retroDream->getConfig()->getBootDevice() + "RD/block1.rom";
-        if (!retroDream->getRender()->getIo()->exist(flashBackup)) {
-            partition.write(retroDream->getRender()->getIo(), flashBackup);
+        if (!io->exist(backupPath)) {
+            partition.write(io, backupPath);
         }
 
         // system options

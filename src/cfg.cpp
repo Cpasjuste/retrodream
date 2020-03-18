@@ -61,7 +61,7 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
     if (!Utility::endsWith(dsPath, "/")) {
         dsPath += "/";
     }
-    if (!io->exist(dsPath)) {
+    if (dsPath.size() < 2 || !io->exist(dsPath)) {
         std::string newPath = RetroUtility::findPath(io, "DS/");
         printf("RetroConfig: DreamShell path '%s' doesn't exist, restoring default: '%s'\n",
                dsPath.c_str(), newPath.c_str());

@@ -26,6 +26,8 @@ public:
 private:
 
     Block1Partition partition;
+    c2d::Io *io = nullptr;
+    std::string backupPath;
 };
 
 #endif //RETRODREAM_SYSTEMMENU_H
