@@ -10,6 +10,7 @@
 
 #include <cstring>
 #include "romflash.h"
+#include "partition.h"
 
 uint8 *RomFlash::read(int *error, int partition) {
 
@@ -169,7 +170,7 @@ int RomFlash::findBlockAddress(int partid, int blockid) {
             continue;
 
         /* Check the checksum to make sure it's valid */
-        bmcnt = flashrom_calc_crc(buffer);
+        bmcnt = crc(buffer);
 
         if (bmcnt != *((uint16 *) (buffer + FLASHROM_OFFSET_CRC))) {
             printf("flashrom_get_block: part %d phys block %d has invalid checksum %04x (should be %04x)\n",
@@ -189,11 +190,11 @@ int RomFlash::findBlockAddress(int partid, int blockid) {
 
 /* Internal function calculates the checksum of a flashrom block. Thanks
    to Marcus Comstedt for this code. */
-int RomFlash::flashrom_calc_crc(const uint8 *buffer) {
+int RomFlash::crc(const uint8 *data) {
     int i, c, n = 0xffff;
 
     for (i = 0; i < FLASHROM_OFFSET_CRC; i++) {
-        n ^= buffer[i] << 8;
+        n ^= data[i] << 8;
 
         for (c = 0; c < 8; c++) {
             if (n & 0x8000)

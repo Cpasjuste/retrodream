@@ -97,7 +97,7 @@ bool Partition::write() {
     if (type == FLASHROM_PT_BLOCK_1) {
         // update block1 SysCfg block crc
         *((uint16 *) (data + sysCfgAddr + FLASHROM_OFFSET_CRC))
-                = (uint16) RomFlash::flashrom_calc_crc(data + sysCfgAddr);
+                = (uint16) RomFlash::crc(data + sysCfgAddr);
     }
 
     error = RomFlash::write(type, data);
@@ -121,7 +121,7 @@ bool Partition::write(c2d::Io *io, const std::string &path) {
     if (type == FLASHROM_PT_BLOCK_1) {
         // update block1 SysCfg block crc
         *((uint16 *) (data + sysCfgAddr + FLASHROM_OFFSET_CRC))
-                = (uint16) RomFlash::flashrom_calc_crc(data + sysCfgAddr);
+                = (uint16) RomFlash::crc(data + sysCfgAddr);
     }
 
     return io->write(path, (const char *) data, size);

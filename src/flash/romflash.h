@@ -5,13 +5,6 @@
 #ifndef RETRODREAM_ROMFLASH_H
 #define RETRODREAM_ROMFLASH_H
 
-#include "partition.h"
-
-#ifdef __DREAMCAST__
-#include <arch/types.h>
-#include <dc/flashrom.h>
-#endif
-
 class RomFlash {
 
 public:
@@ -22,7 +15,7 @@ public:
 
     static int findBlockAddress(int partid, int blockid);
 
-    static int flashrom_calc_crc(const uint8 *data);
+    static int crc(const uint8 *data);
 };
 
 #endif //RETRODREAM_ROMFLASH_H
