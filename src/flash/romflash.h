@@ -5,6 +5,10 @@
 #ifndef RETRODREAM_ROMFLASH_H
 #define RETRODREAM_ROMFLASH_H
 
+#ifndef __DREAMCAST__
+typedef unsigned char uint8;
+#endif
+
 class RomFlash {
 
 public:

@@ -14,7 +14,7 @@
 
 uint8 *RomFlash::read(int *error, int partition) {
 
-    int start, size;
+    int start = 0, size = 0;
     uint8 *data = nullptr;
 
     if (flashrom_info(partition, &start, &size) != 0) {
@@ -52,7 +52,7 @@ uint8 *RomFlash::read(int *error, int partition) {
 
 int RomFlash::write(int partition, uint8 *data) {
 
-    int start, size;
+    int start = 0, size = 0;
 
     if (flashrom_info(partition, &start, &size) != 0) {
         printf("FlashRom::write: FLASHROM_ERR_NO_PARTITION\n");
@@ -78,7 +78,7 @@ int RomFlash::write(int partition, uint8 *data) {
 
 int RomFlash::findBlockAddress(int partid, int blockid) {
 
-    int start, size;
+    int start = 0, size = 0;
     int bmcnt;
     char magic[18];
     uint8 *bitmap;

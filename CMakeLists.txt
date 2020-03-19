@@ -13,7 +13,7 @@ enable_language(ASM)
 
 set(PROJECT_AUTHOR "Cpasjuste")
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "0")
+set(VERSION_MINOR "1")
 
 #############
 # code
