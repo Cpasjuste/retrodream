@@ -14,7 +14,8 @@ public:
     enum MainOption {
         Language,
         Audio,
-        AutoStart
+        AutoStart,
+        Backup
     };
 
     explicit SystemMenu(RetroDream *rd, const c2d::FloatRect &rect);

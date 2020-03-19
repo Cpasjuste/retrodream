@@ -17,6 +17,7 @@ RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Men
 
     config.addOption({"COUNTRY", {"JAPAN", "USA", "EUROPE"}, 0, Country});
     config.addOption({"BROADCAST", {"NTSC", "PAL", "PAL-M", "PAL-N"}, 0, Broadcast});
+    config.addOption({"BACKUP", {"GO"}, 0, Backup});
 }
 
 void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
@@ -44,13 +45,6 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             return;
         }
 
-        // TODO: i don't find why it crash here on some devices
-#if 0
-        // backup flashrom if needed, this is fast enough to not show any message
-        if (!io->exist(backupPath)) {
-            partition.write(io, backupPath);
-        }
-#endif
         // country
         if (partition.getCountry() == SystemPartition::Country::Japan) {
             config.getOption(Country)->setChoicesIndex(0);
@@ -114,7 +108,16 @@ bool RegionFreeMenu::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (keys & Input::Key::Fire2) {
+    if (keys & Input::Key::Fire1) {
+        auto option = configBox->getSelection();
+        if (option != nullptr && option->getId() == Backup) {
+            if (!partition.write(io, backupPath)) {
+                retroDream->showStatus("REGION CHANGER ERROR", partition.getErrorString());
+            } else {
+                retroDream->showStatus("REGION CHANGER", "BACKUP SUCCESS: " + backupPath, COL_GREEN);
+            }
+        }
+    } else if (keys & Input::Key::Fire2) {
         setVisibility(Visibility::Hidden, true);
         retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
         return true;

@@ -19,6 +19,7 @@ SystemMenu::SystemMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, re
                       {"JAPANESE", "ENGLISH", "GERMAN", "FRENCH", "SPANISH", "ITALIAN"}, 0, Language});
     config.addOption({"AUDIO", {"STEREO", "MONO"}, 0, Audio});
     config.addOption({"AUTO START", {"ON", "OFF"}, 0, AutoStart});
+    config.addOption({"BACKUP", {"GO"}, 0, Backup});
 }
 
 void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
@@ -47,13 +48,6 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             return;
         }
 
-        // TODO: i don't find why it crash here on some devices
-#if 0
-        // backup flashrom if needed, this is fast enough to not show any message
-        if (!io->exist(backupPath)) {
-            partition.write(io, backupPath);
-        }
-#endif
         // system options
         config.getOption(Language)->setChoicesIndex((int) partition.getLanguage());
         config.getOption(Audio)->setChoicesIndex((int) partition.getAudio());
@@ -86,7 +80,16 @@ bool SystemMenu::onInput(c2d::Input::Player *players) {
 
     unsigned int keys = players[0].keys;
 
-    if (keys & Input::Key::Fire2) {
+    if (keys & Input::Key::Fire1) {
+        auto option = configBox->getSelection();
+        if (option != nullptr && option->getId() == Backup) {
+            if (!partition.write(io, backupPath)) {
+                retroDream->showStatus("SYSTEM CONFIG ERROR", partition.getErrorString());
+            } else {
+                retroDream->showStatus("SYSTEM CONFIG", "BACKUP SUCCESS: " + backupPath, COL_GREEN);
+            }
+        }
+    } else if (keys & Input::Key::Fire2) {
         setVisibility(Visibility::Hidden, true);
         retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
         return true;

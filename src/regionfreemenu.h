@@ -14,7 +14,7 @@ public:
     enum MainOption {
         Country = 0,
         Broadcast,
-        Language
+        Backup
     };
 
     explicit RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect);
