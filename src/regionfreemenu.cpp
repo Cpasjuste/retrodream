@@ -44,11 +44,13 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             return;
         }
 
+        // TODO: i don't find why it crash here on some devices
+#if 0
         // backup flashrom if needed, this is fast enough to not show any message
         if (!io->exist(backupPath)) {
             partition.write(io, backupPath);
         }
-
+#endif
         // country
         if (partition.getCountry() == SystemPartition::Country::Japan) {
             config.getOption(Country)->setChoicesIndex(0);
