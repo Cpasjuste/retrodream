@@ -8,6 +8,7 @@
 bool Partition::read() {
 
     error = FLASHROM_ERR_NONE;
+    fromFile = false;
 
     if (data != nullptr) {
         free(data);
@@ -50,6 +51,7 @@ bool Partition::read() {
 bool Partition::read(c2d::Io *io, const std::string &path) {
 
     error = FLASHROM_ERR_NONE;
+    fromFile = true;
 
     if (data != nullptr) {
         free(data);
@@ -94,7 +96,7 @@ bool Partition::write() {
         return false;
     }
 
-    if (type == FLASHROM_PT_BLOCK_1) {
+    if (type == FLASHROM_PT_BLOCK_1 && !fromFile) {
         // update block1 SysCfg block crc
         *((uint16 *) (data + sysCfgAddr + FLASHROM_OFFSET_CRC))
                 = (uint16) RomFlash::crc(data + sysCfgAddr);
@@ -118,7 +120,7 @@ bool Partition::write(c2d::Io *io, const std::string &path) {
         return false;
     }
 
-    if (type == FLASHROM_PT_BLOCK_1) {
+    if (type == FLASHROM_PT_BLOCK_1 && !fromFile) {
         // update block1 SysCfg block crc
         *((uint16 *) (data + sysCfgAddr + FLASHROM_OFFSET_CRC))
                 = (uint16) RomFlash::crc(data + sysCfgAddr);
@@ -159,7 +161,6 @@ bool Partition::checkMagic() {
 Partition::~Partition() {
     if (data != nullptr) {
         free(data);
-        data = nullptr;
     }
 }
 

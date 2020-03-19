@@ -81,6 +81,7 @@ protected:
     size_t size = 0;
     int error = FLASHROM_ERR_NONE;
     int sysCfgAddr = 0;
+    bool fromFile = false;
     uint8 *data = nullptr;
 
 };
