@@ -14,6 +14,7 @@ enable_language(ASM)
 set(PROJECT_AUTHOR "Cpasjuste")
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "1")
+set(VERSION_MICRO "1")
 
 #############
 # code
@@ -23,6 +24,7 @@ set(INCLUDES src)
 set(CFLAGS
         -DVERSION_MAJOR="${VERSION_MAJOR}"
         -DVERSION_MINOR="${VERSION_MINOR}"
+        -DVERSION_MICRO="${VERSION_MICRO}"
         -D__RETRODREAM__ -D_NO_VIDEO_H -DMODULE_DEBUG)
 set(LDFLAGS)
 
@@ -42,6 +44,10 @@ if (PLATFORM_DREAMCAST)
             src/ds_wrapper/ds_wrapper.c
             src/ds_wrapper/exports.c
             src/ds_wrapper/exports_gcc.c
+            )
+    # ds vmu
+    list(APPEND SOURCES
+            src/ds/src/vmu/vmu.c
             )
     # ds fs
     list(APPEND SOURCES
