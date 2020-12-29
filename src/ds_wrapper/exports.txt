@@ -14,6 +14,7 @@ getFilePath
 memcpy_sh4
 memset_sh4
 memmove_sh4
+memset4
 compress
 inflate
 inflateEnd
@@ -92,8 +93,8 @@ fs_romdisk_shutdown
 fs_pty_shutdown
 thd_shutdown
 rtc_shutdown
-fini
 _arch_old_stack
 _arch_old_sr
 _arch_old_vbr
 _arch_old_fpscr
+dcache_pref_range

@@ -171,7 +171,7 @@ bool IsoLoader::getConfigInfo(RetroDream *retroDream, Config *config, const std:
 
     if (fd != FILEHND_INVALID) {
         printf("IsoLoader::getConfigInfo: fs_ioctl\n");
-        if (fs_ioctl(fd, (int) boot_sector, ISOFS_IOCTL_GET_BOOT_SECTOR_DATA) > -1) {
+        if (fs_ioctl(fd, ISOFS_IOCTL_GET_BOOT_SECTOR_DATA, (int) boot_sector) > -1) {
             kos_md5(boot_sector, sizeof(boot_sector), md5);
         }
         config->title = Utility::trim(((ipbin_meta_t *) boot_sector)->title);
