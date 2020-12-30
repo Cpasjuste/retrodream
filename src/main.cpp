@@ -352,12 +352,12 @@ int main() {
     render->add(debugText);
 
 #ifdef __DREAMCAST__
-    retroDebug("MOUNTING HDD...");
-    InitIDE();
 #ifdef NDEBUG
     retroDebug("MOUNTING SDCARD...");
     InitSDCard();
 #endif
+    retroDebug("MOUNTING HDD...");
+    InitIDE();
 #ifdef __EMBEDDED_MODULE_DEBUG__
     fs_iso_init();
 #endif
