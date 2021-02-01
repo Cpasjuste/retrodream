@@ -22,11 +22,6 @@ extern "C" {
 #include "ds/include/isoldr.h"
 void vmu_draw_str(uint8 bitmap[192], unsigned char *str, int x, int y);
 }
-#ifdef NDEBUG
-KOS_INIT_FLAGS(INIT_DEFAULT | INIT_QUIET | INIT_NO_DCLOAD);
-#else
-KOS_INIT_FLAGS(INIT_DEFAULT);
-#endif
 #endif
 
 using namespace c2d;
