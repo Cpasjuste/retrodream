@@ -81,6 +81,7 @@ std::vector<std::string> PresetMenu::getAddresses() {
             "0X8C000100",
             "0X8C004800",
             "0X8C008000",
+            "0x8CB00000",
             "0X8CE00000",
             "0X8CEF8000",
             "0X8CF80000",
