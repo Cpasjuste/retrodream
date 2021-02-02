@@ -11,7 +11,7 @@ using namespace c2d;
 SystemMenu::SystemMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
 
     io = rd->getRender()->getIo();
-    backupPath = rd->getConfig()->getBootDevice() + "RD/block1.rom";
+    backupPath = rd->getIo()->getDataPath() + "block1.rom";
 
     title->setString("SYSTEM OPTIONS");
 

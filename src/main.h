@@ -36,6 +36,10 @@ public:
         return render;
     }
 
+    RetroIo *getIo() {
+        return (RetroIo *) render->getIo();
+    }
+
     Header *getHeader() {
         return header;
     }

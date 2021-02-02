@@ -15,21 +15,12 @@ class RetroConfig : public c2d::config::Config {
 public:
 
     enum OptionId {
-        RdPath = 0,
-        FilerPath = 1,
-        DsPath = 2,
-        DsBinPath = 3,
-        ScreenSize = 4,
-        InputDelay = 5
+        FilerPath = 0,
+        ScreenSize = 1,
+        InputDelay = 2
     };
 
-    enum BootDevice {
-        Hdd,
-        Sd,
-        Cd
-    };
-
-    explicit RetroConfig(c2d::Io *io);
+    explicit RetroConfig(RetroIo *io);
 
     std::string get(const OptionId &id);
 
@@ -43,11 +34,8 @@ public:
 
     void setRect(const OptionId &id, const c2d::FloatRect &rect, bool save = true);
 
-    std::string getBootDevice();
-
 private:
     RetroIo *io = nullptr;
-    BootDevice bootDevice = Cd;
 };
 
 #endif //RETRODREAM_CFG_H

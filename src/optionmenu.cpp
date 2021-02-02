@@ -45,7 +45,7 @@ bool OptionMenu::onInput(c2d::Input::Player *players) {
         if (option != nullptr) {
             if (option->getId() == LaunchDs) {
                 retroDream->getConfig()->set(RetroConfig::FilerPath, retroDream->getFiler()->getPath());
-                RetroUtility::exec(retroDream->getConfig()->get(RetroConfig::DsBinPath));
+                RetroUtility::exec(retroDream->getIo()->getDsBinPath());
             } else if (option->getId() == SystemConfig) {
                 setVisibility(Visibility::Hidden, true);
                 retroDream->getSystemMenu()->setVisibility(Visibility::Visible, true);

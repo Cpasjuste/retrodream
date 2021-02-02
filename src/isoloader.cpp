@@ -48,14 +48,12 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
     std::string loaderPath;
     std::string loader = Utility::startWith(path, "/sd") ? "sd" : "ide";
     if (cfg.device == std::string("auto")) {
-        std::string p = retroDream->getConfig()->get(RetroConfig::DsPath)
-                        + "firmware/isoldr/" + loader + ".bin";
+        std::string p = retroDream->getIo()->getDsPath() + "firmware/isoldr/" + loader + ".bin";
         printf("IsoLoader::run: loaderPath: %s\n", p.c_str());
         loaderPath = Utility::remove(p, "/firmware/isoldr/" + loader + ".bin");
         strncpy(isoLdr->fs_dev, loader.c_str(), 7);
     } else {
-        std::string p = retroDream->getConfig()->get(RetroConfig::DsPath)
-                        + "firmware/isoldr/" + cfg.device + ".bin";
+        std::string p = retroDream->getIo()->getDsPath() + "firmware/isoldr/" + cfg.device + ".bin";
         printf("IsoLoader::run: loaderPath: %s\n", p.c_str());
         loaderPath = Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin");
         strncpy(isoLdr->fs_dev, cfg.device.c_str(), 7);
@@ -193,9 +191,7 @@ bool IsoLoader::getConfigInfo(RetroDream *retroDream, Config *config, const std:
              md5[0], md5[1], md5[2], md5[3], md5[4], md5[5], md5[6], md5[7], md5[8],
              md5[9], md5[10], md5[11], md5[12], md5[13], md5[14], md5[15]);
 
-    config->path = retroDream->getConfig()->get(RetroConfig::DsPath)
-                   + "apps/iso_loader/presets" + device + "_" + _md5 + ".cfg";
-
+    config->path = retroDream->getIo()->getDsPath() + "apps/iso_loader/presets" + device + "_" + _md5 + ".cfg";
     printf("IsoLoader::getConfigInfo: config->path: %s\n", config->path.c_str());
 #else
     config->title = "test";

@@ -202,8 +202,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     }
 
     if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
-        std::string path = retroConfig->get(RetroConfig::RdPath) + "screenshots/";
-        RetroUtility::screenshot(this, path);
+        RetroUtility::screenshot(this, getIo()->getScreenshotPath());
     } else if (keys & Input::Key::Fire3 && !optionMenu->isVisible()) {
         optionMenu->setVisibility(Visibility::Hidden, true);
         presetMenu->setVisibility(Visibility::Hidden, true);
@@ -347,12 +346,12 @@ int main() {
     render->add(debugText);
 
 #ifdef __DREAMCAST__
+    retroDebug("MOUNTING HDD...");
+    InitIDE();
 #ifdef NDEBUG
     retroDebug("MOUNTING SDCARD...");
     InitSDCard();
 #endif
-    retroDebug("MOUNTING HDD...");
-    InitIDE();
 #ifdef __EMBEDDED_MODULE_DEBUG__
     fs_iso_init();
 #endif

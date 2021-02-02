@@ -53,7 +53,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                 RetroDream *rd = retroDream;
                 Filer::RetroFile f = retroDream->getFiler()->getSelection();
                 RetroUtility::vmuBackup(
-                        f.data.path, rd->getConfig()->getBootDevice() + "RD/",
+                        f.data.path, rd->getIo()->getDataPath(),
                         [rd](const std::string &msg, float progress) {
                             if (progress < 0) {
                                 rd->getProgressBox()->setVisibility(Visibility::Hidden);

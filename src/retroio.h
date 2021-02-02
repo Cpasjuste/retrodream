@@ -13,15 +13,21 @@ public:
 
     std::string getDataPath() override;
 
-    void setDataPath(const std::string &path);
+    std::string getDsPath();
+
+    std::string getDsBinPath();
 
     std::string getConfigPath();
+
+    std::string getScreenshotPath();
 
     bool hasMoreThanOneFile(const std::string &path);
 
 private:
 
-    std::string dataPath;
+    std::string rdPath;
+    std::string dsPath;
+    std::string dsBinPath;
 };
 
 #endif //RETRODREAM_RETROIO_H

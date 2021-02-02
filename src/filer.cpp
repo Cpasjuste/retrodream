@@ -169,7 +169,7 @@ bool Filer::getDir(const std::string &p) {
         dirList.insert(dirList.begin(), file);
     }
 
-    std::string dsPath = retroDream->getConfig()->get(RetroConfig::OptionId::DsPath);
+    std::string dsPath = retroDream->getIo()->getDsPath();
 
     for (auto const &fileData : dirList) {
         RetroFile file;

@@ -27,28 +27,40 @@ std::string RetroIo::getHomePath() {
 
 std::string RetroIo::getDataPath() {
 #ifdef __DREAMCAST__
-    if (dataPath.empty()) {
-        if (exist("/ide/RD")) {
-            dataPath = "/ide/RD/";
+    if (rdPath.empty()) {
+        if (exist("/cd/RD")) {
+            rdPath = "/cd/RD/";
+            dsPath = "/cd/DS/";
+            dsBinPath = "/cd/DS/DS.BIN";
         } else if (exist("/sd/RD")) {
-            dataPath = "/sd/RD/";
-        } else if (exist("/cd/RD")) {
-            dataPath = "/cd/RD/";
+            rdPath = "/sd/RD/";
+            dsPath = "/sd/DS/";
+            dsBinPath = "/sd/DS/DS.BIN";
+        } else if (exist("/ide/RD")) {
+            rdPath = "/ide/RD/";
+            dsPath = "/ide/DS/";
+            dsBinPath = "/ide/DS/DS.BIN";
         } else {
             // default value for data directory creation...
-            if (exist("/ide")) {
-                create("/ide/RD");
-                dataPath = "/ide/RD/";
-            } else if (exist("/sd")) {
+            if (exist("/sd")) {
                 create("/sd/RD");
-                dataPath = "/sd/RD/";
-            } else {
-                dataPath = "/cd/RD/";
+                rdPath = "/sd/RD/";
+                dsPath = "/sd/DS/";
+                dsBinPath = "/sd/DS/DS.BIN";
+            } else if (exist("/ide")) {
+                create("/ide/RD");
+                rdPath = "/ide/RD/";
+                dsPath = "/ide/DS/";
+                dsBinPath = "/ide/DS/DS.BIN";
             }
+        }
+        // screenshots save directory
+        if (!exist(rdPath + "screenshots")) {
+            create(rdPath + "screenshots");
         }
     }
 
-    return dataPath;
+    return rdPath;
 #else
     if (dataPath.empty()) {
         dataPath = C2DIo::getHomePath();
@@ -58,17 +70,26 @@ std::string RetroIo::getDataPath() {
 #endif
 }
 
+std::string RetroIo::getDsPath() {
+    if (rdPath.empty()) {
+        getDataPath();
+    }
+    return dsPath;
+}
+
+std::string RetroIo::getDsBinPath() {
+    if (rdPath.empty()) {
+        getDataPath();
+    }
+    return dsBinPath;
+}
+
 std::string RetroIo::getConfigPath() {
     return getDataPath() + "retrodream.cfg";
 }
 
-void RetroIo::setDataPath(const std::string &path) {
-    if (exist(path)) {
-        dataPath = path;
-    } else {
-        dataPath.clear();
-        getDataPath();
-    }
+std::string RetroIo::getScreenshotPath() {
+    return getDataPath() + "screenshots/";
 }
 
 #ifdef __DREAMCAST__

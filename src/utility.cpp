@@ -46,23 +46,6 @@ float RetroUtility::percentSize(float size, float percent) {
     return (percent * size) / 100;
 }
 
-std::string RetroUtility::findPath(c2d::Io *io, const std::string &path) {
-
-#ifdef __DREAMCAST__
-    if (io->exist("/ide/" + path)) {
-        return "/ide/" + path;
-    } else if (io->exist("/sd/" + path)) {
-        return "/sd/" + path;
-    } else if (io->exist("/cd/" + path)) {
-        return "/cd/" + path;
-    }
-
-    return "";
-#else
-    return io->getHomePath() + path;
-#endif
-}
-
 bool RetroUtility::screenshot(RetroDream *retroDream, const std::string &path) {
 #ifdef __DREAMCAST__
     int i, res;

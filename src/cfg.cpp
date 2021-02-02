@@ -5,22 +5,17 @@
 #include "cross2d/c2d.h"
 #include "cfg.h"
 #include "retroio.h"
-#include "utility.h"
 
 using namespace c2d;
 using namespace c2d::config;
 
-RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroIo *) retroIo)->getConfigPath()) {
+RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo->getConfigPath()) {
 
-    io = (RetroIo *) retroIo;
-    FloatRect screenSize(0, 0, 640, 480);
+    io = retroIo;
 
     Group main("main");
-    main.addOption({"retrodream_path", io->getDataPath(), OptionId::RdPath});
-    main.addOption({"dreamshell_path", RetroUtility::findPath(io, "DS/"), OptionId::DsPath});
-    main.addOption({"dreamshell_bin_path", RetroUtility::findPath(io, "DS/DS.BIN"), OptionId::DsBinPath});
     main.addOption({"filer_path", io->getHomePath(), OptionId::FilerPath});
-    main.addOption({"screen_size", screenSize, OptionId::ScreenSize});
+    main.addOption({"screen_size", FloatRect{0, 0, 640, 480}, OptionId::ScreenSize});
     main.addOption({"input_delay", 200, OptionId::InputDelay});
     addGroup(main);
 
@@ -34,66 +29,20 @@ RetroConfig::RetroConfig(c2d::Io *retroIo) : Config("RetroDreamConfig", ((RetroI
         }
     }
 
-    // ensure all paths exists
-    bool saveNeeded = false;
-
-    // check RetroDream data directory
-    std::string rdPath = getGroup("main")->getOption(RdPath)->getString();
-    if (!Utility::endsWith(rdPath, "/")) {
-        rdPath += "/";
-    }
-    if (!io->exist(rdPath)) {
-        printf("RetroConfig: RetroDream data path '%s' doesn't exist, restoring default: '%s'\n",
-               rdPath.c_str(), io->getDataPath().c_str());
-        rdPath = io->getDataPath();
-        io->create(rdPath);
-        set(RdPath, rdPath, false);
-        saveNeeded = true;
-    }
-
-    // check screenshots directory
-    if (!io->exist(rdPath + "screenshots")) {
-        io->create(rdPath + "screenshots");
-    }
-
-    // check DreamShell directories
-    std::string dsPath = getGroup("main")->getOption(DsPath)->getString();
-    if (!Utility::endsWith(dsPath, "/")) {
-        dsPath += "/";
-    }
-    if (dsPath.size() < 2 || !io->exist(dsPath)) {
-        std::string newPath = RetroUtility::findPath(io, "DS/");
-        printf("RetroConfig: DreamShell path '%s' doesn't exist, restoring default: '%s'\n",
-               dsPath.c_str(), newPath.c_str());
-        dsPath = io->getHomePath();
-        set(DsPath, newPath, false);
-        set(DsBinPath, newPath + "DS.BIN", false);
-        saveNeeded = true;
-    }
-
     // check default filer data directory
-    std::string filerPath = getGroup("main")->getOption(FilerPath)->getString();
+    std::string filerPath = get(FilerPath);
     if (!io->exist(filerPath)) {
         printf("RetroConfig: FilerPath '%s' doesn't exist, restoring default: '%s'\n",
                filerPath.c_str(), io->getHomePath().c_str());
         filerPath = io->getHomePath();
-        set(FilerPath, filerPath, false);
-        saveNeeded = true;
+        set(FilerPath, filerPath, true);
     }
 
-    if (io->exist("/ide/RD")) {
-        bootDevice = Hdd;
-    } else if (io->exist("/sd/RD")) {
-        bootDevice = Sd;
-    }
-
-    if (saveNeeded) {
-        save();
-    }
-
-    printf("retrodream_path: %s\n", rdPath.c_str());
-    printf("dreamshell_path: %s\n", dsPath.c_str());
-    printf("filer_path: %s\n", filerPath.c_str());
+    printf("RetroConfig: retrodream path: %s\n", io->getDataPath().c_str());
+    printf("RetroConfig: retrodream config path: %s\n", io->getConfigPath().c_str());
+    printf("RetroConfig: dreamshell path: %s\n", io->getDsPath().c_str());
+    printf("RetroConfig: dreamshell binary path: %s\n", io->getDsBinPath().c_str());
+    printf("RetroConfig: filer path: %s\n", filerPath.c_str());
 }
 
 std::string RetroConfig::get(const RetroConfig::OptionId &id) {
@@ -128,13 +77,4 @@ void RetroConfig::setRect(const OptionId &id, const c2d::FloatRect &rect, bool s
     if (s) {
         save();
     }
-}
-
-std::string RetroConfig::getBootDevice() {
-    if (bootDevice == Hdd) {
-        return "/ide/";
-    } else if (bootDevice == Sd) {
-        return "/sd/";
-    } else
-        return "/cd/";
 }

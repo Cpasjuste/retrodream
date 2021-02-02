@@ -20,8 +20,6 @@ public:
 
     static float percentSize(float size, float percent);
 
-    static std::string findPath(c2d::Io *io, const std::string &path);
-
     static bool screenshot(RetroDream *retroDream, const std::string &path);
 
     static void *getVmuDevice(const std::string &path);
