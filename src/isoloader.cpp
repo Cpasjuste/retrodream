@@ -195,7 +195,7 @@ bool IsoLoader::getConfigInfo(RetroDream *retroDream, Config *config, const std:
     printf("IsoLoader::getConfigInfo: config->path: %s\n", config->path.c_str());
 #else
     config->title = "test";
-    config->path = c2d_renderer->getIo()->getDataPath() + "RD/test.cfg";
+    config->path = c2d_renderer->getIo()->getDataPath() + "test.cfg";
 #endif
 
     return true;

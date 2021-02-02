@@ -21,7 +21,7 @@ std::string RetroIo::getHomePath() {
 #ifdef __DREAMCAST__
     return "/";
 #else
-    return "/media/cpasjuste/SSD/dreamcast/";
+    return C2DIo::getHomePath();
 #endif
 }
 
@@ -62,11 +62,10 @@ std::string RetroIo::getDataPath() {
 
     return rdPath;
 #else
-    if (dataPath.empty()) {
-        dataPath = C2DIo::getHomePath();
-    }
-
-    return dataPath;
+    rdPath = C2DIo::getHomePath() + "RD/";
+    dsPath = C2DIo::getHomePath() + "DS/";
+    dsBinPath = C2DIo::getHomePath() + "DS/DS.BIN";
+    return rdPath;
 #endif
 }
 
