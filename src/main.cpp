@@ -15,6 +15,7 @@
 #include "isoloader.h"
 #include "retroio.h"
 #include "systemmenu.h"
+#include "roqplayer.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
@@ -40,11 +41,11 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     setOutlineColor(COL_BLUE_DARK);
     setOutlineThickness(outlineThickness * 2);
 
-#ifdef __PLATFORM_LINUX__
+#ifdef __LINUX__
     Font *font = new Font();
     font->setFilter(Texture::Filter::Point);
     font->setOffset({0, 5});
-    font->loadFromFile(render->getIo()->getDataPath() + "/future.ttf");
+    font->loadFromFile(render->getIo()->getRomFsPath() + "skin/future.ttf");
     render->setFont(font);
     debugText->setFont(font);
 #endif
@@ -381,6 +382,17 @@ int main() {
 
 #ifdef __DREAMCAST__
     cdrom_spin_down();
+#endif
+
+#ifdef __LINUX__
+    /*
+    // ffmpeg -i video.mp4 -ar 22050 -framerate 30 -s 256x128 -t 10 video.roq
+    auto *player = new RoqPlayerTexture();
+    render->add(player);
+    player->setPosition(350, 80);
+    player->setScale(1.0f, 1.2f);
+    player->play(render->getIo()->getRomFsPath() + "test.roq");
+    */
 #endif
 
     // let's go
