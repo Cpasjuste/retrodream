@@ -30,7 +30,8 @@ bool Preview::load(const std::string &path) {
             return false;
         }
 
-        file_ret = fread(read_buffer, CHUNK_HEADER_SIZE, 1, file);
+        file_buffer = (unsigned char *) malloc(MAX_BUF_SIZE);
+        file_ret = fread(file_buffer, CHUNK_HEADER_SIZE, 1, file);
         if (file_ret != 1) {
             fclose(file);
             printf("ROQ_FILE_READ_FAILURE\n");
@@ -38,8 +39,8 @@ bool Preview::load(const std::string &path) {
             return false;
         }
 
-        chunk_id = LE_16(&read_buffer[0]);
-        chunk_size = LE_32(&read_buffer[2]);
+        chunk_id = LE_16(&file_buffer[0]);
+        chunk_size = LE_32(&file_buffer[2]);
         if (chunk_id != RoQ_SIGNATURE || chunk_size != 0xFFFFFFFF) {
             printf("ROQ_FILE_READ_FAILURE: %s\n", path.c_str());
             fclose(file);
@@ -47,7 +48,7 @@ bool Preview::load(const std::string &path) {
             return false;
         }
 
-        framerate = LE_16(&read_buffer[6]);
+        framerate = LE_16(&file_buffer[6]);
         printf("RoQ file plays at %d frames/sec\n", framerate);
 
         /* Initialize Audio SQRT Look-Up Table */
@@ -95,6 +96,10 @@ void Preview::unload() {
         free(state.frame[1]);
         state.frame[1] = nullptr;
     }
+    if (file_buffer != nullptr) {
+        free(file_buffer);
+        file_buffer = nullptr;
+    }
     initialized = 0;
     status = ROQ_STOPPED;
     // roq video player
@@ -123,7 +128,7 @@ void Preview::onUpdate() {
         return;
     }
 
-    file_ret = fread(read_buffer, CHUNK_HEADER_SIZE, 1, file);
+    file_ret = fread(file_buffer, CHUNK_HEADER_SIZE, 1, file);
     if (file_ret != 1) {
         /* if the read failed but the file is not EOF, there is a deeper
          * problem; don't entertain the idea of looping */
@@ -138,9 +143,9 @@ void Preview::onUpdate() {
         }
     }
 
-    chunk_id = LE_16(&read_buffer[0]);
-    chunk_size = LE_32(&read_buffer[2]);
-    chunk_arg = LE_16(&read_buffer[6]);
+    chunk_id = LE_16(&file_buffer[0]);
+    chunk_size = LE_32(&file_buffer[2]);
+    chunk_arg = LE_16(&file_buffer[6]);
 
     if (chunk_size > MAX_BUF_SIZE) {
         unload();
@@ -148,7 +153,7 @@ void Preview::onUpdate() {
         return;
     }
 
-    file_ret = fread(read_buffer, chunk_size, 1, file);
+    file_ret = fread(file_buffer, chunk_size, 1, file);
     if (file_ret != 1) {
         unload();
         status = ROQ_FILE_READ_FAILURE;
@@ -163,8 +168,8 @@ void Preview::onUpdate() {
                 return;
 
             state.alpha = chunk_arg;
-            state.width = LE_16(&read_buffer[0]);
-            state.height = LE_16(&read_buffer[2]);
+            state.width = LE_16(&file_buffer[0]);
+            state.height = LE_16(&file_buffer[2]);
             /* width and height each need to be divisible by 16 */
             if ((state.width & 0xF) || (state.height & 0xF)) {
                 status = ROQ_INVALID_PIC_SIZE;
@@ -226,19 +231,19 @@ void Preview::onUpdate() {
 
         case RoQ_QUAD_CODEBOOK:
             if (colorspace == ROQ_RGB565)
-                status = roq_unpack_quad_codebook_rgb565(read_buffer, chunk_size,
+                status = roq_unpack_quad_codebook_rgb565(file_buffer, chunk_size,
                                                          chunk_arg, &state);
             else if (colorspace == ROQ_RGBA)
-                status = roq_unpack_quad_codebook_rgba(read_buffer, chunk_size,
+                status = roq_unpack_quad_codebook_rgba(file_buffer, chunk_size,
                                                        chunk_arg, &state);
             break;
 
         case RoQ_QUAD_VQ:
             if (colorspace == ROQ_RGB565)
-                status = roq_unpack_vq_rgb565(read_buffer, chunk_size,
+                status = roq_unpack_vq_rgb565(file_buffer, chunk_size,
                                               chunk_arg, &state);
             else if (colorspace == ROQ_RGBA)
-                status = roq_unpack_vq_rgba(read_buffer, chunk_size,
+                status = roq_unpack_vq_rgba(file_buffer, chunk_size,
                                             chunk_arg, &state);
 
             void *buf;
@@ -258,7 +263,7 @@ void Preview::onUpdate() {
             audio.pcm_samples = chunk_size * 2;
             snd_left = chunk_arg;
             for (unsigned int i = 0; i < chunk_size; i++) {
-                snd_left += audio.snd_sqr_array[read_buffer[i]];
+                snd_left += audio.snd_sqr_array[file_buffer[i]];
                 audio.pcm_sample[i * 2] = snd_left & 0xff;
                 audio.pcm_sample[i * 2 + 1] = (snd_left & 0xff00) >> 8;
             }
@@ -275,8 +280,8 @@ void Preview::onUpdate() {
             snd_left = (chunk_arg & 0xFF00);
             snd_right = (chunk_arg & 0xFF) << 8;
             for (unsigned int i = 0; i < chunk_size; i += 2) {
-                snd_left += audio.snd_sqr_array[read_buffer[i]];
-                snd_right += audio.snd_sqr_array[read_buffer[i + 1]];
+                snd_left += audio.snd_sqr_array[file_buffer[i]];
+                snd_right += audio.snd_sqr_array[file_buffer[i + 1]];
                 audio.pcm_sample[i * 2] = snd_left & 0xff;
                 audio.pcm_sample[i * 2 + 1] = (snd_left & 0xff00) >> 8;
                 audio.pcm_sample[i * 2 + 2] = snd_right & 0xff;

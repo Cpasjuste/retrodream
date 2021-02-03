@@ -30,8 +30,9 @@ private:
     // ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=256:-2" -t 30 video.roq
     void onUpdate() override;
 
-    FILE *file;
-    size_t file_ret;
+    FILE *file = nullptr;
+    size_t file_ret = 0;
+    unsigned char *file_buffer = nullptr;
     int framerate;
     int chunk_id;
     unsigned int chunk_size;
@@ -40,7 +41,6 @@ private:
     roq_audio audio;
     int status = ROQ_STOPPED;
     int initialized = 0;
-    unsigned char read_buffer[MAX_BUF_SIZE];
     int snd_left, snd_right;
     bool loop = true;
     int colorspace = ROQ_RGB565;
