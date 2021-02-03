@@ -440,8 +440,8 @@ void Filer::onUpdate() {
         // TODO: load cover then video
         if (getSelection().isGame && !getSelection().preview_video.empty() && !retroDream->getPreview()->isLoaded()
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
-            //bool loaded = retroDream->getPreview()->load(getSelection().preview_video);
-            bool loaded = retroDream->getPreview()->load("/cd/DS/apps/iso_loader/videos/retrodream.roq");
+            bool loaded = retroDream->getPreview()->load(getSelection().preview_video);
+            //bool loaded = retroDream->getPreview()->load("/cd/DS/apps/iso_loader/videos/retrodream.roq");
             if (!loaded) {
                 retroDream->showStatus("PREVIEW NOT FOUND", getSelection().preview_video, COL_RED);
             }

@@ -351,9 +351,9 @@ int main() {
     InitIDE();
     retroDebug("MOUNTING SDCARD...");
     InitSDCard();
+#endif
 #ifdef __EMBEDDED_MODULE_DEBUG__
     fs_iso_init();
-#endif
 #endif
 #endif
 
@@ -391,9 +391,7 @@ int main() {
 
 #ifdef __DREAMCAST__
 #ifdef __EMBEDDED_MODULE_DEBUG__
-#ifdef NDEBUG
     fs_iso_shutdown();
-#endif
 #endif
 #endif
 
