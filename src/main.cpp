@@ -15,7 +15,6 @@
 #include "isoloader.h"
 #include "retroio.h"
 #include "systemmenu.h"
-#include "roqplayer.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
@@ -347,14 +346,14 @@ int main() {
     render->add(debugText);
 
 #ifdef __DREAMCAST__
+#ifdef NDEBUG
     retroDebug("MOUNTING HDD...");
     InitIDE();
-#ifdef NDEBUG
     retroDebug("MOUNTING SDCARD...");
     InitSDCard();
-#endif
 #ifdef __EMBEDDED_MODULE_DEBUG__
     fs_iso_init();
+#endif
 #endif
 #endif
 
@@ -366,7 +365,6 @@ int main() {
 
     /// main rect
     FloatRect screenSize = retroConfig->getRect(RetroConfig::ScreenSize);
-    //FloatRect screenSize = {32, 32, 640-64, 480-64};
     float outline = 6;
     FloatRect rect = {screenSize.left + outline, screenSize.top + outline,
                       screenSize.width - (outline * 2), screenSize.height - (outline * 2)};
@@ -384,17 +382,6 @@ int main() {
     cdrom_spin_down();
 #endif
 
-#ifdef __LINUX__
-    /*
-    // ffmpeg -i video.mp4 -ar 22050 -framerate 30 -s 256x128 -t 10 video.roq
-    auto *player = new RoqPlayerTexture();
-    render->add(player);
-    player->setPosition(350, 80);
-    player->setScale(1.0f, 1.2f);
-    player->play(render->getIo()->getRomFsPath() + "test.roq");
-    */
-#endif
-
     // let's go
     while (!retroDream->quit) {
         render->flip();
@@ -404,7 +391,9 @@ int main() {
 
 #ifdef __DREAMCAST__
 #ifdef __EMBEDDED_MODULE_DEBUG__
+#ifdef NDEBUG
     fs_iso_shutdown();
+#endif
 #endif
 #endif
 

@@ -44,6 +44,7 @@ public:
         std::string isoType;
         std::string isoPath;
         std::string preview;
+        std::string preview_video;
         std::string preset;
         std::string upperName;
         bool isGame = false;

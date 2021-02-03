@@ -187,7 +187,11 @@ bool Filer::getDir(const std::string &p) {
                     file.isoType = "GDI";
                 }
                 // DreamShell compatibility
-                file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(file.data.name) + ".jpg";
+                std::string noExt = Utility::removeExt(file.data.name);
+                file.preview = dsPath + "apps/iso_loader/covers/";
+                file.preview += noExt + ".jpg";
+                file.preview_video = dsPath + "apps/iso_loader/videos/";
+                file.preview_video += noExt + ".roq";
             }
         } else if (fileData.type == Io::Type::Directory) {
             Io::File gameFile = io->findFile(fileData.path, {".gdi", ".cdi", ".iso"}, "track");
@@ -216,7 +220,11 @@ bool Filer::getDir(const std::string &p) {
                     }
                 }
                 // DreamShell compatibility
-                file.preview = dsPath + "apps/iso_loader/covers/" + Utility::removeExt(gameFile.name) + ".jpg";
+                std::string noExt = Utility::removeExt(gameFile.name);
+                file.preview = dsPath + "apps/iso_loader/covers/";
+                file.preview += noExt + ".jpg";
+                file.preview_video = dsPath + "apps/iso_loader/videos/";
+                file.preview_video += noExt + ".roq";
             }
         }
 
@@ -428,13 +436,14 @@ void Filer::onUpdate() {
     }
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
-
     if (keys == 0) {
-        if (getSelection().isGame && !getSelection().preview.empty() && !retroDream->getPreview()->isLoaded()
+        // TODO: load cover then video
+        if (getSelection().isGame && !getSelection().preview_video.empty() && !retroDream->getPreview()->isLoaded()
             && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
-            bool loaded = retroDream->getPreview()->load(getSelection().preview);
+            //bool loaded = retroDream->getPreview()->load(getSelection().preview_video);
+            bool loaded = retroDream->getPreview()->load("/cd/DS/apps/iso_loader/videos/retrodream.roq");
             if (!loaded) {
-                retroDream->showStatus("PREVIEW NOT FOUND", getSelection().preview, COL_RED);
+                retroDream->showStatus("PREVIEW NOT FOUND", getSelection().preview_video, COL_RED);
             }
         }
     }

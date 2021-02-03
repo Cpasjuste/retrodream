@@ -16,15 +16,26 @@ void RetroUtility::exec(const std::string &path) {
 
     f = fs_open(path.c_str(), O_RDONLY);
     if (f == FILEHND_INVALID) {
+        printf("RetroUtility::exec: could not open file (%s)\n", path.c_str());
         return;
     }
 
+    ssize_t file_size = fs_total(f);
     elf = fs_mmap(f);
     if (elf == nullptr) {
-        return;
+        // we may are loading elf/bin from gdrom, fs_mmap will fail
+        elf = malloc(file_size);
+        ssize_t read_size = fs_read(f, elf, file_size);
+        if (read_size != file_size) {
+            fs_close(f);
+            free(elf);
+            printf("RetroUtility::exec: file is not an elf (%s)\n", path.c_str());
+            return;
+        }
     }
 
-    arch_exec(elf, fs_total(f));
+    printf("RetroUtility::exec: arch_exec(%s, size: %u)\n", path.c_str(), file_size);
+    arch_exec(elf, file_size);
 #else
     printf(" RetroUtility::exec(%s): not implemented on linux\n", path.c_str());
 #endif
@@ -96,7 +107,7 @@ bool RetroUtility::vmuBackup(const std::string &vmuDevice, const std::string &vm
                              const std::function<void(const std::string, float)> &callback) {
 #ifdef __DREAMCAST__
     char dstPath[MAX_PATH];
-    uint8 *data = nullptr;
+    uint8 * data = nullptr;
 
     callback("DETECTING VMU DEVICE...", 0);
     auto dev = (maple_device_t *) getVmuDevice(vmuDevice);
@@ -154,7 +165,7 @@ bool RetroUtility::vmuBackup(const std::string &vmuDevice, const std::string &vm
 bool RetroUtility::vmuRestore(const std::string &vmuBackupFile,
                               const std::function<void(const std::string, float)> &callback) {
 #ifdef __DREAMCAST__
-    uint8 *data = nullptr;
+    uint8 * data = nullptr;
 
     callback("DETECTING VMU DEVICE...", 0);
     auto dev = (maple_device_t *) getVmuDevice("/vmu/a1");

@@ -1,0 +1,14 @@
+1.bin > 0.6.6 beta
+2.bin > 0.6.1 gcc-5.2
+3.bin > 0.6.1 gcc-7.1
+4.bin > 0.6.2_noCDDA_gcc7.1
+5.bin > 0.6.3_noWINCE_noCDDA_gcc7.1
+6.bin > 0.6.7_gcc8.2
+7.bin > 0.6.7_gcc8.2_noCDDA
+8.bin > 0.7.x_OPT-Only_noCDDA beta 1 
+9.bin > 0.7.x_OPT-Only_noCDDA beta 2
+10.bin > 0.7.x_OPT-Only_noCDDA beta 3
+11.bin > isoldr_v0.6.10_beta
+12.bin > isoldr_v0.6.10_beta_dyn
+13.bin > isoldr_v0.6.10_beta_dyn_dt1
+14.bin > isoldr_v0.6.11_beta_se_noCDDA - Light loader without CDDA and IRQ
