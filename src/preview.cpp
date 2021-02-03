@@ -215,8 +215,6 @@ void Preview::onUpdate() {
             // create texture
             texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
             texture->setOrigin(Origin::Left);
-            //texture->setSize(state.width, state.height);
-            //texture->setTextureRect(IntRect{0, 0, state.width, state.height});
             texture->setPosition(Vector2f(8, getSize().y / 2));
             texture_scaling = std::min(
                     getSize().x / ((float) texture->getTextureRect().width + 32),
@@ -231,8 +229,7 @@ void Preview::onUpdate() {
 
         case RoQ_QUAD_CODEBOOK:
             if (colorspace == ROQ_RGB565)
-                status = roq_unpack_quad_codebook_rgb565(file_buffer, chunk_size,
-                                                         chunk_arg, &state);
+                status = roq_unpack_quad_codebook_rgb565(file_buffer, chunk_size, chunk_arg, &state);
             else if (colorspace == ROQ_RGBA)
                 status = roq_unpack_quad_codebook_rgba(file_buffer, chunk_size,
                                                        chunk_arg, &state);
@@ -240,16 +237,11 @@ void Preview::onUpdate() {
 
         case RoQ_QUAD_VQ:
             if (colorspace == ROQ_RGB565)
-                status = roq_unpack_vq_rgb565(file_buffer, chunk_size,
-                                              chunk_arg, &state);
+                status = roq_unpack_vq_rgb565(file_buffer, chunk_size, chunk_arg, &state);
             else if (colorspace == ROQ_RGBA)
-                status = roq_unpack_vq_rgba(file_buffer, chunk_size,
-                                            chunk_arg, &state);
+                status = roq_unpack_vq_rgba(file_buffer, chunk_size, chunk_arg, &state);
 
-            void *buf;
-            texture->lock(nullptr, &buf, nullptr);
-            memcpy(buf, state.frame[state.current_frame & 1], state.stride * state.height * 2);
-            texture->unlock();
+            texture->unlock(state.frame[state.current_frame & 1]);
             //printf("width: %i, height: %i, stride: %i, texture_height: %i, colorspace: %i\n",
             //     state.width, state.height, state.stride, state.texture_height, colorspace);
             state.current_frame++;

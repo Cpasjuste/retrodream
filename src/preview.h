@@ -44,7 +44,6 @@ private:
     int snd_left, snd_right;
     bool loop = true;
     int colorspace = ROQ_RGB565;
-
 };
 
 #endif //RETRODREAM_PREVIEW_H
