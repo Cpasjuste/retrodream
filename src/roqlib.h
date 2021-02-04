@@ -40,9 +40,8 @@ extern "C" {
 #define ROQ_RENDER_PROBLEM    9
 #define ROQ_CLIENT_PROBLEM    10
 #define ROQ_STOPPED           11
-
-#define ROQ_RGB565 0
-#define ROQ_RGBA   1
+#define ROQ_LOAD              12
+#define ROQ_SIG_FAILURE       13
 
 typedef struct {
     int pcm_samples;
@@ -59,27 +58,17 @@ typedef struct {
     int mb_height;
     int mb_count;
     int alpha;
-
     int current_frame;
     unsigned char *frame[2];
     int stride;
     int texture_height;
-    int colorspace;
-
     unsigned short cb2x2_rgb565[ROQ_CODEBOOK_SIZE][4];
     unsigned short cb4x4_rgb565[ROQ_CODEBOOK_SIZE][16];
-
-    unsigned int cb2x2_rgba[ROQ_CODEBOOK_SIZE][4];
-    unsigned int cb4x4_rgba[ROQ_CODEBOOK_SIZE][16];
 } roq_state;
 
 int roq_unpack_quad_codebook_rgb565(unsigned char *buf, int size, int arg, roq_state *state);
 
-int roq_unpack_quad_codebook_rgba(unsigned char *buf, int size, int arg, roq_state *state);
-
 int roq_unpack_vq_rgb565(unsigned char *buf, int size, unsigned int arg, roq_state *state);
-
-int roq_unpack_vq_rgba(unsigned char *buf, int size, unsigned int arg, roq_state *state);
 
 #ifdef __cplusplus
 }

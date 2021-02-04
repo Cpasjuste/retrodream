@@ -8,11 +8,21 @@
 #include "cross2d/skeleton/sfml/RoundedRectangleShape.h"
 #include "roqlib.h"
 
+// preview video with audio (roq)
+// ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=256:-2" -t 30 video.roq
+
+// preview video without audio (roq)
+// ffmpeg -i video.mp4 -an -framerate 15 -vf "scale=256:-2" -t 30 video.roq
+
+class RetroDream;
+
 class Preview : public c2d::RoundedRectangleShape {
 
 public:
 
-    Preview(const c2d::FloatRect &rect);
+    explicit Preview(RetroDream *rd, const c2d::FloatRect &rect);
+
+    ~Preview() override;
 
     bool load(const std::string &path);
 
@@ -20,30 +30,26 @@ public:
 
     bool isLoaded();
 
+    void hide(int status);
+
+    std::string previewPath;
+    c2d::Mutex *mutex = nullptr;
+    bool thread_stop = false;
+    int status = ROQ_STOPPED;
+    // preview video
+    c2d::Texture *videoTex = nullptr;
+    bool videoUpload = false;
+    float texture_scaling;
+
 private:
 
-    c2d::Texture *texture = nullptr;
-    float texture_scaling;
-    bool loaded = false;
-
-    // roq video player
-    // ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=256:-2" -t 30 video.roq
     void onUpdate() override;
 
-    FILE *file = nullptr;
-    size_t file_ret = 0;
-    unsigned char *file_buffer = nullptr;
-    int framerate;
-    int chunk_id;
-    unsigned int chunk_size;
-    unsigned int chunk_arg;
-    roq_state state;
-    roq_audio audio;
-    int status = ROQ_STOPPED;
-    int initialized = 0;
-    int snd_left, snd_right;
-    bool loop = true;
-    int colorspace = ROQ_RGB565;
+    RetroDream *retroDream = nullptr;
+    bool loaded = false;
+    c2d::Thread *thread = nullptr;
+    // preview image
+    c2d::Texture *texture = nullptr;
 };
 
 #endif //RETRODREAM_PREVIEW_H

@@ -90,7 +90,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     FloatRect previewRect = {
             previewSize + 52, PERCENT(size.y, 10.0f),
             previewSize + 32, previewSize};
-    preview = new Preview(previewRect);
+    preview = new Preview(this, previewRect);
     preview->setFillColor(COL_BLUE_GRAY);
     preview->setOutlineColor(COL_BLUE_DARK);
     preview->setOutlineThickness(3);
