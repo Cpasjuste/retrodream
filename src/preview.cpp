@@ -15,23 +15,28 @@ static int decodeThread(void *data) {
     auto rd = (RetroDream *) data;
     auto preview = rd->getPreview();
 
-    int framerate;
+    int framerate = 30;
     int chunk_id;
     unsigned int chunk_size;
     unsigned int chunk_arg;
-    roq_audio audio;
+    roq_audio roq_audio;
     int initialized = 0;
     int snd_left, snd_right;
     bool loop = true;
     FILE *file = nullptr;
     size_t file_ret;
-    auto file_buffer = (unsigned char *) malloc(MAX_BUF_SIZE);
     C2DClock clock;
     C2DClock timer;
 
-    while (!rd->getPreview()->thread_stop) {
+    auto file_buffer = (unsigned char *) malloc(MAX_BUF_SIZE);
+    roq_audio.pcm_sample = (unsigned char *) malloc(MAX_BUF_SIZE);
+    //(unsigned char *) preview->audio->getBuffer();
+
+    while (!preview->thread_stop) {
+
         // load roq file
         if (preview->status == ROQ_LOAD) {
+            printf("Preview::Thread: ROQ_LOAD (%s)\n", preview->previewPath.c_str());
             // open file
             if (file) {
                 fclose(file);
@@ -62,8 +67,8 @@ static int decodeThread(void *data) {
             printf("RoQ file plays at %d frames/sec\n", framerate);
             // Initialize Audio SQRT Look-Up Table
             for (int i = 0; i < 128; i++) {
-                audio.snd_sqr_array[i] = i * i;
-                audio.snd_sqr_array[i + 128] = -(i * i);
+                roq_audio.snd_sqr_array[i] = i * i;
+                roq_audio.snd_sqr_array[i + 128] = -(i * i);
             }
 
             if (state.frame[0]) {
@@ -83,7 +88,8 @@ static int decodeThread(void *data) {
         }
 
         // sleep thread if not playing
-        if (preview->status != ROQ_PLAYING) {
+        if (!preview->isLoaded() || preview->status != ROQ_PLAYING) {
+            preview->status = ROQ_STOPPED;
             rd->getRender()->delay(100);
             continue;
         }
@@ -184,7 +190,7 @@ static int decodeThread(void *data) {
 
                 // frame limit
                 while (clock.getElapsedTime().asMilliseconds() < 1000 / framerate) {
-                    rd->getRender()->delay(5);
+                    rd->getRender()->delay(1);
                 }
                 // update buffers
                 preview->mutex->lock();
@@ -200,39 +206,41 @@ static int decodeThread(void *data) {
                 break;
 
             case RoQ_SOUND_MONO:
-                audio.channels = 1;
-                audio.pcm_samples = chunk_size * 2;
+                //printf("RoQ_SOUND_MONO\n");
+                roq_audio.channels = 1;
+                roq_audio.pcm_samples = chunk_size * 2;
                 snd_left = chunk_arg;
                 for (unsigned int i = 0; i < chunk_size; i++) {
-                    snd_left += audio.snd_sqr_array[file_buffer[i]];
-                    audio.pcm_sample[i * 2] = snd_left & 0xff;
-                    audio.pcm_sample[i * 2 + 1] = (snd_left & 0xff00) >> 8;
+                    snd_left += roq_audio.snd_sqr_array[file_buffer[i]];
+                    roq_audio.pcm_sample[i * 2] = snd_left & 0xff;
+                    roq_audio.pcm_sample[i * 2 + 1] = (snd_left & 0xff00) >> 8;
                 }
-                /* TODO
-                if (cbs->audio_cb)
-                    status = cbs->audio_cb(roq_audio.pcm_sample, roq_audio.pcm_samples,
-                                           roq_audio.channels);
-                */
+                // TODO: audio
                 break;
 
             case RoQ_SOUND_STEREO:
-                audio.channels = 2;
-                audio.pcm_samples = chunk_size * 2;
+                if (!preview->audio || !preview->audio->isAvailable()) {
+                    break;
+                }
+                if (chunk_size * 2 > preview->audio->getAudioBuffer()->buffer_size) {
+                    printf("RoQ_SOUND_STEREO: buffer size (%i), audio size (%i) \n",
+                           chunk_size * 2, preview->audio->getAudioBuffer()->buffer_size);
+                    break;
+                }
+                roq_audio.channels = 2;
+                roq_audio.pcm_samples = chunk_size * 2;
                 snd_left = (chunk_arg & 0xFF00);
                 snd_right = (chunk_arg & 0xFF) << 8;
                 for (unsigned int i = 0; i < chunk_size; i += 2) {
-                    snd_left += audio.snd_sqr_array[file_buffer[i]];
-                    snd_right += audio.snd_sqr_array[file_buffer[i + 1]];
-                    audio.pcm_sample[i * 2] = snd_left & 0xff;
-                    audio.pcm_sample[i * 2 + 1] = (snd_left & 0xff00) >> 8;
-                    audio.pcm_sample[i * 2 + 2] = snd_right & 0xff;
-                    audio.pcm_sample[i * 2 + 3] = (snd_right & 0xff00) >> 8;
+                    snd_left += roq_audio.snd_sqr_array[file_buffer[i]];
+                    snd_right += roq_audio.snd_sqr_array[file_buffer[i + 1]];
+                    roq_audio.pcm_sample[i * 2] = snd_left & 0xff;
+                    roq_audio.pcm_sample[i * 2 + 1] = (snd_left & 0xff00) >> 8;
+                    roq_audio.pcm_sample[i * 2 + 2] = snd_right & 0xff;
+                    roq_audio.pcm_sample[i * 2 + 3] = (snd_right & 0xff00) >> 8;
                 }
-                /* TODO
-                if (cbs->audio_cb)
-                    status = cbs->audio_cb(roq_audio.pcm_sample, roq_audio.pcm_samples,
-                                           roq_audio.channels);
-                */
+                //preview->audio->play();
+                preview->audio->play(roq_audio.pcm_sample, roq_audio.pcm_samples / 2 / (int) sizeof(int16_t));
                 break;
 
             case RoQ_PACKET:
@@ -266,6 +274,7 @@ Preview::Preview(RetroDream *rd, const c2d::FloatRect &rect)
         : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
 
     retroDream = rd;
+    audio = new C2DAudio(22050, 30);
 
     add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.1f));
     setVisibility(Visibility::Hidden);
@@ -281,9 +290,6 @@ void Preview::hide(int i) {
 bool Preview::load(const std::string &path) {
 
     unload();
-
-    // set loaded to true so we don't loop on non-existing preview
-    loaded = true;
 
     // roq video
     if (Utility::endsWith(path, ".roq")) {
@@ -314,27 +320,32 @@ bool Preview::load(const std::string &path) {
         setVisibility(Visibility::Visible, true);
     }
 
+    // set loaded to true so we don't loop on non-existing preview
+    loaded = true;
     return true;
 }
 
 void Preview::unload() {
 
+    if (isVisible()) {
+        setVisibility(Visibility::Hidden, true);
+    }
+
     // roq video player
     if (videoTex != nullptr) {
+        mutex->lock();
         delete (videoTex);
         videoTex = nullptr;
+        mutex->unlock();
     }
-    status = ROQ_STOPPED;
 
     if (texture != nullptr) {
         delete (texture);
         texture = nullptr;
     }
 
-    if (isVisible()) {
-        setVisibility(Visibility::Hidden, true);
-    }
-
+    status = ROQ_STOPPED;
+    videoUpload = false;
     loaded = false;
 }
 
@@ -344,7 +355,7 @@ bool Preview::isLoaded() {
 
 void Preview::onUpdate() {
 
-    if (status == ROQ_PLAYING && videoUpload) {
+    if (isVisible() && status == ROQ_PLAYING && videoUpload) {
         if (!videoTex) {
             videoTex = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
             videoTex->setOrigin(Origin::Left);
@@ -370,7 +381,12 @@ void Preview::onUpdate() {
 
 Preview::~Preview() {
     thread_stop = true;
-    thread->join();
-    delete (thread);
-    delete (mutex);
+    if (thread) {
+        thread->join();
+        delete (thread);
+        delete (mutex);
+    }
+    if (audio) {
+        delete (audio);
+    }
 }

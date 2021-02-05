@@ -40,6 +40,7 @@ public:
     c2d::Texture *videoTex = nullptr;
     bool videoUpload = false;
     float texture_scaling;
+    c2d::Audio *audio = nullptr;
 
 private:
 

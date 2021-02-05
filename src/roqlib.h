@@ -48,7 +48,7 @@ typedef struct {
     int channels;
     int position;
     short snd_sqr_array[SQR_ARRAY_SIZE];
-    unsigned char pcm_sample[MAX_BUF_SIZE];
+    unsigned char *pcm_sample;
 } roq_audio;
 
 typedef struct {
