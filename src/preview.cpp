@@ -30,7 +30,6 @@ static int decodeThread(void *data) {
 
     auto file_buffer = (unsigned char *) malloc(MAX_BUF_SIZE);
     roq_audio.pcm_sample = (unsigned char *) malloc(MAX_BUF_SIZE);
-    //(unsigned char *) preview->audio->getBuffer();
 
     while (!preview->thread_stop) {
 
@@ -157,10 +156,10 @@ static int decodeThread(void *data) {
                 printf("  RoQ_INFO: dimensions = %dx%d, %dx%d; %d mbs, texture = %dx%d\n",
                        state.width, state.height, state.mb_width, state.mb_height,
                        state.mb_count, state.stride, state.texture_height);
-                state.frame[0] = (unsigned char *) malloc(
-                        state.texture_height * state.stride * sizeof(unsigned short));
-                state.frame[1] = (unsigned char *) malloc(
-                        state.texture_height * state.stride * sizeof(unsigned short));
+                state.frame[0] = (unsigned char *) malloc(state.width * state.width * 2);
+                //state.texture_height * state.stride * sizeof(unsigned short));
+                state.frame[1] = (unsigned char *) malloc(state.width * state.width * 2);
+                //state.texture_height * state.stride * sizeof(unsigned short));
                 state.current_frame = 0;
                 if (!state.frame[0] || !state.frame[1]) {
                     free(state.frame[0]);
@@ -190,7 +189,11 @@ static int decodeThread(void *data) {
 
                 // frame limit
                 while (clock.getElapsedTime().asMilliseconds() < 1000 / framerate) {
+#ifdef __DREAMCAST__
+                    thd_pass();
+#else
                     rd->getRender()->delay(1);
+#endif
                 }
                 // update buffers
                 preview->mutex->lock();
@@ -222,9 +225,10 @@ static int decodeThread(void *data) {
                 if (!preview->audio || !preview->audio->isAvailable()) {
                     break;
                 }
-                if (chunk_size * 2 > preview->audio->getAudioBuffer()->buffer_size) {
+
+                if ((int) chunk_size * 2 > preview->audio->getAudioBuffer()->space()) {
                     printf("RoQ_SOUND_STEREO: buffer size (%i), audio size (%i) \n",
-                           chunk_size * 2, preview->audio->getAudioBuffer()->buffer_size);
+                           chunk_size * 2, preview->audio->getAudioBuffer()->space());
                     break;
                 }
                 roq_audio.channels = 2;
@@ -239,7 +243,7 @@ static int decodeThread(void *data) {
                     roq_audio.pcm_sample[i * 2 + 2] = snd_right & 0xff;
                     roq_audio.pcm_sample[i * 2 + 3] = (snd_right & 0xff00) >> 8;
                 }
-                //preview->audio->play();
+
                 preview->audio->play(roq_audio.pcm_sample, roq_audio.pcm_samples / 2 / (int) sizeof(int16_t));
                 break;
 
@@ -257,11 +261,12 @@ static int decodeThread(void *data) {
     }
     if (state.frame[0]) {
         free(state.frame[0]);
-        state.frame[0] = nullptr;
     }
     if (state.frame[1]) {
         free(state.frame[1]);
-        state.frame[1] = nullptr;
+    }
+    if (roq_audio.pcm_sample) {
+        free(roq_audio.pcm_sample);
     }
     if (file_buffer != nullptr) {
         free(file_buffer);
@@ -275,6 +280,9 @@ Preview::Preview(RetroDream *rd, const c2d::FloatRect &rect)
 
     retroDream = rd;
     audio = new C2DAudio(22050, 30);
+
+    sprite = new Sprite(texture);
+    add(sprite);
 
     add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.1f));
     setVisibility(Visibility::Hidden);
@@ -310,13 +318,13 @@ bool Preview::load(const std::string &path) {
             return false;
         }
 
-        texture->setOrigin(Origin::Left);
-        texture->setPosition(Vector2f(8, getSize().y / 2));
+        sprite->setTexture(texture, true);
+        sprite->setOrigin(Origin::Left);
+        sprite->setPosition(Vector2f(8, getSize().y / 2));
         texture_scaling = std::min(
                 getSize().x / ((float) texture->getTextureRect().width + 16),
                 getSize().y / ((float) texture->getTextureRect().height + 16));
-        texture->setScale(texture_scaling, texture_scaling);
-        add(texture);
+        sprite->setScale(texture_scaling, texture_scaling);
         setVisibility(Visibility::Visible, true);
     }
 
@@ -331,16 +339,13 @@ void Preview::unload() {
         setVisibility(Visibility::Hidden, true);
     }
 
-    // roq video player
-    if (videoTex != nullptr) {
-        mutex->lock();
-        delete (videoTex);
-        videoTex = nullptr;
-        mutex->unlock();
-    }
+    audio->pause(1);
 
+    sprite->setTexture(nullptr);
     if (texture != nullptr) {
+        mutex->lock();
         delete (texture);
+        mutex->unlock();
         texture = nullptr;
     }
 
@@ -356,20 +361,22 @@ bool Preview::isLoaded() {
 void Preview::onUpdate() {
 
     if (isVisible() && status == ROQ_PLAYING && videoUpload) {
-        if (!videoTex) {
-            videoTex = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
-            videoTex->setOrigin(Origin::Left);
-            videoTex->setPosition(Vector2f(8, getSize().y / 2));
+        if (!texture) {
+            texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
+            //texture->setFilter(Texture::Filter::Point);
+            sprite->setTexture(texture);
+            sprite->setTextureRect(IntRect{0, 0, state.width, state.height});
+            sprite->setOrigin(Origin::Left);
+            sprite->setPosition(Vector2f(8, getSize().y / 2));
             texture_scaling = std::min(
-                    getSize().x / ((float) videoTex->getTextureRect().width + 32),
-                    getSize().y / ((float) videoTex->getTextureRect().height + 32));
-            videoTex->setScale(texture_scaling, texture_scaling);
-            add(videoTex);
+                    getSize().x / ((float) texture->getTextureRect().width + 32),
+                    getSize().y / ((float) texture->getTextureRect().height + 32));
+            sprite->setScale(texture_scaling, texture_scaling);
         }
 
         mutex->lock();
         //C2DClock clock;
-        videoTex->unlock(state.frame[state.current_frame & 1]);
+        texture->unlock(state.frame[state.current_frame & 1]);
         //printf("videoTex->unlock: %i ms (fps: %f)\n",
         //     clock.restart().asMilliseconds(), retroDream->getRender()->getFps());
         mutex->unlock();
@@ -385,6 +392,9 @@ Preview::~Preview() {
         thread->join();
         delete (thread);
         delete (mutex);
+    }
+    if (texture != nullptr) {
+        delete (texture);
     }
     if (audio) {
         delete (audio);

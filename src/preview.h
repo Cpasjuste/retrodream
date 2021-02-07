@@ -8,11 +8,10 @@
 #include "cross2d/skeleton/sfml/RoundedRectangleShape.h"
 #include "roqlib.h"
 
-// preview video with audio (roq)
+// preview video 128
+// ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=128:-2" -t 30 video.roq
+// preview video 256
 // ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=256:-2" -t 30 video.roq
-
-// preview video without audio (roq)
-// ffmpeg -i video.mp4 -an -framerate 15 -vf "scale=256:-2" -t 30 video.roq
 
 class RetroDream;
 
@@ -36,8 +35,6 @@ public:
     c2d::Mutex *mutex = nullptr;
     bool thread_stop = false;
     int status = ROQ_STOPPED;
-    // preview video
-    c2d::Texture *videoTex = nullptr;
     bool videoUpload = false;
     float texture_scaling;
     c2d::Audio *audio = nullptr;
@@ -49,8 +46,8 @@ private:
     RetroDream *retroDream = nullptr;
     bool loaded = false;
     c2d::Thread *thread = nullptr;
-    // preview image
     c2d::Texture *texture = nullptr;
+    c2d::Sprite *sprite = nullptr;
 };
 
 #endif //RETRODREAM_PREVIEW_H
