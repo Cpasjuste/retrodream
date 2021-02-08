@@ -437,13 +437,18 @@ void Filer::onUpdate() {
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
     if (keys == 0) {
-        // TODO: load cover then video
-        if (getSelection().isGame && !getSelection().preview_video.empty() && !retroDream->getPreview()->isLoaded()
-            && previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
-            bool loaded = retroDream->getPreview()->load(getSelection().preview_video);
-            //bool loaded = retroDream->getPreview()->load("/cd/DS/apps/iso_loader/videos/retrodream.roq");
-            if (!loaded) {
-                retroDream->showStatus("PREVIEW NOT FOUND", getSelection().preview_video, COL_RED);
+        const Filer::RetroFile file = getSelection();
+        if (file.isGame) {
+            if (previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay * 10) {
+                // load preview video
+                if (!file.preview_video.empty() && !retroDream->getPreview()->isVideoLoaded()) {
+                    retroDream->getPreview()->load(file.preview_video);
+                }
+            } else if (previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
+                // load preview image
+                if (!file.preview.empty() && !retroDream->getPreview()->isImageLoaded()) {
+                    retroDream->getPreview()->load(file.preview);
+                }
             }
         }
     }

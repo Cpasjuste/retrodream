@@ -27,7 +27,9 @@ public:
 
     void unload();
 
-    bool isLoaded();
+    bool isImageLoaded() const;
+
+    bool isVideoLoaded() const;
 
     void hide(int status);
 
@@ -36,7 +38,6 @@ public:
     bool thread_stop = false;
     int status = ROQ_STOPPED;
     bool videoUpload = false;
-    float texture_scaling;
     c2d::Audio *audio = nullptr;
 
 private:
@@ -48,6 +49,7 @@ private:
     c2d::Thread *thread = nullptr;
     c2d::Texture *texture = nullptr;
     c2d::Sprite *sprite = nullptr;
+    float texture_scaling;
 };
 
 #endif //RETRODREAM_PREVIEW_H
