@@ -88,7 +88,6 @@ static int decodeThread(void *data) {
 
         // sleep thread if not playing
         if (!preview->isImageLoaded() || preview->status != ROQ_PLAYING) {
-            preview->status = ROQ_STOPPED;
             rd->getRender()->delay(32);
             continue;
         }
@@ -283,7 +282,8 @@ Preview::Preview(RetroDream *rd, const c2d::FloatRect &rect)
     audio = new C2DAudio(22050, 30);
     mutex = new C2DMutex();
 
-    sprite = new Sprite(texture);
+    sprite = new Sprite(textureVideo);
+    sprite->setVisibility(Visibility::Hidden);
     add(sprite);
 
     add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.1f));
@@ -293,18 +293,17 @@ Preview::Preview(RetroDream *rd, const c2d::FloatRect &rect)
 void Preview::hide(int i) {
     mutex->lock();
     status = i;
-    setVisibility(Visibility::Hidden, true);
+    sprite->setVisibility(Visibility::Hidden);
     mutex->unlock();
 }
 
 bool Preview::load(const std::string &path) {
 
-    unload();
-
     printf("Preview::load: %s\n", path.c_str());
 
     // roq video
     if (Utility::endsWith(path, ".roq")) {
+        unload(true);
         if (!thread) {
             thread = new C2DThread(decodeThread, retroDream);
         }
@@ -312,46 +311,52 @@ bool Preview::load(const std::string &path) {
         status = ROQ_LOAD;
     } else {
         // preview image
+        unload(false);
         texture = new C2DTexture(path);
         if (!texture->available) {
             delete (texture);
             texture = nullptr;
-            return false;
+        } else {
+            texture->setOrigin(Origin::Left);
+            texture->setPosition(Vector2f(8, getSize().y / 2));
+            texture_scaling = std::min(
+                    getSize().x / ((float) texture->getTextureRect().width + 16),
+                    getSize().y / ((float) texture->getTextureRect().height + 16));
+            texture->setScale(texture_scaling, texture_scaling);
+            add(texture);
+            setVisibility(Visibility::Visible, true);
         }
-
-        sprite->setTexture(texture, true);
-        sprite->setOrigin(Origin::Left);
-        sprite->setPosition(Vector2f(8, getSize().y / 2));
-        texture_scaling = std::min(
-                getSize().x / ((float) texture->getTextureRect().width + 16),
-                getSize().y / ((float) texture->getTextureRect().height + 16));
-        sprite->setScale(texture_scaling, texture_scaling);
-        setVisibility(Visibility::Visible, true);
     }
 
-    // set loaded to true so we don't loop on non-existing preview
     loaded = true;
     return true;
 }
 
-void Preview::unload() {
+void Preview::unload(bool videoOnly) {
 
+    sprite->setVisibility(Visibility::Hidden);
     sprite->setTexture(nullptr);
-    if (texture != nullptr) {
-        mutex->lock();
+
+    if (loaded && !videoOnly && isVisible()) {
+        setVisibility(Visibility::Hidden, true);
+    }
+
+    if (!videoOnly && texture != nullptr) {
         delete (texture);
-        mutex->unlock();
         texture = nullptr;
+    }
+
+    if (textureVideo != nullptr) {
+        mutex->lock();
+        delete (textureVideo);
+        textureVideo = nullptr;
+        mutex->unlock();
     }
 
     audio->pause(1);
     status = ROQ_STOPPED;
     videoUpload = false;
     loaded = false;
-
-    if (isVisible()) {
-        setVisibility(Visibility::Hidden, true);
-    }
 }
 
 bool Preview::isImageLoaded() const {
@@ -365,21 +370,28 @@ bool Preview::isVideoLoaded() const {
 void Preview::onUpdate() {
 
     if (isVisible() && status == ROQ_PLAYING && videoUpload) {
-        if (!texture) {
-            texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
-            sprite->setTexture(texture);
+        if (!textureVideo) {
+            textureVideo = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
+            sprite->setTexture(textureVideo);
             sprite->setTextureRect(IntRect{0, 0, state.width, state.height});
-            sprite->setOrigin(Origin::Left);
-            sprite->setPosition(Vector2f(16, getSize().y / 2));
+            sprite->setOrigin(Origin::Center);
+            sprite->setPosition(Vector2f((getSize().x / 2) - 16, getSize().y / 2));
             texture_scaling = std::min(
-                    getSize().x / ((float) texture->getTextureRect().width + 32),
-                    getSize().y / ((float) texture->getTextureRect().height + 32));
+                    getSize().x / ((float) textureVideo->getTextureRect().width + 32),
+                    getSize().y / ((float) textureVideo->getTextureRect().height + 32));
             sprite->setScale(texture_scaling, texture_scaling);
+            sprite->setLayer(10);
+            if (spriteTween) {
+                delete (spriteTween);
+            }
+            spriteTween = new TweenScale({0, 0}, {texture_scaling, texture_scaling}, 1.0f);
+            sprite->add(spriteTween);
+            sprite->setVisibility(Visibility::Visible, true);
         }
 
         mutex->lock();
         //C2DClock clock;
-        texture->unlock(state.frame[state.current_frame & 1]);
+        textureVideo->unlock(state.frame[state.current_frame & 1]);
         //printf("videoTex->unlock: %i ms (fps: %f)\n",
         //     clock.restart().asMilliseconds(), retroDream->getRender()->getFps());
         mutex->unlock();
@@ -398,6 +410,9 @@ Preview::~Preview() {
     delete (mutex);
     if (texture != nullptr) {
         delete (texture);
+    }
+    if (textureVideo != nullptr) {
+        delete (textureVideo);
     }
     if (audio) {
         delete (audio);

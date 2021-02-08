@@ -25,7 +25,7 @@ public:
 
     bool load(const std::string &path);
 
-    void unload();
+    void unload(bool videoOnly);
 
     bool isImageLoaded() const;
 
@@ -48,7 +48,9 @@ private:
     bool loaded = false;
     c2d::Thread *thread = nullptr;
     c2d::Texture *texture = nullptr;
+    c2d::Texture *textureVideo = nullptr;
     c2d::Sprite *sprite = nullptr;
+    c2d::TweenScale *spriteTween = nullptr;
     float texture_scaling;
 };
 
