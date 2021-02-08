@@ -130,11 +130,6 @@ target_link_libraries(${PROJECT_NAME} cross2d ${LDFLAGS})
 if (PLATFORM_DREAMCAST)
     # for dcload-serial binary size
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS -s)
-    # add reicast debug target
-    add_custom_target(${PROJECT_NAME}-reicast
-            DEPENDS ${PROJECT_NAME}
-            COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/reicast/reicast-debug-serial.sh ${CMAKE_CURRENT_SOURCE_DIR}/reicast/dcload-103-serial-dj3.cdi ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.elf
-            )
 endif ()
 #############
 # targets
