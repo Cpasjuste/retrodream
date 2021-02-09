@@ -119,13 +119,14 @@ private:
     c2d::RoundedRectangleShape *highlight = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
     c2d::C2DClock previewClock;
-    int previewLoadDelay = 500;
     float line_height;
     int max_lines;
     int file_index = 0;
     int highlight_index = 0;
     c2d::Color colorDir;
     c2d::Color colorFile;
+    int previewImageDelay = 500;
+    int previewVideoDelay = 5000;
 };
 
 #endif //RETRODREAM_FILER_H

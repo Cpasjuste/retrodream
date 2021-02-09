@@ -14,10 +14,32 @@ class RetroConfig : public c2d::config::Config {
 
 public:
 
+    enum TweenType {
+        Alpha = 0,
+        Scale = 1
+    };
+
+    class CustomShape {
+    public:
+        c2d::FloatRect rect;
+        c2d::Color color;
+        c2d::Color outlineColor;
+        float outlineSize = 0;
+        c2d::Color colorFile;
+        c2d::Color colorDir;
+        TweenType tweenType = Alpha;
+    };
+
     enum OptionId {
         FilerPath = 0,
         ScreenSize = 1,
-        InputDelay = 2
+        InputDelay = 2,
+        PreviewImageDelay = 3,
+        PreviewVideoDelay = 4,
+        FilerShape = 20,
+        PreviewImageShape = 30,
+        PreviewVideoShape = 40,
+        HelpShape = 50,
     };
 
     explicit RetroConfig(RetroIo *io);
@@ -33,6 +55,8 @@ public:
     c2d::FloatRect getRect(const OptionId &id);
 
     void setRect(const OptionId &id, const c2d::FloatRect &rect, bool save = true);
+
+    CustomShape getShape(int groupId);
 
 private:
     RetroIo *io = nullptr;

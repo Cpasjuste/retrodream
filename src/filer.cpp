@@ -93,6 +93,10 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     blurLayer->setVisibility(Visibility::Hidden);
     add(blurLayer);
 
+    // previews timer delay
+    previewImageDelay = retroDream->getConfig()->getInt(RetroConfig::PreviewImageDelay);
+    previewVideoDelay = retroDream->getConfig()->getInt(RetroConfig::PreviewVideoDelay);
+
     getDir(path);
 };
 
@@ -439,15 +443,15 @@ void Filer::onUpdate() {
     if (keys == 0) {
         const Filer::RetroFile file = getSelection();
         if (file.isGame) {
-            if (previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay * 10) {
+            if (previewClock.getElapsedTime().asMilliseconds() > previewVideoDelay) {
                 // load preview video
-                if (!file.preview_video.empty() && !retroDream->getPreview()->isVideoLoaded()) {
-                    retroDream->getPreview()->load(file.preview_video);
+                if (!retroDream->getPreviewVideo()->isLoaded()) {
+                    retroDream->getPreviewVideo()->load(file.preview_video);
                 }
-            } else if (previewClock.getElapsedTime().asMilliseconds() > previewLoadDelay) {
+            } else if (previewClock.getElapsedTime().asMilliseconds() > previewImageDelay) {
                 // load preview image
-                if (!file.preview.empty() && !retroDream->getPreview()->isImageLoaded()) {
-                    retroDream->getPreview()->load(file.preview);
+                if (!retroDream->getPreviewImage()->isLoaded()) {
+                    retroDream->getPreviewImage()->load(file.preview);
                 }
             }
         }
@@ -471,19 +475,23 @@ bool Filer::onInput(c2d::Input::Player *players) {
     unsigned int keys = players[0].keys;
 
     if (keys & Input::Key::Up) {
-        retroDream->getPreview()->unload(false);
+        retroDream->getPreviewImage()->unload();
+        retroDream->getPreviewVideo()->unload();
         previewClock.restart();
         up();
     } else if (keys & Input::Key::Down) {
-        retroDream->getPreview()->unload(false);
+        retroDream->getPreviewImage()->unload();
+        retroDream->getPreviewVideo()->unload();
         previewClock.restart();
         down();
     } else if (keys & Input::Key::Right) {
-        retroDream->getPreview()->unload(false);
+        retroDream->getPreviewImage()->unload();
+        retroDream->getPreviewVideo()->unload();
         previewClock.restart();
         setSelection(getIndex() + getMaxLines());
     } else if (keys & Input::Key::Left) {
-        retroDream->getPreview()->unload(false);
+        retroDream->getPreviewImage()->unload();
+        retroDream->getPreviewVideo()->unload();
         previewClock.restart();
         setSelection(getIndex() - getMaxLines());
     } else if (keys & Input::Key::Fire1) {
@@ -494,7 +502,8 @@ bool Filer::onInput(c2d::Input::Player *players) {
             retroDream->getConfig()->set(RetroConfig::FilerPath, path);
             IsoLoader::run(retroDream, file.isoPath);
         } else if (type == Io::Type::Directory) {
-            retroDream->getPreview()->unload(false);
+            retroDream->getPreviewImage()->unload();
+            retroDream->getPreviewVideo()->unload();
             previewClock.restart();
             enter(getIndex());
         } else if (RetroUtility::isElf(file.data.name)) {
@@ -513,7 +522,8 @@ bool Filer::onInput(c2d::Input::Player *players) {
             blurLayer->setVisibility(Visibility::Hidden, true);
         }
     } else if (keys & Input::Key::Fire2) {
-        retroDream->getPreview()->unload(false);
+        retroDream->getPreviewImage()->unload();
+        retroDream->getPreviewVideo()->unload();
         previewClock.restart();
         exit();
     }

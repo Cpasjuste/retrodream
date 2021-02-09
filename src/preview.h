@@ -6,12 +6,7 @@
 #define RETRODREAM_PREVIEW_H
 
 #include "cross2d/skeleton/sfml/RoundedRectangleShape.h"
-#include "roqlib.h"
-
-// preview video 128
-// ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=128:-2" -t 30 video.roq
-// preview video 256
-// ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=256:-2" -t 30 video.roq
+#include "cfg.h"
 
 class RetroDream;
 
@@ -19,39 +14,18 @@ class Preview : public c2d::RoundedRectangleShape {
 
 public:
 
-    explicit Preview(RetroDream *rd, const c2d::FloatRect &rect);
-
-    ~Preview() override;
+    explicit Preview(RetroConfig::CustomShape *shape);
 
     bool load(const std::string &path);
 
-    void unload(bool videoOnly);
+    void unload();
 
-    bool isImageLoaded() const;
-
-    bool isVideoLoaded() const;
-
-    void hide(int status);
-
-    std::string previewPath;
-    c2d::Mutex *mutex = nullptr;
-    bool thread_stop = false;
-    int status = ROQ_STOPPED;
-    bool videoUpload = false;
-    c2d::Audio *audio = nullptr;
+    bool isLoaded() const;
 
 private:
 
-    void onUpdate() override;
-
-    RetroDream *retroDream = nullptr;
-    bool loaded = false;
-    c2d::Thread *thread = nullptr;
     c2d::Texture *texture = nullptr;
-    c2d::Texture *textureVideo = nullptr;
-    c2d::Sprite *sprite = nullptr;
-    c2d::TweenScale *spriteTween = nullptr;
-    float texture_scaling;
+    bool loaded = false;
 };
 
 #endif //RETRODREAM_PREVIEW_H

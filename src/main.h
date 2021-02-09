@@ -11,6 +11,7 @@
 #include "filer.h"
 #include "header.h"
 #include "preview.h"
+#include "previewvideo.h"
 #include "menu.h"
 #include "presetmenu.h"
 #include "filemenu.h"
@@ -44,8 +45,12 @@ public:
         return header;
     }
 
-    Preview *getPreview() {
+    Preview *getPreviewImage() {
         return preview;
+    }
+
+    PreviewVideo *getPreviewVideo() {
+        return previewVideo;
     }
 
     Filer *getFiler() {
@@ -109,6 +114,7 @@ private:
     Filer *filer = nullptr;
     Header *header = nullptr;
     Preview *preview = nullptr;
+    PreviewVideo *previewVideo = nullptr;
     Menu *optionMenu = nullptr;
     Menu *presetMenu = nullptr;
     Menu *fileMenu = nullptr;

@@ -84,38 +84,37 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 42));
 
-    /// preview box
-    retroDebug("LOADING PREVIEW BOX...");
+    // TODO: remove (skin)...
     float previewSize = (size.x / 2) - 32;
     FloatRect previewRect = {
             previewSize + 52, PERCENT(size.y, 10.0f),
             previewSize + 32, previewSize};
-    preview = new Preview(this, previewRect);
-    preview->setFillColor(COL_BLUE_GRAY);
-    preview->setOutlineColor(COL_BLUE_DARK);
-    preview->setOutlineThickness(3);
+    // TODO: remove (skin)...
+    retroDebug("LOADING HELP BOX...");
+    RetroConfig::CustomShape shape = getConfig()->getShape(RetroConfig::OptionId::HelpShape);
+    helpBox = new HelpBox(this, &shape);
+    add(helpBox);
+
+    /// preview box
+    retroDebug("LOADING PREVIEW IMAGE BOX...");
+    shape = getConfig()->getShape(RetroConfig::OptionId::PreviewImageShape);
+    preview = new Preview(&shape);
     add(preview);
 
-    retroDebug("LOADING HELP BOX...");
-    helpBox = new HelpBox(this, {previewRect.left,
-                                 previewRect.top + previewRect.height + 8,
-                                 previewSize + 6, PERCENT(size.y, 22.2f)});
-    helpBox->setFillColor(COL_BLUE_LIGHT);
-    helpBox->setOutlineColor(COL_BLUE_DARK);
-    helpBox->setOutlineThickness(2);
-    add(helpBox);
+    /// preview box (video)
+    retroDebug("LOADING PREVIEW VIDEO BOX...");
+    shape = getConfig()->getShape(RetroConfig::OptionId::PreviewVideoShape);
+    previewVideo = new PreviewVideo(this, &shape);
+    add(previewVideo);
 
     /// filers
     retroDebug("LOADING GAMES...");
-    FloatRect filerRect = {
-            PERCENT(size.x, 1.5f), PERCENT(size.y, 10.0f),
-            PERCENT(size.x, 50.0f), PERCENT(size.y, 79.5f)
-    };
-    filer = new Filer(this, filerRect, retroConfig->get(RetroConfig::FilerPath), 10);
-    filer->setFillColor(COL_BLUE_GRAY);
-    filer->setOutlineColor(COL_BLUE_DARK);
-    filer->setOutlineThickness(3);
-    filer->setColor(COL_BLUE_DARK, COL_BLUE);
+    shape = getConfig()->getShape(RetroConfig::OptionId::FilerShape);
+    filer = new Filer(this, shape.rect, retroConfig->get(RetroConfig::FilerPath), 10);
+    filer->setFillColor(shape.color);
+    filer->setOutlineColor(shape.outlineColor);
+    filer->setOutlineThickness(shape.outlineSize);
+    filer->setColor(shape.colorDir, shape.colorFile);
     add(filer);
 
     retroDebug("LOADING GAME MENU...");
