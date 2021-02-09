@@ -9,10 +9,12 @@
 using namespace c2d;
 
 Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
-        : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
+        : RectangleShape({rect.width, rect.height}) {
 
     retroDream = rd;
     setPosition(rect.left, rect.top);
+    setCornersRadius(CORNER_RADIUS);
+    setCornerPointCount(CORNER_POINTS);
 
     title = new Text("CREDITS", FONT_SIZE);
     title->setOrigin(Origin::BottomLeft);

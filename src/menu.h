@@ -5,7 +5,7 @@
 #ifndef RETRODREAM_MENU_H
 #define RETRODREAM_MENU_H
 
-class Menu : public c2d::RoundedRectangleShape {
+class Menu : public c2d::RectangleShape {
 
 public:
 

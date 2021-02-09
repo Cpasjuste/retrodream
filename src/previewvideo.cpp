@@ -5,7 +5,6 @@
 #include "cross2d/c2d.h"
 #include "main.h"
 #include "previewvideo.h"
-#include "roundedtexture.h"
 
 using namespace c2d;
 
@@ -67,8 +66,8 @@ static int decodeThread(void *data) {
             printf("RoQ file plays at %d frames/sec\n", framerate);
             // Initialize Audio SQRT Look-Up Table
             for (int i = 0; i < 128; i++) {
-                roq_audio.snd_sqr_array[i] = i * i;
-                roq_audio.snd_sqr_array[i + 128] = -(i * i);
+                roq_audio.snd_sqr_array[i] = (short) (i * i);
+                roq_audio.snd_sqr_array[i + 128] = (short) -(i * i);
             }
 
             if (state.frame[0]) {
@@ -129,7 +128,7 @@ static int decodeThread(void *data) {
                 if (initialized)
                     break;
 
-                state.alpha = chunk_arg;
+                state.alpha = (int) chunk_arg;
                 state.width = LE_16(&file_buffer[0]);
                 state.height = LE_16(&file_buffer[2]);
                 /* width and height each need to be divisible by 16 */
@@ -176,7 +175,8 @@ static int decodeThread(void *data) {
                 break;
 
             case RoQ_QUAD_CODEBOOK:
-                preview->status = roq_unpack_quad_codebook_rgb565(file_buffer, chunk_size, chunk_arg, &state);
+                preview->status = roq_unpack_quad_codebook_rgb565(file_buffer, (int) chunk_size, (int) chunk_arg,
+                                                                  &state);
                 break;
 
             case RoQ_QUAD_VQ:
@@ -191,16 +191,24 @@ static int decodeThread(void *data) {
 #endif
                 // frame limit
                 while (clock.getElapsedTime().asMilliseconds() < 1000 / framerate) {
+                    if (preview->thread_stop) {
+                        break;
+                    }
 #ifdef __DREAMCAST__
                     thd_pass();
 #else
                     rd->getRender()->delay(1);
 #endif
                 }
+
+                if (preview->thread_stop) {
+                    break;
+                }
+
                 // update buffers
                 preview->mutex->lock();
                 clock.restart();
-                preview->status = roq_unpack_vq_rgb565(file_buffer, chunk_size, chunk_arg, &state);
+                preview->status = roq_unpack_vq_rgb565(file_buffer, (int) chunk_size, chunk_arg, &state);
                 preview->mutex->unlock();
 
                 preview->videoUpload = true;
@@ -213,8 +221,8 @@ static int decodeThread(void *data) {
             case RoQ_SOUND_MONO:
                 //printf("RoQ_SOUND_MONO\n");
                 roq_audio.channels = 1;
-                roq_audio.pcm_samples = chunk_size * 2;
-                snd_left = chunk_arg;
+                roq_audio.pcm_samples = (int) chunk_size * 2;
+                snd_left = (int) chunk_arg;
                 for (unsigned int i = 0; i < chunk_size; i++) {
                     snd_left += roq_audio.snd_sqr_array[file_buffer[i]];
                     roq_audio.pcm_sample[i * 2] = snd_left & 0xff;
@@ -234,9 +242,9 @@ static int decodeThread(void *data) {
                     break;
                 }
                 roq_audio.channels = 2;
-                roq_audio.pcm_samples = chunk_size * 2;
-                snd_left = (chunk_arg & 0xFF00);
-                snd_right = (chunk_arg & 0xFF) << 8;
+                roq_audio.pcm_samples = (int) chunk_size * 2;
+                snd_left = (int) (chunk_arg & 0xFF00);
+                snd_right = (int) (chunk_arg & 0xFF) << 8;
                 for (unsigned int i = 0; i < chunk_size; i += 2) {
                     snd_left += roq_audio.snd_sqr_array[file_buffer[i]];
                     snd_right += roq_audio.snd_sqr_array[file_buffer[i + 1]];
@@ -251,8 +259,6 @@ static int decodeThread(void *data) {
 
             case RoQ_PACKET:
                 /* still unimplemented */
-                break;
-
             default:
                 break;
         }
@@ -278,27 +284,25 @@ static int decodeThread(void *data) {
 }
 
 PreviewVideo::PreviewVideo(RetroDream *rd, RetroConfig::CustomShape *shape)
-        : RoundedRectangleShape({shape->rect.width, shape->rect.height}, 8, 4) {
+        : RectangleShape(shape->rect) {
 
     retroDream = rd;
     audio = new C2DAudio(22050, 30);
     mutex = new C2DMutex();
 
-    sprite = new Sprite();
-    add(sprite);
-
-    setOrigin(Origin::Center);
-    setPosition(shape->rect.left, shape->rect.top);
-    setFillColor(shape->color);
-    setOutlineColor(shape->outlineColor);
-    setOutlineThickness(shape->outlineSize);
+    Shape::setOrigin(Origin::Center);
+    Shape::setFillColor(shape->color);
+    Shape::setOutlineColor(shape->outlineColor);
+    Shape::setOutlineThickness(shape->outlineSize);
+    setCornersRadius(CORNER_RADIUS);
+    setCornerPointCount(CORNER_POINTS);
     if (shape->tweenType == RetroConfig::TweenType::Alpha) {
-        add(new TweenAlpha(0, 255, 0.5f));
+        Shape::add(new TweenAlpha(0, 255, 0.5f));
     } else {
-        add(new TweenScale({0, 0}, {1, 1}, 0.5f));
+        Shape::add(new TweenScale({0, 0}, {1, 1}, 0.5f));
     }
 
-    setVisibility(Visibility::Hidden);
+    Shape::setVisibility(Visibility::Hidden);
 }
 
 void PreviewVideo::hide(int i) {
@@ -328,8 +332,6 @@ bool PreviewVideo::load(const std::string &path) {
 
 void PreviewVideo::unload() {
 
-    sprite->setTexture(nullptr);
-
     if (loaded && isVisible()) {
         setVisibility(Visibility::Hidden, true);
         retroDream->getHelpBox()->setVisibility(Visibility::Visible, true);
@@ -356,16 +358,14 @@ void PreviewVideo::onUpdate() {
 
     if (isVisible() && status == ROQ_PLAYING && videoUpload) {
         if (!texture) {
-            texture = new RoundedTexture({state.width, state.width}, Texture::Format::RGB565);
-            sprite->setTexture(texture);
-            sprite->setTextureRect(IntRect{0, 0, state.width, state.height});
-            sprite->setOrigin(Origin::Center);
-            sprite->setPosition(Vector2f(getSize().x / 2, getSize().y / 2));
-            texture_scaling = std::min(
-                    getSize().x / ((float) texture->getTextureRect().width),
-                    getSize().y / ((float) texture->getTextureRect().height));
-            sprite->setScale(texture_scaling, texture_scaling);
-            sprite->setLayer(10);
+            texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
+            texture->setCornerPointCount(CORNER_POINTS);
+            texture->setCornersRadius(CORNER_RADIUS);
+            texture->setTextureRect(IntRect{0, 0, state.width, state.height});
+            texture->setOrigin(Origin::Center);
+            texture->setPosition(Vector2f(getSize().x / 2, getSize().y / 2));
+            texture->setSize(getSize());
+            add(texture);
         }
 
         mutex->lock();

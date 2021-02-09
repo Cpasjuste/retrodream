@@ -6,7 +6,7 @@
 #define RETRODREAM_HEADER_H
 
 #include "cross2d/skeleton/sfml/Text.hpp"
-#include "cross2d/skeleton/sfml/RoundedRectangleShape.h"
+#include "cross2d/skeleton/sfml/RectangleShape.hpp"
 
 class Header : public c2d::Rectangle {
 
@@ -36,8 +36,8 @@ private:
 
     c2d::Text *textLeft = nullptr;
     c2d::Text *textRight = nullptr;
-    c2d::RoundedRectangleShape *left = nullptr;
-    c2d::RoundedRectangleShape *right = nullptr;
+    c2d::RectangleShape *left = nullptr;
+    c2d::RectangleShape *right = nullptr;
 };
 
 #endif //RETRODREAM_HEADER_H

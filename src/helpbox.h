@@ -5,7 +5,7 @@
 #ifndef RETRODREAM_HELPBOX_H
 #define RETRODREAM_HELPBOX_H
 
-class HelpBox : public c2d::RoundedRectangleShape {
+class HelpBox : public c2d::RectangleShape {
 
 public:
 

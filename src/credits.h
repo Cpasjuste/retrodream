@@ -5,7 +5,7 @@
 #ifndef RETRODREAM_CREDITS_H
 #define RETRODREAM_CREDITS_H
 
-class Credits : public c2d::RoundedRectangleShape {
+class Credits : public c2d::RectangleShape {
 
 public:
 

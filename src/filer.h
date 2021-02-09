@@ -32,7 +32,7 @@ private:
     c2d::Text *text = nullptr;
 };
 
-class Filer : public c2d::RoundedRectangleShape {
+class Filer : public c2d::RectangleShape {
 
 public:
 
@@ -116,7 +116,7 @@ private:
     std::vector<int> item_index_prev;
     RetroDream *retroDream = nullptr;
     RetroIo *io = nullptr;
-    c2d::RoundedRectangleShape *highlight = nullptr;
+    c2d::RectangleShape *highlight = nullptr;
     c2d::RectangleShape *blurLayer = nullptr;
     c2d::C2DClock previewClock;
     float line_height;

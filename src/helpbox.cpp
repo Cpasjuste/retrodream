@@ -26,13 +26,15 @@ HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spri
 }
 
 HelpBox::HelpBox(RetroDream *retroDream, RetroConfig::CustomShape *shape)
-        : RoundedRectangleShape({288, 103}, 8, 4) {
+        : RectangleShape({288, 103}) {
 
     setOrigin(Origin::Center);
     setPosition(shape->rect.left, shape->rect.top);
     setFillColor(shape->color);
     setOutlineColor(shape->outlineColor);
     setOutlineThickness(shape->outlineSize);
+    setCornersRadius(CORNER_RADIUS);
+    setCornerPointCount(CORNER_POINTS);
     if (shape->tweenType == RetroConfig::TweenType::Alpha) {
         add(new TweenAlpha(0, 255, 0.5f));
     } else {

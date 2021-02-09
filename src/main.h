@@ -24,10 +24,12 @@
 #include "progressbox.h"
 
 #define FONT_SIZE 15
+#define CORNER_RADIUS 8
+#define CORNER_POINTS 8
 
 void retroDebug(const char *fmt, ...);
 
-class RetroDream : public c2d::RoundedRectangleShape {
+class RetroDream : public c2d::RectangleShape {
 
 public:
 
@@ -97,7 +99,7 @@ public:
 
     void debugClockEnd(const char *msg);
 
-    RetroConfig *getConfig();
+    static RetroConfig *getConfig();
 
     void showStatus(const std::string &title, const std::string &msg, const c2d::Color &color = COL_RED);
 

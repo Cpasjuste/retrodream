@@ -33,12 +33,14 @@ static Text *debugText = nullptr;
 static RetroConfig *retroConfig = nullptr;
 
 RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlineThickness)
-        : RoundedRectangleShape(size, 8, 4) {
+        : RectangleShape(size) {
 
     render = r;
-    setFillColor(COL_BLUE);
-    setOutlineColor(COL_BLUE_DARK);
-    setOutlineThickness(outlineThickness * 2);
+    Shape::setFillColor(COL_BLUE);
+    Shape::setOutlineColor(COL_BLUE_DARK);
+    Shape::setOutlineThickness(outlineThickness * 2);
+    setCornersRadius(CORNER_RADIUS);
+    setCornerPointCount(CORNER_POINTS);
 
 #ifdef __LINUX__
     Font *font = new Font();
@@ -77,10 +79,10 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     header->getTextRight()->setFillColor(COL_YELLOW);
     header->getTextRight()->setOutlineColor(Color::Black);
     header->getTextRight()->setOutlineThickness(2);
-    add(header);
+    Shape::add(header);
 
     /// splash/title texture
-    add(splashTex);
+    Shape::add(splashTex);
     splashTex->setOrigin(Origin::Center);
     splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 42));
 
@@ -93,19 +95,19 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     retroDebug("LOADING HELP BOX...");
     RetroConfig::CustomShape shape = getConfig()->getShape(RetroConfig::OptionId::HelpShape);
     helpBox = new HelpBox(this, &shape);
-    add(helpBox);
+    Shape::add(helpBox);
 
     /// preview box
     retroDebug("LOADING PREVIEW IMAGE BOX...");
     shape = getConfig()->getShape(RetroConfig::OptionId::PreviewImageShape);
     preview = new Preview(&shape);
-    add(preview);
+    Shape::add(preview);
 
     /// preview box (video)
     retroDebug("LOADING PREVIEW VIDEO BOX...");
     shape = getConfig()->getShape(RetroConfig::OptionId::PreviewVideoShape);
     previewVideo = new PreviewVideo(this, &shape);
-    add(previewVideo);
+    Shape::add(previewVideo);
 
     /// filers
     retroDebug("LOADING GAMES...");
@@ -115,42 +117,42 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     filer->setOutlineColor(shape.outlineColor);
     filer->setOutlineThickness(shape.outlineSize);
     filer->setColor(shape.colorDir, shape.colorFile);
-    add(filer);
+    Shape::add(filer);
 
     retroDebug("LOADING GAME MENU...");
     presetMenu = new PresetMenu(this, previewRect);
     presetMenu->setFillColor(COL_BLUE_GRAY);
     presetMenu->setOutlineColor(COL_BLUE_DARK);
     presetMenu->setOutlineThickness(3);
-    add(presetMenu);
+    Shape::add(presetMenu);
 
     retroDebug("LOADING FILE MENU...");
     fileMenu = new FileMenu(this, previewRect);
     fileMenu->setFillColor(COL_BLUE_GRAY);
     fileMenu->setOutlineColor(COL_BLUE_DARK);
     fileMenu->setOutlineThickness(3);
-    add(fileMenu);
+    Shape::add(fileMenu);
 
     retroDebug("LOADING SYSTEM MENU...");
     systemMenu = new SystemMenu(this, previewRect);
     systemMenu->setFillColor(COL_BLUE_GRAY);
     systemMenu->setOutlineColor(COL_BLUE_DARK);
     systemMenu->setOutlineThickness(3);
-    add(systemMenu);
+    Shape::add(systemMenu);
 
     retroDebug("LOADING REGION FREE MENU...");
     regionFreeMenu = new RegionFreeMenu(this, previewRect);
     regionFreeMenu->setFillColor(COL_BLUE_GRAY);
     regionFreeMenu->setOutlineColor(COL_BLUE_DARK);
     regionFreeMenu->setOutlineThickness(3);
-    add(regionFreeMenu);
+    Shape::add(regionFreeMenu);
 
     retroDebug("LOADING OPTIONS MENU...");
     optionMenu = new OptionMenu(this, previewRect);
     optionMenu->setFillColor(COL_BLUE_GRAY);
     optionMenu->setOutlineColor(COL_BLUE_DARK);
     optionMenu->setOutlineThickness(3);
-    add(optionMenu);
+    Shape::add(optionMenu);
 
     retroDebug("LOADING CREDITS...");
     FloatRect CreditsRect = {
@@ -162,11 +164,11 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     credits->setFillColor(COL_BLUE_GRAY);
     credits->setOutlineColor(COL_BLUE_DARK);
     credits->setOutlineThickness(3);
-    add(credits);
+    Shape::add(credits);
 
     progressBox = new ProgressBox(this, COL_BLUE_LIGHT, COL_BLUE_DARK, COL_BLUE_DARK);
     progressBox->getTitle()->setFillColor(COL_RED);
-    add(progressBox);
+    Shape::add(progressBox);
 
     messageBox = new MessageBox(progressBox->getLocalBounds(), render->getInput(), render->getFont(), FONT_SIZE);
     messageBox->setPosition(progressBox->getPosition());
@@ -178,11 +180,11 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     messageBox->setNotSelectedColor(COL_BLUE_DARK, Color::White);
     messageBox->getTitleText()->setFillColor(COL_RED);
     messageBox->getMessageText()->setFillColor(COL_BLUE_DARK);
-    add(messageBox);
+    Shape::add(messageBox);
 
     statusBox = new StatusBox({8, size.y - 14, size.x, FONT_SIZE * 2});
     statusBox->setOrigin(Origin::BottomLeft);
-    add(statusBox);
+    Shape::add(statusBox);
 
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
     render->getInput()->setRepeatDelay(inputDelay);

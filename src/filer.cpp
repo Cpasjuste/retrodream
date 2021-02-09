@@ -49,12 +49,14 @@ Text *Line::getText() {
 }
 
 Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path, int lineSpacing)
-        : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
+        : RectangleShape({rect.width, rect.height}) {
 
     retroDream = rd;
     io = (RetroIo *) retroDream->getRender()->getIo();
 
     setPosition(rect.left, rect.top);
+    setCornersRadius(CORNER_RADIUS);
+    setCornerPointCount(CORNER_POINTS);
 
     // set default colors
     colorDir = COL_BLUE_DARK;
@@ -68,10 +70,12 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     }
 
     // add selection rectangle (highlight)
-    highlight = new RoundedRectangleShape(Vector2f(rect.width - 2, line_height), 8, 4);
+    highlight = new RectangleShape(Vector2f(rect.width - 2, line_height));
     highlight->setFillColor(COL_YELLOW);
     highlight->setOutlineColor(COL_BLUE_DARK);
     highlight->setOutlineThickness(2);
+    highlight->setCornersRadius(CORNER_RADIUS);
+    highlight->setCornerPointCount(CORNER_POINTS);
     add(highlight);
 
     // add lines
@@ -457,7 +461,7 @@ void Filer::onUpdate() {
         }
     }
 
-    RoundedRectangleShape::onUpdate();
+    RectangleShape::onUpdate();
 }
 
 bool Filer::onInput(c2d::Input::Player *players) {

@@ -5,12 +5,12 @@
 #ifndef RETRODREAM_PREVIEW_H
 #define RETRODREAM_PREVIEW_H
 
-#include "cross2d/skeleton/sfml/RoundedRectangleShape.h"
+#include "cross2d/skeleton/sfml/RectangleShape.hpp"
 #include "cfg.h"
 
 class RetroDream;
 
-class Preview : public c2d::RoundedRectangleShape {
+class Preview : public c2d::RectangleShape {
 
 public:
 

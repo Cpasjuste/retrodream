@@ -10,9 +10,12 @@
 using namespace c2d;
 
 Menu::Menu(RetroDream *rd, const c2d::FloatRect &rect)
-        : RoundedRectangleShape({rect.width, rect.height}, 8, 4) {
+        : RectangleShape({rect.width, rect.height}) {
 
     retroDream = rd;
+
+    setCornersRadius(CORNER_RADIUS);
+    setCornerPointCount(CORNER_POINTS);
 
     title = new Text("MENU", FONT_SIZE);
     title->setOrigin(Origin::BottomLeft);
@@ -53,7 +56,7 @@ void Menu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         retroDream->getFiler()->setSelectionBack();
     }
 
-    RoundedRectangleShape::setVisibility(visibility, tweenPlay);
+    RectangleShape::setVisibility(visibility, tweenPlay);
 }
 
 bool Menu::onInput(c2d::Input::Player *players) {
