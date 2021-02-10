@@ -208,7 +208,6 @@ static int decodeThread(void *data) {
                 clock.restart();
                 preview->status = roq_unpack_vq_rgb565(file_buffer, (int) chunk_size, chunk_arg, &state);
                 preview->mutex->unlock();
-
                 preview->videoUpload = true;
                 state.current_frame++;
                 break;
