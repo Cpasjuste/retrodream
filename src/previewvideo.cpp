@@ -285,7 +285,7 @@ PreviewVideo::PreviewVideo(RetroDream *rd, RetroConfig::CustomShape *shape)
         : RectangleShape(shape->rect) {
 
     retroDream = rd;
-    audio = new C2DAudio(22050, 30);
+    audio = new C2DAudio(22050, 2048);
     mutex = new C2DMutex();
 
     RectangleShape::setOrigin(Origin::Center);

@@ -42,7 +42,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     setCornersRadius(CORNER_RADIUS);
     setCornerPointCount(CORNER_POINTS);
 
-#ifdef __LINUX__
+#if defined( __LINUX__) || defined(__WINDOWS__)
     Font *font = new Font();
     font->setFilter(Texture::Filter::Point);
     font->setOffset({0, 5});
@@ -299,7 +299,7 @@ void retroDebug(const char *fmt, ...) {
     }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 
     c2d_default_font_texture_size = {256, 256};
 
