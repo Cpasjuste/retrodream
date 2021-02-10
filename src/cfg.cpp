@@ -35,19 +35,19 @@ RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo-
     skin.addGroup(filer);
     // preview image
     Group preview_image("preview_image", PreviewImageShape);
-    preview_image.addOption({"rect", FloatRect{482, 160, 190, 190}, PreviewImageShape});
+    preview_image.addOption({"rect", FloatRect{482, 155, 190, 190}, PreviewImageShape});
     preview_image.addOption({"color", Color{204, 228, 240}, PreviewImageShape + 1});
     preview_image.addOption({"outline_color", Color{228, 81, 72}, PreviewImageShape + 2});
     preview_image.addOption({"outline_size", 6, PreviewImageShape + 3});
-    preview_image.addOption({"tween_type", 0, PreviewImageShape + 4});
+    preview_image.addOption({"tween_type", 1, PreviewImageShape + 4});
     skin.addGroup(preview_image);
     // preview video
     Group preview_video("preview_video", PreviewVideoShape);
     preview_video.addOption({"rect", FloatRect{482, 367, 256, 192}, PreviewVideoShape});
     preview_video.addOption({"color", Color{204, 228, 240}, PreviewVideoShape + 1});
-    preview_video.addOption({"outline_color", Color{240, 226, 107}, PreviewVideoShape + 2});
+    preview_video.addOption({"outline_color", Color{49, 121, 159}, PreviewVideoShape + 2});
     preview_video.addOption({"outline_size", 6, PreviewVideoShape + 3});
-    preview_video.addOption({"tween_type", 0, PreviewVideoShape + 4});
+    preview_video.addOption({"tween_type", 1, PreviewVideoShape + 4});
     skin.addGroup(preview_video);
     // help box
     Group help("help", HelpShape);

@@ -9,19 +9,27 @@ using namespace c2d;
 
 Preview::Preview(RetroConfig::CustomShape *shape) : RectangleShape(shape->rect) {
 
-    Shape::setOrigin(Origin::Center);
-    Shape::setFillColor(shape->color);
-    Shape::setOutlineColor(shape->outlineColor);
-    Shape::setOutlineThickness(shape->outlineSize);
-    setCornersRadius(CORNER_RADIUS);
-    setCornerPointCount(CORNER_POINTS);
+    RectangleShape::setOrigin(Origin::Center);
+    RectangleShape::setFillColor(Color::Transparent);
+    RectangleShape::setOutlineColor(Color::Black);
+    RectangleShape::setOutlineThickness(shape->outlineSize + 2);
+    RectangleShape::setCornersRadius(CORNER_RADIUS);
+    RectangleShape::setCornerPointCount(CORNER_POINTS);
     if (shape->tweenType == RetroConfig::TweenType::Alpha) {
-        add(new TweenAlpha(0, 255, 0.5f));
+        RectangleShape::add(new TweenAlpha(0, 255, 0.3f));
     } else {
-        add(new TweenScale({0, 0}, {1, 1}, 0.3f));
+        RectangleShape::add(new TweenScale({0, 0}, {1, 1}, 0.2f));
     }
 
-    setVisibility(Visibility::Hidden);
+    outline = new RectangleShape({shape->rect.width, shape->rect.height});
+    outline->setFillColor(Color::Transparent);
+    outline->setOutlineColor(shape->outlineColor);
+    outline->setOutlineThickness(shape->outlineSize);
+    outline->setCornersRadius(CORNER_RADIUS);
+    outline->setCornerPointCount(CORNER_POINTS);
+    RectangleShape::add(outline);
+
+    RectangleShape::setVisibility(Visibility::Hidden);
 }
 
 bool Preview::load(const std::string &path) {
@@ -45,7 +53,7 @@ bool Preview::load(const std::string &path) {
         texture->setOrigin(Origin::Center);
         texture->setPosition(Vector2f(getSize().x / 2, getSize().y / 2));
         texture->setSize(getSize());
-        add(texture);
+        outline->add(texture);
         setVisibility(Visibility::Visible, true);
     }
 

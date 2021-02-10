@@ -157,9 +157,7 @@ static int decodeThread(void *data) {
                        state.width, state.height, state.mb_width, state.mb_height,
                        state.mb_count, state.stride, state.texture_height);
                 state.frame[0] = (unsigned char *) malloc(state.width * state.width * 2);
-                //state.texture_height * state.stride * sizeof(unsigned short));
                 state.frame[1] = (unsigned char *) malloc(state.width * state.width * 2);
-                //state.texture_height * state.stride * sizeof(unsigned short));
                 state.current_frame = 0;
                 if (!state.frame[0] || !state.frame[1]) {
                     free(state.frame[0]);
@@ -290,19 +288,27 @@ PreviewVideo::PreviewVideo(RetroDream *rd, RetroConfig::CustomShape *shape)
     audio = new C2DAudio(22050, 30);
     mutex = new C2DMutex();
 
-    Shape::setOrigin(Origin::Center);
-    Shape::setFillColor(shape->color);
-    Shape::setOutlineColor(shape->outlineColor);
-    Shape::setOutlineThickness(shape->outlineSize);
-    setCornersRadius(CORNER_RADIUS);
-    setCornerPointCount(CORNER_POINTS);
+    RectangleShape::setOrigin(Origin::Center);
+    RectangleShape::setFillColor(Color::Transparent);
+    RectangleShape::setOutlineColor(Color::Black);
+    RectangleShape::setOutlineThickness(shape->outlineSize + 2);
+    RectangleShape::setCornersRadius(CORNER_RADIUS);
+    RectangleShape::setCornerPointCount(CORNER_POINTS);
     if (shape->tweenType == RetroConfig::TweenType::Alpha) {
-        Shape::add(new TweenAlpha(0, 255, 0.5f));
+        RectangleShape::add(new TweenAlpha(0, 255, 0.3f));
     } else {
-        Shape::add(new TweenScale({0, 0}, {1, 1}, 0.5f));
+        RectangleShape::add(new TweenScale({0, 0}, {1, 1}, 0.2f));
     }
 
-    Shape::setVisibility(Visibility::Hidden);
+    outline = new RectangleShape({shape->rect.width, shape->rect.height});
+    outline->setFillColor(Color::Transparent);
+    outline->setOutlineColor(shape->outlineColor);
+    outline->setOutlineThickness(shape->outlineSize);
+    outline->setCornersRadius(CORNER_RADIUS);
+    outline->setCornerPointCount(CORNER_POINTS);
+    RectangleShape::add(outline);
+
+    RectangleShape::setVisibility(Visibility::Hidden);
 }
 
 void PreviewVideo::hide(int i) {
@@ -365,7 +371,7 @@ void PreviewVideo::onUpdate() {
             texture->setOrigin(Origin::Center);
             texture->setPosition(Vector2f(getSize().x / 2, getSize().y / 2));
             texture->setSize(getSize());
-            add(texture);
+            outline->add(texture);
         }
 
         mutex->lock();

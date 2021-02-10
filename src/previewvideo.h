@@ -46,7 +46,7 @@ private:
     bool loaded = false;
     c2d::Thread *thread = nullptr;
     c2d::Texture *texture = nullptr;
-    c2d::RectangleShape *borders = nullptr;
+    c2d::RectangleShape *outline = nullptr;
 };
 
 #endif //RETRODREAM_PREVIEWVIDEO_H

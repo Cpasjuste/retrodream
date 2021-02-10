@@ -24,6 +24,7 @@ public:
 
 private:
 
+    c2d::RectangleShape *outline = nullptr;
     c2d::Texture *texture = nullptr;
     bool loaded = false;
 };
