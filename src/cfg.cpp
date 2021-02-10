@@ -25,37 +25,58 @@ RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo-
     Group skin("skin");
     // filer
     Group filer("filer", FilerShape);
-    filer.addOption({"rect", FloatRect{9, 46, 314, 372}, FilerShape});
-    filer.addOption({"color", Color{204, 228, 240}, FilerShape + 1});
-    filer.addOption({"outline_color", Color{49, 121, 159}, FilerShape + 2});
-    filer.addOption({"outline_size", 3, FilerShape + 3});
-    filer.addOption({"tween_type", 0, FilerShape + 4});
-    filer.addOption({"file_color", Color{97, 190, 236}, FilerShape + 5});
-    filer.addOption({"dir_color", Color{49, 121, 159}, FilerShape + 6});
+    filer.addOption({"rect", FloatRect{9, 46, 314, 372}});
+    filer.addOption({"corners_radius", 8});
+    filer.addOption({"origin", 1});
+    filer.addOption({"color", Color{204, 228, 240}});
+    filer.addOption({"outline_color", Color{49, 121, 159}});
+    filer.addOption({"outline_size", 3});
+    filer.addOption({"tween_type", 0});
+    filer.addOption({"file_color", Color{97, 190, 236}});
+    filer.addOption({"dir_color", Color{49, 121, 159}});
     skin.addGroup(filer);
+    // filer highlight
+    // TODO
+    /*
+    Group highlight("highlight", FilerShape);
+    filer.addOption({"rect", FloatRect{9, 46, 314, 372}});
+    filer.addOption({"corners_radius", 8});
+    filer.addOption({"origin", 1});
+    filer.addOption({"color", Color{204, 228, 240}});
+    filer.addOption({"outline_color", Color{49, 121, 159}});
+    filer.addOption({"outline_size", 3});
+    filer.addOption({"tween_type", 0});
+    skin.addGroup(highlight);
+    */
     // preview image
     Group preview_image("preview_image", PreviewImageShape);
-    preview_image.addOption({"rect", FloatRect{482, 155, 190, 190}, PreviewImageShape});
-    preview_image.addOption({"color", Color{204, 228, 240}, PreviewImageShape + 1});
-    preview_image.addOption({"outline_color", Color{228, 81, 72}, PreviewImageShape + 2});
-    preview_image.addOption({"outline_size", 6, PreviewImageShape + 3});
-    preview_image.addOption({"tween_type", 1, PreviewImageShape + 4});
+    preview_image.addOption({"rect", FloatRect{482, 155, 190, 190}});
+    preview_image.addOption({"corners_radius", 8});
+    preview_image.addOption({"origin", 8});
+    //preview_image.addOption({"color", Color{204, 228, 240}});
+    preview_image.addOption({"outline_color", Color{228, 81, 72}});
+    preview_image.addOption({"outline_size", 6});
+    preview_image.addOption({"tween_type", 1});
     skin.addGroup(preview_image);
     // preview video
     Group preview_video("preview_video", PreviewVideoShape);
-    preview_video.addOption({"rect", FloatRect{482, 367, 256, 192}, PreviewVideoShape});
-    preview_video.addOption({"color", Color{204, 228, 240}, PreviewVideoShape + 1});
-    preview_video.addOption({"outline_color", Color{49, 121, 159}, PreviewVideoShape + 2});
-    preview_video.addOption({"outline_size", 6, PreviewVideoShape + 3});
-    preview_video.addOption({"tween_type", 1, PreviewVideoShape + 4});
+    preview_video.addOption({"rect", FloatRect{482, 367, 256, 192}});
+    preview_video.addOption({"corners_radius", 8});
+    preview_video.addOption({"origin", 8});
+    //preview_video.addOption({"color", Color{204, 228, 240}});
+    preview_video.addOption({"outline_color", Color{49, 121, 159}});
+    preview_video.addOption({"outline_size", 6});
+    preview_video.addOption({"tween_type", 1});
     skin.addGroup(preview_video);
     // help box
     Group help("help", HelpShape);
-    help.addOption({"rect", FloatRect{478, 387, 0, 0}, HelpShape});
-    help.addOption({"color", Color{178, 226, 249}, HelpShape + 1});
-    help.addOption({"outline_color", Color{49, 121, 159}, HelpShape + 2});
-    help.addOption({"outline_size", 2, HelpShape + 3});
-    help.addOption({"tween_type", 0, HelpShape + 4});
+    help.addOption({"rect", FloatRect{478, 387, 0, 0}});
+    help.addOption({"corners_radius", 8});
+    help.addOption({"origin", 8});
+    help.addOption({"color", Color{178, 226, 249}});
+    help.addOption({"outline_color", Color{49, 121, 159}});
+    help.addOption({"outline_size", 2});
+    help.addOption({"tween_type", 0});
     skin.addGroup(help);
     // add all
     addGroup(skin);
@@ -66,9 +87,11 @@ RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo-
         // file doesn't exist or is malformed, (re)create it
         printf("RetroConfig: config file doesn't exist or is malformed, "
                "creating a new one (%s)\n", getPath().c_str());
+#if 0
         if (!save()) {
             printf("RetroConfig: could not create configuration file (%s)\n", getPath().c_str());
         }
+#endif
     }
 
     // check default filer data directory
@@ -131,14 +154,18 @@ RetroConfig::CustomShape RetroConfig::getShape(int groupId) {
         return shape;
     }
 
-    shape.rect = group->getOption(groupId)->getFloatRect();
-    shape.color = group->getOption(groupId + 1)->getColor();
-    shape.outlineColor = group->getOption(groupId + 2)->getColor();
-    shape.outlineSize = (float) group->getOption(groupId + 3)->getInteger();
-    shape.tweenType = (TweenType) group->getOption(groupId + 4)->getInteger();
+    shape.rect = group->getOption("rect")->getFloatRect();
+    shape.corners_radius = group->getOption("corners_radius")->getInteger();
+    shape.origin = (Origin) group->getOption("origin")->getInteger();
+    if (groupId != PreviewImageShape && groupId != PreviewVideoShape) {
+        shape.color = group->getOption("color")->getColor();
+    }
+    shape.outlineColor = group->getOption("outline_color")->getColor();
+    shape.outlineSize = (float) group->getOption("outline_size")->getInteger();
+    shape.tweenType = (TweenType) group->getOption("tween_type")->getInteger();
     if (groupId == FilerShape) {
-        shape.colorFile = group->getOption(groupId + 5)->getColor();
-        shape.colorDir = group->getOption(groupId + 6)->getColor();
+        shape.colorFile = group->getOption("file_color")->getColor();
+        shape.colorDir = group->getOption("dir_color")->getColor();
     }
 
     return shape;

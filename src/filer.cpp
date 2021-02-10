@@ -48,29 +48,25 @@ Text *Line::getText() {
     return text;
 }
 
-Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path, int lineSpacing)
-        : RectangleShape({rect.width, rect.height}) {
+Filer::Filer(RetroDream *rd, RetroConfig::CustomShape *shape, const std::string &path, int lineSpacing)
+        : SkinRect(shape) {
 
     retroDream = rd;
     io = (RetroIo *) retroDream->getRender()->getIo();
 
-    setPosition(rect.left, rect.top);
-    setCornersRadius(CORNER_RADIUS);
-    setCornerPointCount(CORNER_POINTS);
-
     // set default colors
-    colorDir = COL_BLUE_DARK;
-    colorFile = COL_BLUE;
+    colorDir = shape->colorDir;
+    colorFile = shape->colorFile;
 
     // calculate number of lines shown
     line_height = FONT_SIZE + lineSpacing;
-    max_lines = (int) (rect.height / line_height);
-    if ((float) max_lines * line_height < rect.height) {
-        line_height = rect.height / (float) max_lines;
+    max_lines = (int) (shape->rect.height / line_height);
+    if ((float) max_lines * line_height < shape->rect.height) {
+        line_height = shape->rect.height / (float) max_lines;
     }
 
     // add selection rectangle (highlight)
-    highlight = new RectangleShape(Vector2f(rect.width - 2, line_height));
+    highlight = new RectangleShape(Vector2f(shape->rect.width - 2, line_height));
     highlight->setFillColor(COL_YELLOW);
     highlight->setOutlineColor(COL_BLUE_DARK);
     highlight->setOutlineThickness(2);
@@ -80,7 +76,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
 
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
-        FloatRect r = {1, (line_height * (float) i) + 1, rect.width - 2, line_height - 2};
+        FloatRect r = {1, (line_height * (float) i) + 1, shape->rect.width - 2, line_height - 2};
         auto line = new Line(r, "", retroDream->getRender()->getFont(), FONT_SIZE);
         line->setLayer(2);
         lines.push_back(line);
@@ -88,7 +84,7 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     }
 
     // "hide main rect" layer
-    blurLayer = new RectangleShape({-rect.left - 16, -rect.top - 16,
+    blurLayer = new RectangleShape({-shape->rect.left - 16, -shape->rect.top - 16,
                                     retroDream->getRender()->getSize().x + 64,
                                     retroDream->getRender()->getSize().y + 64});
     blurLayer->setFillColor(Color::Gray);
@@ -98,8 +94,8 @@ Filer::Filer(RetroDream *rd, const c2d::FloatRect &rect, const std::string &path
     add(blurLayer);
 
     // previews timer delay
-    previewImageDelay = retroDream->getConfig()->getInt(RetroConfig::PreviewImageDelay);
-    previewVideoDelay = retroDream->getConfig()->getInt(RetroConfig::PreviewVideoDelay);
+    previewImageDelay = RetroDream::getConfig()->getInt(RetroConfig::PreviewImageDelay);
+    previewVideoDelay = RetroDream::getConfig()->getInt(RetroConfig::PreviewVideoDelay);
 
     getDir(path);
 };

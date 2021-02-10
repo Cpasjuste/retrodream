@@ -112,7 +112,7 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
     /// filers
     retroDebug("LOADING GAMES...");
     shape = getConfig()->getShape(RetroConfig::OptionId::FilerShape);
-    filer = new Filer(this, shape.rect, retroConfig->get(RetroConfig::FilerPath), 10);
+    filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath), 10);
     filer->setFillColor(shape.color);
     filer->setOutlineColor(shape.outlineColor);
     filer->setOutlineThickness(shape.outlineSize);

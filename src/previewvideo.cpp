@@ -280,33 +280,13 @@ static int decodeThread(void *data) {
     return 0;
 }
 
-PreviewVideo::PreviewVideo(RetroDream *rd, RetroConfig::CustomShape *shape)
-        : RectangleShape(shape->rect) {
+PreviewVideo::PreviewVideo(RetroDream *rd, RetroConfig::CustomShape *shape) : SkinRect(shape) {
 
     retroDream = rd;
     audio = new C2DAudio(22050, 2048);
     mutex = new C2DMutex();
 
-    RectangleShape::setOrigin(Origin::Center);
     RectangleShape::setFillColor(Color::Transparent);
-    RectangleShape::setOutlineColor(Color::Black);
-    RectangleShape::setOutlineThickness(shape->outlineSize + 2);
-    RectangleShape::setCornersRadius(CORNER_RADIUS);
-    RectangleShape::setCornerPointCount(CORNER_POINTS);
-    if (shape->tweenType == RetroConfig::TweenType::Alpha) {
-        RectangleShape::add(new TweenAlpha(0, 255, 0.3f));
-    } else {
-        RectangleShape::add(new TweenScale({0, 0}, {1, 1}, 0.2f));
-    }
-
-    outline = new RectangleShape({shape->rect.width, shape->rect.height});
-    outline->setFillColor(Color::Transparent);
-    outline->setOutlineColor(shape->outlineColor);
-    outline->setOutlineThickness(shape->outlineSize);
-    outline->setCornersRadius(CORNER_RADIUS);
-    outline->setCornerPointCount(CORNER_POINTS);
-    RectangleShape::add(outline);
-
     RectangleShape::setVisibility(Visibility::Hidden);
 }
 
@@ -365,12 +345,12 @@ void PreviewVideo::onUpdate() {
         if (!texture) {
             texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
             texture->setCornerPointCount(CORNER_POINTS);
-            texture->setCornersRadius(CORNER_RADIUS);
+            texture->setCornersRadius(getCornersRadius());
             texture->setTextureRect(IntRect{0, 0, state.width, state.height});
             texture->setOrigin(Origin::Center);
             texture->setPosition(Vector2f(getSize().x / 2, getSize().y / 2));
             texture->setSize(getSize());
-            outline->add(texture);
+            add(texture);
         }
 
         mutex->lock();

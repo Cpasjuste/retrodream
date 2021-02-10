@@ -5,7 +5,7 @@
 #ifndef RETRODREAM_PREVIEWVIDEO_H
 #define RETRODREAM_PREVIEWVIDEO_H
 
-#include "cross2d/skeleton/sfml/Rectangle.hpp"
+#include "skinrect.h"
 #include "roqlib.h"
 
 // preview video 128
@@ -15,7 +15,7 @@
 
 class RetroDream;
 
-class PreviewVideo : public c2d::RectangleShape {
+class PreviewVideo : public SkinRect {
 
 public:
 
@@ -46,7 +46,6 @@ private:
     bool loaded = false;
     c2d::Thread *thread = nullptr;
     c2d::Texture *texture = nullptr;
-    c2d::RectangleShape *outline = nullptr;
 };
 
 #endif //RETRODREAM_PREVIEWVIDEO_H

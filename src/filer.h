@@ -5,8 +5,8 @@
 #ifndef RETRODREAM_FILER_H
 #define RETRODREAM_FILER_H
 
-#include "cross2d/skeleton/sfml/RectangleShape.hpp"
 #include "cross2d/skeleton/sfml/Text.hpp"
+#include "skinrect.h"
 #include "retroio.h"
 
 class RetroDream;
@@ -32,7 +32,7 @@ private:
     c2d::Text *text = nullptr;
 };
 
-class Filer : public c2d::RectangleShape {
+class Filer : public SkinRect {
 
 public:
 
@@ -56,7 +56,7 @@ public:
         Game
     };
 
-    Filer(RetroDream *retroDream, const c2d::FloatRect &rect, const std::string &path, int lineSpacing = 2);
+    Filer(RetroDream *retroDream, RetroConfig::CustomShape *shape, const std::string &path, int lineSpacing = 2);
 
     bool getDir(const std::string &path);
 

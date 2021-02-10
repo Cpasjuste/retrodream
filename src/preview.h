@@ -5,12 +5,12 @@
 #ifndef RETRODREAM_PREVIEW_H
 #define RETRODREAM_PREVIEW_H
 
-#include "cross2d/skeleton/sfml/RectangleShape.hpp"
+#include "skinrect.h"
 #include "cfg.h"
 
 class RetroDream;
 
-class Preview : public c2d::RectangleShape {
+class Preview : public SkinRect {
 
 public:
 
@@ -24,7 +24,6 @@ public:
 
 private:
 
-    c2d::RectangleShape *outline = nullptr;
     c2d::Texture *texture = nullptr;
     bool loaded = false;
 };

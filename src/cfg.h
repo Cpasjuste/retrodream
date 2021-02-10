@@ -22,6 +22,8 @@ public:
     class CustomShape {
     public:
         c2d::FloatRect rect;
+        int corners_radius;
+        c2d::Origin origin = c2d::Origin::TopLeft;
         c2d::Color color;
         c2d::Color outlineColor;
         float outlineSize = 0;
