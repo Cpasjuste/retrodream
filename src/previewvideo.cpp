@@ -233,9 +233,9 @@ static int decodeThread(void *data) {
                     break;
                 }
 
-                if ((int) chunk_size * 2 > preview->audio->getAudioBuffer()->space()) {
+                if ((int) chunk_size * 2 > preview->audio->getSampleBufferAvailable()) {
                     printf("RoQ_SOUND_STEREO: buffer size (%i), audio size (%i) \n",
-                           chunk_size * 2, preview->audio->getAudioBuffer()->space());
+                           chunk_size * 2, preview->audio->getSampleBufferAvailable());
                     break;
                 }
                 roq_audio.channels = 2;
