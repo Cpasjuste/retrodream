@@ -48,7 +48,7 @@ Text *Line::getText() {
     return text;
 }
 
-Filer::Filer(RetroDream *rd, RetroConfig::CustomShape *shape, const std::string &path, int lineSpacing)
+Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, int lineSpacing)
         : SkinRect(shape) {
 
     retroDream = rd;
@@ -66,17 +66,13 @@ Filer::Filer(RetroDream *rd, RetroConfig::CustomShape *shape, const std::string 
     }
 
     // add selection rectangle (highlight)
-    highlight = new RectangleShape(Vector2f(shape->rect.width - 2, line_height));
-    highlight->setFillColor(COL_YELLOW);
-    highlight->setOutlineColor(COL_BLUE_DARK);
-    highlight->setOutlineThickness(2);
-    highlight->setCornersRadius(CORNER_RADIUS);
-    highlight->setCornerPointCount(CORNER_POINTS);
+    Skin::CustomShape shape2 = RetroDream::getSkin()->getShape(Skin::Id::FilerHighlightShape);
+    highlight = new SkinRect(&shape2);
     add(highlight);
 
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
-        FloatRect r = {1, (line_height * (float) i) + 1, shape->rect.width - 2, line_height - 2};
+        FloatRect r = {0, (line_height * (float) i), shape->rect.width, line_height};
         auto line = new Line(r, "", retroDream->getRender()->getFont(), FONT_SIZE);
         line->setLayer(2);
         lines.push_back(line);
@@ -115,7 +111,7 @@ void Filer::updateLines() {
             // set highlight position and color
             if ((int) i == highlight_index) {
                 // handle highlight
-                highlight->setPosition(lines[i]->getPosition());
+                highlight->setPosition({highlight->getPosition().x, lines[i]->getPosition().y});
                 // handle header title
                 if (file.isGame) {
                     retroDream->getHeader()->setStringLeft(file.upperName);

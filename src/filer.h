@@ -56,7 +56,7 @@ public:
         Game
     };
 
-    Filer(RetroDream *retroDream, RetroConfig::CustomShape *shape, const std::string &path, int lineSpacing = 2);
+    Filer(RetroDream *retroDream, Skin::CustomShape *shape, const std::string &path, int lineSpacing = 2);
 
     bool getDir(const std::string &path);
 

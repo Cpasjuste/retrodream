@@ -14,7 +14,7 @@ class Preview : public SkinRect {
 
 public:
 
-    explicit Preview(RetroConfig::CustomShape *shape);
+    explicit Preview(Skin::CustomShape *shape);
 
     bool load(const std::string &path);
 

@@ -6,13 +6,13 @@
 #define RETRODREAM_SKINRECT_H
 
 #include "cross2d/skeleton/sfml/RectangleShape.hpp"
-#include "cfg.h"
+#include "skin.h"
 
 class SkinRect : public c2d::RectangleShape {
 
 public:
 
-    explicit SkinRect(RetroConfig::CustomShape *shape);
+    explicit SkinRect(Skin::CustomShape *shape);
 };
 
 #endif //RETRODREAM_SKINRECT_H

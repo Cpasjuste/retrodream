@@ -29,11 +29,11 @@
 
 void retroDebug(const char *fmt, ...);
 
-class RetroDream : public c2d::RectangleShape {
+class RetroDream : public SkinRect {
 
 public:
 
-    explicit RetroDream(c2d::Renderer *renderer, const c2d::Vector2f &size, float outlineThickness);
+    explicit RetroDream(c2d::Renderer *renderer, Skin::CustomShape *shape);
 
     c2d::Renderer *getRender() {
         return render;
@@ -100,6 +100,8 @@ public:
     void debugClockEnd(const char *msg);
 
     static RetroConfig *getConfig();
+
+    static Skin *getSkin();
 
     void showStatus(const std::string &title, const std::string &msg, const c2d::Color &color = COL_RED);
 

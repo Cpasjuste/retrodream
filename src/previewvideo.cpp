@@ -280,7 +280,7 @@ static int decodeThread(void *data) {
     return 0;
 }
 
-PreviewVideo::PreviewVideo(RetroDream *rd, RetroConfig::CustomShape *shape) : SkinRect(shape) {
+PreviewVideo::PreviewVideo(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape) {
 
     retroDream = rd;
     audio = new C2DAudio(22050, 2048);

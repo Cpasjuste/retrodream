@@ -8,28 +8,38 @@
 
 using namespace c2d;
 
-Header::Header(const c2d::FloatRect &rect) : Rectangle(rect) {
+Header::Header(Skin::CustomShape *shape) : Rectangle(shape->rect) {
 
-    left = new RectangleShape({PERCENT(rect.width, 92), rect.height});
-    left->setCornersRadius(CORNER_RADIUS);
-    left->setCornerPointCount(CORNER_POINTS);
+    // left box
+    shape->rect.width = PERCENT(Rectangle::getSize().x, 92);
+    left = new SkinRect(shape);
+    left->setPosition(0, 0);
+    Rectangle::add(left);
+    // left box text
+    Skin::CustomColor colors = RetroDream::getSkin()->getColor(Skin::Id::FilerBarText);
     textLeft = new Text("", FONT_SIZE);
+    textLeft->setFillColor(colors.color);
+    textLeft->setOutlineColor(colors.outlineColor);
+    textLeft->setOutlineThickness(colors.outlineSize);
     textLeft->setOrigin(Origin::Left);
-    textLeft->setPosition(PERCENT(left->getSize().x, 1), (rect.height / 2));
+    textLeft->setPosition(PERCENT(left->getSize().x, 1), (Rectangle::getSize().y / 2));
     textLeft->setSizeMax(left->getSize().x - FONT_SIZE - 10, 0);
     left->add(textLeft);
-    add(left);
 
-    right = new RectangleShape({PERCENT(rect.width, 7.5f), rect.height});
-    right->setCornersRadius(CORNER_RADIUS);
-    right->setCornerPointCount(CORNER_POINTS);
-    right->setPosition(PERCENT(rect.width, 93), 0);
+    // right box
+    shape->rect.width = PERCENT(Rectangle::getSize().x, 7.5f);
+    right = new SkinRect(shape);
+    right->setPosition(PERCENT(Rectangle::getSize().x, 93), 0);
+    Rectangle::add(right);
+    // right box text
     textRight = new Text("GDI", FONT_SIZE);
+    textRight->setFillColor(colors.color);
+    textRight->setOutlineColor(colors.outlineColor);
+    textRight->setOutlineThickness(colors.outlineSize);
     textRight->setOrigin(Origin::Center);
-    textRight->setPosition(right->getSize().x / 2 + 1, right->getSize().y / 2);
+    textRight->setPosition(right->getSize().x / 2, Rectangle::getSize().y / 2);
     textRight->setSizeMax(right->getSize().x, 0);
     right->add(textRight);
-    add(right);
 }
 
 c2d::Text *Header::getTextLeft() {

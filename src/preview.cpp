@@ -7,7 +7,7 @@
 
 using namespace c2d;
 
-Preview::Preview(RetroConfig::CustomShape *shape) : SkinRect(shape) {
+Preview::Preview(Skin::CustomShape *shape) : SkinRect(shape) {
     RectangleShape::setFillColor(Color::Transparent);
     RectangleShape::setVisibility(Visibility::Hidden);
 }

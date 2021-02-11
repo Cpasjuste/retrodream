@@ -25,7 +25,7 @@ HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spri
     add(text);
 }
 
-HelpBox::HelpBox(RetroDream *retroDream, RetroConfig::CustomShape *shape)
+HelpBox::HelpBox(RetroDream *retroDream, Skin::CustomShape *shape)
         : RectangleShape({288, 103}) {
 
     setOrigin(Origin::Center);
@@ -35,7 +35,7 @@ HelpBox::HelpBox(RetroDream *retroDream, RetroConfig::CustomShape *shape)
     setOutlineThickness(shape->outlineSize);
     setCornersRadius(CORNER_RADIUS);
     setCornerPointCount(CORNER_POINTS);
-    if (shape->tweenType == RetroConfig::TweenType::Alpha) {
+    if (shape->tweenType == Skin::TweenType::Alpha) {
         add(new TweenAlpha(0, 255, 0.5f));
     } else {
         add(new TweenScale({0, 0}, {1, 1}, 0.3f));

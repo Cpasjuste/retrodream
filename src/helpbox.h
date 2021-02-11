@@ -25,7 +25,7 @@ public:
         c2d::Text *text = nullptr;
     };
 
-    explicit HelpBox(RetroDream *retroDream, RetroConfig::CustomShape *shape);
+    explicit HelpBox(RetroDream *retroDream, Skin::CustomShape *shape);
 
     ~HelpBox() override;
 

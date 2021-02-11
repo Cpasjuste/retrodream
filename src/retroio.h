@@ -19,6 +19,8 @@ public:
 
     std::string getConfigPath();
 
+    std::string getSkinPath();
+
     std::string getScreenshotPath();
 
     bool hasMoreThanOneFile(const std::string &path);

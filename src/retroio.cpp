@@ -87,6 +87,10 @@ std::string RetroIo::getConfigPath() {
     return getDataPath() + "retrodream.cfg";
 }
 
+std::string RetroIo::getSkinPath() {
+    return getDataPath() + "skin.cfg";
+}
+
 std::string RetroIo::getScreenshotPath() {
     return getDataPath() + "screenshots/";
 }

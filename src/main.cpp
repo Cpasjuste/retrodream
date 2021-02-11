@@ -31,21 +31,15 @@ static Texture *splashTex = nullptr;
 static Sprite *splashSprite = nullptr;
 static Text *debugText = nullptr;
 static RetroConfig *retroConfig = nullptr;
+static Skin *skin = nullptr;
 
-RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlineThickness)
-        : RectangleShape(size) {
+RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_shape) {
 
     render = r;
-    Shape::setFillColor(COL_BLUE);
-    Shape::setOutlineColor(COL_BLUE_DARK);
-    Shape::setOutlineThickness(outlineThickness * 2);
-    setCornersRadius(CORNER_RADIUS);
-    setCornerPointCount(CORNER_POINTS);
+    Vector2f size = SkinRect::getSize();
 
 #if defined( __LINUX__) || defined(__WINDOWS__)
     Font *font = new Font();
-    font->setFilter(Texture::Filter::Point);
-    font->setOffset({0, 5});
     font->loadFromFile(render->getIo()->getRomFsPath() + "skin/future.ttf");
     render->setFont(font);
     debugText->setFont(font);
@@ -64,21 +58,8 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
 
     /// header text
     retroDebug("LOADING HEADER BOX...");
-    FloatRect headerRect = {
-            PERCENT(size.x, 1.5f), PERCENT(size.y, 1.5f),
-            PERCENT(size.x, 97), PERCENT(size.y, 6.5f)
-    };
-    header = new Header(headerRect);
-    header->setPosition(8, 8);
-    header->setFillColor(COL_BLUE_DARK);
-    header->setOutlineColor(Color::White);
-    header->setOutlineThickness(2);
-    header->getTextLeft()->setFillColor(COL_YELLOW);
-    header->getTextLeft()->setOutlineColor(Color::Black);
-    header->getTextLeft()->setOutlineThickness(2);
-    header->getTextRight()->setFillColor(COL_YELLOW);
-    header->getTextRight()->setOutlineColor(Color::Black);
-    header->getTextRight()->setOutlineThickness(2);
+    Skin::CustomShape shape = skin->getShape(Skin::Id::FilerBarShape);
+    header = new Header(&shape);
     Shape::add(header);
 
     /// splash/title texture
@@ -93,30 +74,26 @@ RetroDream::RetroDream(c2d::Renderer *r, const c2d::Vector2f &size, float outlin
             previewSize + 32, previewSize};
     // TODO: remove (skin)...
     retroDebug("LOADING HELP BOX...");
-    RetroConfig::CustomShape shape = getConfig()->getShape(RetroConfig::OptionId::HelpShape);
+    shape = skin->getShape(Skin::Id::HelpShape);
     helpBox = new HelpBox(this, &shape);
     Shape::add(helpBox);
 
     /// preview box
     retroDebug("LOADING PREVIEW IMAGE BOX...");
-    shape = getConfig()->getShape(RetroConfig::OptionId::PreviewImageShape);
+    shape = skin->getShape(Skin::Id::PreviewImageShape);
     preview = new Preview(&shape);
     Shape::add(preview);
 
     /// preview box (video)
     retroDebug("LOADING PREVIEW VIDEO BOX...");
-    shape = getConfig()->getShape(RetroConfig::OptionId::PreviewVideoShape);
+    shape = skin->getShape(Skin::Id::PreviewVideoShape);
     previewVideo = new PreviewVideo(this, &shape);
     Shape::add(previewVideo);
 
     /// filers
     retroDebug("LOADING GAMES...");
-    shape = getConfig()->getShape(RetroConfig::OptionId::FilerShape);
+    shape = skin->getShape(Skin::Id::FilerShape);
     filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath), 10);
-    filer->setFillColor(shape.color);
-    filer->setOutlineColor(shape.outlineColor);
-    filer->setOutlineThickness(shape.outlineSize);
-    filer->setColor(shape.colorDir, shape.colorFile);
     Shape::add(filer);
 
     retroDebug("LOADING GAME MENU...");
@@ -260,6 +237,10 @@ RetroConfig *RetroDream::getConfig() {
     return retroConfig;
 }
 
+Skin *RetroDream::getSkin() {
+    return skin;
+}
+
 void RetroDream::showStatus(const std::string &title, const std::string &msg, const c2d::Color &color) {
     if (statusBox != nullptr) {
         statusBox->show(title, msg, color);
@@ -305,8 +286,6 @@ int main(int argc, char *argv[]) {
 
     /// render
     render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
-    render->getFont()->setFilter(Texture::Filter::Point);
-    render->getFont()->setOffset({0, 5});
 
 #ifdef __DREAMCAST__
     // vmu
@@ -364,13 +343,12 @@ int main(int argc, char *argv[]) {
     retroConfig = new RetroConfig(retroIo);
     render->setIo(retroIo);
 
+    /// skin
+    skin = new Skin(retroIo);
+
     /// main rect
-    FloatRect screenSize = retroConfig->getRect(RetroConfig::ScreenSize);
-    float outline = 6;
-    FloatRect rect = {screenSize.left + outline, screenSize.top + outline,
-                      screenSize.width - (outline * 2), screenSize.height - (outline * 2)};
-    auto *retroDream = new RetroDream(render, {rect.width, rect.height}, outline);
-    retroDream->setPosition(rect.left, rect.top);
+    Skin::CustomShape shape = skin->getShape(Skin::Id::BackgroundShape);
+    auto *retroDream = new RetroDream(render, &shape);
     render->add(retroDream);
 
     // be sure all stuff is updated/created before splash deletion

@@ -19,7 +19,7 @@ class PreviewVideo : public SkinRect {
 
 public:
 
-    explicit PreviewVideo(RetroDream *rd, RetroConfig::CustomShape *shape);
+    explicit PreviewVideo(RetroDream *rd, Skin::CustomShape *shape);
 
     ~PreviewVideo() override;
 

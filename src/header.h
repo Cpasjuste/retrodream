@@ -12,7 +12,7 @@ class Header : public c2d::Rectangle {
 
 public:
 
-    explicit Header(const c2d::FloatRect &rect);
+    explicit Header(Skin::CustomShape *shape);
 
     c2d::Text *getTextLeft();
 
