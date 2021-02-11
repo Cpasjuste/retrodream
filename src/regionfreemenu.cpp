@@ -8,7 +8,7 @@
 
 using namespace c2d;
 
-RegionFreeMenu::RegionFreeMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
+RegionFreeMenu::RegionFreeMenu(RetroDream *rd, Skin::CustomShape *shape) : Menu(rd, shape) {
 
     io = rd->getRender()->getIo();
     backupPath = rd->getIo()->getDataPath() + "system.rom";

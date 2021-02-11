@@ -5,11 +5,11 @@
 #ifndef RETRODREAM_MENU_H
 #define RETRODREAM_MENU_H
 
-class Menu : public c2d::RectangleShape {
+class Menu : public SkinRect {
 
 public:
 
-    explicit Menu(RetroDream *rd, const c2d::FloatRect &rect);
+    explicit Menu(RetroDream *rd, Skin::CustomShape *shape);
 
     void setVisibility(c2d::Visibility visibility, bool tweenPlay = false) override;
 

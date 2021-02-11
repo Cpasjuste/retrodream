@@ -16,8 +16,6 @@ using namespace c2d;
 Line::Line(const FloatRect &rect, const std::string &str, Font *font, unsigned int fontSize) : RectangleShape(rect) {
 
     text = new Text(str, fontSize, font);
-    text->setOutlineColor(Color::Black);
-    text->setOutlineThickness(2);
     text->setOrigin(Origin::Left);
     text->setPosition(6, rect.height / 2);
     text->setSizeMax(rect.width - ((float) fontSize) - 4, 0);
@@ -54,10 +52,6 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
     retroDream = rd;
     io = (RetroIo *) retroDream->getRender()->getIo();
 
-    // set default colors
-    colorDir = shape->colorDir;
-    colorFile = shape->colorFile;
-
     // calculate number of lines shown
     line_height = FONT_SIZE + lineSpacing;
     max_lines = (int) (shape->rect.height / line_height);
@@ -69,6 +63,10 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
     Skin::CustomShape shape2 = RetroDream::getSkin()->getShape(Skin::Id::FilerHighlightShape);
     highlight = new SkinRect(&shape2);
     add(highlight);
+
+    // custom lines/text colors
+    fileColor = RetroDream::getSkin()->getColor(Skin::Id::FilerFileText);
+    dirColor = RetroDream::getSkin()->getColor(Skin::Id::FilerDirText);
 
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
@@ -107,7 +105,10 @@ void Filer::updateLines() {
             Filer::RetroFile file = files[file_index + i];
             lines[i]->setVisibility(Visibility::Visible);
             lines[i]->setString(file.upperName);
-            lines[i]->getText()->setFillColor(file.data.type == Io::Type::File ? colorFile : colorDir);
+            Skin::CustomColor *color = file.data.type == Io::Type::File ? &fileColor : &dirColor;
+            lines[i]->getText()->setFillColor(color->color);
+            lines[i]->getText()->setOutlineColor(color->outlineColor);
+            lines[i]->getText()->setOutlineThickness(color->outlineSize);
             // set highlight position and color
             if ((int) i == highlight_index) {
                 // handle highlight
@@ -165,7 +166,7 @@ bool Filer::getDir(const std::string &p) {
 
     std::vector<Io::File> dirList = io->getDirList(path, true, false);
     if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
-        Io::File file("..", "..", Io::Type::Directory, 0, colorDir);
+        Io::File file("..", "..", Io::Type::Directory, 0, dirColor.color);
         dirList.insert(dirList.begin(), file);
     }
 
@@ -388,12 +389,6 @@ void Filer::setSize(float width, float height) {
     for (auto &line : lines) {
         line->setSize(width, line->getSize().y);
     }
-}
-
-void Filer::setColor(const Color &dirColor, const Color &fileColor) {
-    colorDir = dirColor;
-    colorFile = fileColor;
-    updateLines();
 }
 
 void Filer::setAlpha(uint8_t alpha, bool recursive) {

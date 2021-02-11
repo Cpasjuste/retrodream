@@ -17,7 +17,7 @@ public:
         Credits
     };
 
-    explicit OptionMenu(RetroDream *rd, const c2d::FloatRect &rect);
+    explicit OptionMenu(RetroDream *rd, Skin::CustomShape *shape);
 
     void setVisibility(c2d::Visibility visibility, bool tweenPlay = false) override;
 

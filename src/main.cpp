@@ -15,6 +15,7 @@
 #include "isoloader.h"
 #include "retroio.h"
 #include "systemmenu.h"
+#include "skintex.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
@@ -58,21 +59,20 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
 
     /// header text
     retroDebug("LOADING HEADER BOX...");
-    Skin::CustomShape shape = skin->getShape(Skin::Id::FilerBarShape);
+    Skin::CustomShape shape = skin->getShape(Skin::Id::FilerPathShape);
     header = new Header(&shape);
     Shape::add(header);
 
     /// splash/title texture
+    shape = skin->getShape(Skin::Id::LogoShape);
+    splashTex->setOrigin(shape.origin);
+    splashTex->setPosition(shape.rect.left, shape.rect.top);
+    splashTex->setSize(shape.rect.width, shape.rect.height);
+    splashTex->setFillColor(shape.color);
+    splashTex->setOutlineColor(shape.outlineColor);
+    splashTex->setOutlineThickness(shape.outlineSize);
     Shape::add(splashTex);
-    splashTex->setOrigin(Origin::Center);
-    splashTex->setPosition(PERCENT(size.x, 76), PERCENT(size.y, 42));
 
-    // TODO: remove (skin)...
-    float previewSize = (size.x / 2) - 32;
-    FloatRect previewRect = {
-            previewSize + 52, PERCENT(size.y, 10.0f),
-            previewSize + 32, previewSize};
-    // TODO: remove (skin)...
     retroDebug("LOADING HELP BOX...");
     shape = skin->getShape(Skin::Id::HelpShape);
     helpBox = new HelpBox(this, &shape);
@@ -97,38 +97,24 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     Shape::add(filer);
 
     retroDebug("LOADING GAME MENU...");
-    presetMenu = new PresetMenu(this, previewRect);
-    presetMenu->setFillColor(COL_BLUE_GRAY);
-    presetMenu->setOutlineColor(COL_BLUE_DARK);
-    presetMenu->setOutlineThickness(3);
+    shape = skin->getShape(Skin::Id::MenuShape);
+    presetMenu = new PresetMenu(this, &shape);
     Shape::add(presetMenu);
 
     retroDebug("LOADING FILE MENU...");
-    fileMenu = new FileMenu(this, previewRect);
-    fileMenu->setFillColor(COL_BLUE_GRAY);
-    fileMenu->setOutlineColor(COL_BLUE_DARK);
-    fileMenu->setOutlineThickness(3);
+    fileMenu = new FileMenu(this, &shape);
     Shape::add(fileMenu);
 
     retroDebug("LOADING SYSTEM MENU...");
-    systemMenu = new SystemMenu(this, previewRect);
-    systemMenu->setFillColor(COL_BLUE_GRAY);
-    systemMenu->setOutlineColor(COL_BLUE_DARK);
-    systemMenu->setOutlineThickness(3);
+    systemMenu = new SystemMenu(this, &shape);
     Shape::add(systemMenu);
 
     retroDebug("LOADING REGION FREE MENU...");
-    regionFreeMenu = new RegionFreeMenu(this, previewRect);
-    regionFreeMenu->setFillColor(COL_BLUE_GRAY);
-    regionFreeMenu->setOutlineColor(COL_BLUE_DARK);
-    regionFreeMenu->setOutlineThickness(3);
+    regionFreeMenu = new RegionFreeMenu(this, &shape);
     Shape::add(regionFreeMenu);
 
     retroDebug("LOADING OPTIONS MENU...");
-    optionMenu = new OptionMenu(this, previewRect);
-    optionMenu->setFillColor(COL_BLUE_GRAY);
-    optionMenu->setOutlineColor(COL_BLUE_DARK);
-    optionMenu->setOutlineThickness(3);
+    optionMenu = new OptionMenu(this, &shape);
     Shape::add(optionMenu);
 
     retroDebug("LOADING CREDITS...");
@@ -308,7 +294,6 @@ int main(int argc, char *argv[]) {
     splash->setFillColor(Color::White);
     render->add(splash);
     splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
-    splashTex->setFilter(Texture::Filter::Point);
     splashSprite = new Sprite(splashTex, {0, 0, splashTex->getSize().x, splashTex->getSize().y});
     splashSprite->setOrigin(Origin::Center);
     splashSprite->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);

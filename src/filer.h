@@ -82,8 +82,6 @@ public:
 
     void setSize(float width, float height) override;
 
-    void setColor(const c2d::Color &dirColor, const c2d::Color &fileColor);
-
     void setAlpha(uint8_t alpha, bool recursive = false) override;
 
     int getMaxLines();
@@ -123,8 +121,8 @@ private:
     int max_lines;
     int file_index = 0;
     int highlight_index = 0;
-    c2d::Color colorDir;
-    c2d::Color colorFile;
+    Skin::CustomColor fileColor;
+    Skin::CustomColor dirColor;
     int previewImageDelay = 500;
     int previewVideoDelay = 5000;
 };

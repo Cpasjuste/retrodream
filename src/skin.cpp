@@ -20,30 +20,47 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
                                 12, 0);
     addGroup(background);
 
-    // filer_bar
-    Group filer_bar = addShape("filer_bar", FilerBarShape,
-                               FloatRect{8, 8, 610, 30},
-                               8, Origin::TopLeft,
-                               Color{49, 121, 159},
-                               Color{255, 255, 255},
-                               2, 0);
-    Group filerText = addColor("text", FilerBarText,
-                                   Color{240, 226, 107},
-                                   Color{0, 0, 0},
-                                   2);
-    filer_bar.addGroup(filerText);
-    addGroup(filer_bar);
+    // logo
+    Group logo = addShape("logo", LogoShape,
+                          FloatRect{477, 196, 256, 256},
+                          0, Origin::Center,
+                          Color{255, 255, 255},
+                          Color{255, 255, 255},
+                          0, 0);
+    addGroup(logo);
 
-    // filer
+    // filer_path
+    Group filer_path = addShape("filer_path", FilerPathShape,
+                                FloatRect{8, 8, 610, 30},
+                                8, Origin::TopLeft,
+                                Color{49, 121, 159},
+                                Color{255, 255, 255},
+                                2, 0);
+    Group filerText = addColor("text", FilerBarText,
+                               Color{240, 226, 107},
+                               Color{0, 0, 0},
+                               2);
+    filer_path.addGroup(filerText);
+    addGroup(filer_path);
+
+    /// filer
     Group filer = addShape("filer", FilerShape,
                            FloatRect{9, 46, 314, 372},
                            8, Origin::TopLeft,
                            Color{204, 228, 240},
                            Color{49, 121, 159},
                            3, 0);
-    filer.addOption({"file_color", Color{97, 190, 236}});
-    filer.addOption({"dir_color", Color{49, 121, 159}});
-    // filer highlight
+    Group filerFileText = addColor("file_text", FilerFileText,
+                                   Color{97, 190, 236},
+                                   Color{0, 0, 0},
+                                   2);
+    filer.addGroup(filerFileText);
+    Group filerDirText = addColor("dir_text", FilerDirText,
+                                  Color{49, 121, 159},
+                                  Color{0, 0, 0},
+                                  2);
+    filer.addGroup(filerDirText);
+    // highlight
     Group filerHighlight = addShape("highlight", FilerHighlightShape,
                                     FloatRect{1, 0, 312, 26},
                                     8, Origin::TopLeft,
@@ -52,6 +69,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
                                     2, 0);
     filer.addGroup(filerHighlight);
     addGroup(filer);
+    /// filer
 
     // preview image
     Group preview_image = addShape("preview_image", PreviewImageShape,
@@ -73,12 +91,39 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // help box
     Group help = addShape("help", HelpShape,
-                          FloatRect{478, 387, 0, 0},
+                          FloatRect{478, 387, 288, 103},
                           8, Origin::Center,
                           Color{178, 226, 249},
                           Color{49, 121, 159},
                           2, 0);
     addGroup(help);
+
+    // menus
+    Group menu = addShape("menu", MenuShape,
+                          FloatRect{334, 46, 314, 282},
+                          8, Origin::TopLeft,
+                          Color{204, 228, 240},
+                          Color{49, 121, 159},
+                          3, 0);
+    Group menuLeftText = addColor("left_text", MenuLeftText,
+                                  Color{49, 121, 159},
+                                  Color{0, 0, 0},
+                                  2);
+    menu.addGroup(menuLeftText);
+    Group menuRightText = addColor("right_text", MenuRightText,
+                                   Color{255, 255, 255},
+                                   Color{49, 121, 159},
+                                   2);
+    menu.addGroup(menuRightText);
+    // highlight
+    Group menuHighlight = addShape("highlight", MenuHighlightShape,
+                                   FloatRect{1, 0, 312, 26},
+                                   8, Origin::TopLeft,
+                                   Color{240, 226, 107},
+                                   Color{49, 121, 159},
+                                   2, 0);
+    menu.addGroup(menuHighlight);
+    addGroup(menu);
 
     // load the configuration from file, overwriting default values
     if (!load()) {
@@ -125,10 +170,6 @@ Skin::CustomShape Skin::getShape(int groupId) {
     shape.outlineColor = group->getOption("outline_color")->getColor();
     shape.outlineSize = (float) group->getOption("outline_size")->getInteger();
     shape.tweenType = (TweenType) group->getOption("tween_type")->getInteger();
-    if (groupId == FilerShape) {
-        shape.colorFile = group->getOption("file_color")->getColor();
-        shape.colorDir = group->getOption("dir_color")->getColor();
-    }
 
     return shape;
 }

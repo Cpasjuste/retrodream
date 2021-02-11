@@ -8,7 +8,7 @@
 
 using namespace c2d;
 
-SystemMenu::SystemMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
+SystemMenu::SystemMenu(RetroDream *rd, Skin::CustomShape *shape) : Menu(rd, shape) {
 
     io = rd->getRender()->getIo();
     backupPath = rd->getIo()->getDataPath() + "block1.rom";

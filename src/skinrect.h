@@ -12,7 +12,7 @@ class SkinRect : public c2d::RectangleShape {
 
 public:
 
-    explicit SkinRect(Skin::CustomShape *shape);
+    explicit SkinRect(Skin::CustomShape *shape, bool tween = true);
 };
 
 #endif //RETRODREAM_SKINRECT_H

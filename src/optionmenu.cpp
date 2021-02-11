@@ -8,7 +8,7 @@
 
 using namespace c2d;
 
-OptionMenu::OptionMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
+OptionMenu::OptionMenu(RetroDream *rd, Skin::CustomShape *shape) : Menu(rd, shape) {
 
     retroDream = rd;
 
@@ -44,7 +44,7 @@ bool OptionMenu::onInput(c2d::Input::Player *players) {
         auto option = configBox->getSelection();
         if (option != nullptr) {
             if (option->getId() == LaunchDs) {
-                retroDream->getConfig()->set(RetroConfig::FilerPath, retroDream->getFiler()->getPath());
+                RetroDream::getConfig()->set(RetroConfig::FilerPath, retroDream->getFiler()->getPath());
                 RetroUtility::exec(retroDream->getIo()->getDsBinPath());
             } else if (option->getId() == SystemConfig) {
                 setVisibility(Visibility::Hidden, true);

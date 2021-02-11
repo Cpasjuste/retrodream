@@ -25,23 +25,11 @@ HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spri
     add(text);
 }
 
-HelpBox::HelpBox(RetroDream *retroDream, Skin::CustomShape *shape)
-        : RectangleShape({288, 103}) {
+HelpBox::HelpBox(RetroDream *retroDream, Skin::CustomShape *shape) : SkinRect(shape) {
 
-    setOrigin(Origin::Center);
-    setPosition(shape->rect.left, shape->rect.top);
-    setFillColor(shape->color);
-    setOutlineColor(shape->outlineColor);
-    setOutlineThickness(shape->outlineSize);
-    setCornersRadius(CORNER_RADIUS);
-    setCornerPointCount(CORNER_POINTS);
-    if (shape->tweenType == Skin::TweenType::Alpha) {
-        add(new TweenAlpha(0, 255, 0.5f));
-    } else {
-        add(new TweenScale({0, 0}, {1, 1}, 0.3f));
-    }
-
-    float width = getSize().x;
+    // HelpBox use scaling for size (original size: 288 x 103)
+    SkinRect::setSize(288, 103);
+    float width = 288;
 
     texture = new C2DTexture(retroDream->getRender()->getIo()->getRomFsPath() + "skin/buttons.png");
 
@@ -49,29 +37,32 @@ HelpBox::HelpBox(RetroDream *retroDream, Skin::CustomShape *shape)
             {2, 4, width, 32},
             {0, 0, 32, 32}, texture);
     lines[HelpButton::X]->text->setString("FILE OPTIONS");
-    add(lines[HelpButton::X]);
+    SkinRect::add(lines[HelpButton::X]);
 
     lines[HelpButton::A] = new HelpLine(
             {2, 36, width, 32},
             {32, 32, 32, 32}, texture);
-    add(lines[HelpButton::A]);
+    SkinRect::add(lines[HelpButton::A]);
 
     lines[HelpButton::Y] = new HelpLine(
             {width / 2 - 4, 4, width, 32},
             {32, 0, 32, 32}, texture);
-    add(lines[HelpButton::Y]);
+    SkinRect::add(lines[HelpButton::Y]);
 
     lines[HelpButton::B] = new HelpLine(
             {width / 2 - 4, 36, width, 32},
             {0, 32, 32, 32}, texture);
     lines[HelpButton::B]->text->setString("BACK");
-    add(lines[HelpButton::B]);
+    SkinRect::add(lines[HelpButton::B]);
 
     lines[HelpButton::Start] = new HelpLine(
             {2, 68, width, 32},
             {64, 0, 32, 32}, texture);
     lines[HelpButton::Start]->text->setString("MAIN MENU");
-    add(lines[HelpButton::Start]);
+    SkinRect::add(lines[HelpButton::Start]);
+
+    // scaling (original size: 288 x 103)
+    SkinRect::setScale(shape->rect.width / 288, shape->rect.height / 103);
 }
 
 void HelpBox::setString(HelpBox::HelpButton button, const std::string &text) {

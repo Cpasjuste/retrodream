@@ -9,13 +9,9 @@
 
 using namespace c2d;
 
-Menu::Menu(RetroDream *rd, const c2d::FloatRect &rect)
-        : RectangleShape({rect.width, rect.height}) {
+Menu::Menu(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape, false) {
 
     retroDream = rd;
-
-    setCornersRadius(CORNER_RADIUS);
-    setCornerPointCount(CORNER_POINTS);
 
     title = new Text("MENU", FONT_SIZE);
     title->setOrigin(Origin::BottomLeft);
@@ -24,24 +20,33 @@ Menu::Menu(RetroDream *rd, const c2d::FloatRect &rect)
     title->setOutlineColor(COL_BLUE_DARK);
     Menu::add(title);
 
-    FloatRect configRect = {16, 16, rect.width - 28, rect.height - 64};
+    FloatRect configRect = {16, 16, shape->rect.width - 28, shape->rect.height - 64};
     configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect, FONT_SIZE + 10);
-    configBox->getListBoxLeft()->setFillColor(COL_BLUE_GRAY);
-    configBox->getListBoxLeft()->setTextOutlineColor(Color::Black);
-    configBox->getListBoxLeft()->setTextOutlineThickness(2);
-    configBox->getListBoxLeft()->setTextColor(COL_BLUE_DARK);
-
-    configBox->getListBoxRight()->setFillColor(COL_BLUE_GRAY);
-    configBox->getListBoxRight()->setTextOutlineColor(COL_BLUE_DARK);
-    configBox->getListBoxRight()->setTextOutlineThickness(2);
-    configBox->getListBoxRight()->setTextColor(Color::White);
-    configBox->getListBoxRight()->getHighlight()->setFillColor(COL_YELLOW);
-    configBox->getListBoxRight()->getHighlight()->setOutlineColor(COL_BLUE_DARK);
-    configBox->getListBoxRight()->getHighlight()->setOutlineThickness(1);
-
+    // left box
+    Skin::CustomColor lcol = RetroDream::getSkin()->getColor(Skin::Id::MenuLeftText);
+    configBox->getListBoxLeft()->setFillColor(shape->color);
+    configBox->getListBoxLeft()->setTextColor(lcol.color);
+    configBox->getListBoxLeft()->setTextOutlineColor(lcol.outlineColor);
+    configBox->getListBoxLeft()->setTextOutlineThickness(lcol.outlineSize);
+    // right box
+    Skin::CustomColor rcol = RetroDream::getSkin()->getColor(Skin::Id::MenuRightText);
+    configBox->getListBoxRight()->setFillColor(shape->color);
+    configBox->getListBoxRight()->setTextColor(rcol.color);
+    configBox->getListBoxRight()->setTextOutlineColor(rcol.outlineColor);
+    configBox->getListBoxRight()->setTextOutlineThickness(rcol.outlineSize);
+    // right highlight
+    Skin::CustomShape hshape = RetroDream::getSkin()->getShape(Skin::Id::MenuHighlightShape);
+    configBox->getListBoxRight()->getHighlight()->setFillColor(hshape.color);
+    configBox->getListBoxRight()->getHighlight()->setOutlineColor(hshape.outlineColor);
+    configBox->getListBoxRight()->getHighlight()->setOutlineThickness(hshape.outlineSize);
+    configBox->getListBoxRight()->getHighlight()->setCornersRadius((float) hshape.corners_radius);
+    configBox->getListBoxRight()->getHighlight()->setCornerPointCount(CORNER_POINTS);
+    //
     Menu::add(configBox);
 
-    Menu::add(new TweenPosition({rect.left + rect.width + 10, rect.top}, {rect.left, rect.top}, 0.2f));
+    Menu::add(new TweenPosition(
+            {shape->rect.left + shape->rect.width + 10, shape->rect.top},
+            {shape->rect.left, shape->rect.top}, 0.2f));
     Menu::setVisibility(Visibility::Hidden);
 }
 

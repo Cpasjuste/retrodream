@@ -18,13 +18,20 @@ public:
 
     enum Id {
         BackgroundShape,
+        LogoShape,
         FilerShape,
         FilerHighlightShape,
-        FilerBarShape,
+        FilerPathShape,
         FilerBarText,
+        FilerFileText,
+        FilerDirText,
         PreviewImageShape,
         PreviewVideoShape,
-        HelpShape
+        HelpShape,
+        MenuShape,
+        MenuLeftText,
+        MenuRightText,
+        MenuHighlightShape
     };
 
     class CustomShape {

@@ -9,7 +9,7 @@
 
 using namespace c2d;
 
-FileMenu::FileMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
+FileMenu::FileMenu(RetroDream *rd, Skin::CustomShape *shape) : Menu(rd, shape) {
 
     title->setString("FILE OPTIONS");
 }

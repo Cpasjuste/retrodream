@@ -8,7 +8,7 @@
 
 using namespace c2d;
 
-PresetMenu::PresetMenu(RetroDream *rd, const c2d::FloatRect &rect) : Menu(rd, rect) {
+PresetMenu::PresetMenu(RetroDream *rd, Skin::CustomShape *shape) : Menu(rd, shape) {
 
     title->setString("GAME OPTIONS");
 
