@@ -1,3 +1,15 @@
+////
+//// RESIZING / QUANTING (PNG)
+////
+find . -name '*.png' -print0 | xargs -0 -P8 -L1 mogrify -resize 256x256
+find . -name '*.png' -print0 | xargs -0 -P8 -L1 pngquant --ext .png --force 256
+find . -name '*.mp4' -print0 | sed 's|.mp4||g' | xargs -0 -P8 -L1 -I{} ffmpeg -i {}.mp4 -ar 22050 -framerate 30 -vf "scale=128:-2" -t 30 {}.roq
+
+////
+//// SCRAPPING RESULT
+////
+
+
 ./sscrap.elf -u cpasjuste -p xxx -r /home/cpasjuste/dev/dreamcast/scrap/covers/ -sid 23 -dlm video-normalized ss sstitle mixrbv2 wheel box-2D
   _________ ____________________________    _____ __________ 
  /   _____//   _____/\_   ___ \______   \  /  _  \\______   \
