@@ -1,0 +1,509 @@
+./sscrap.elf -u cpasjuste -p xxx -r /home/cpasjuste/dev/dreamcast/scrap/covers/ -sid 23 -dlm video-normalized ss sstitle mixrbv2 wheel box-2D
+  _________ ____________________________    _____ __________ 
+ /   _____//   _____/\_   ___ \______   \  /  _  \\______   \
+ \_____  \ \_____  \ /    \  \/|       _/ /  /_\  \|     ___/
+ /        \/        \\     \___|    |   \/    |    \    |    
+/_______  /_______  / \______  /____|_  /\____|__ _/____|    
+        \/        \/         \/       \/ 2020 @ cpasjuste
+
+Getting user information... found user cpasjuste, threads: 4, requests: 381/20000, download speed: 4096 Ko/s
+Updating systems... found 219 systems
+Updating medias types... found 48 medias type
+Building roms list... found 405 roms
+Scrapping system 'Dreamcast', let's go!
+
+[2/405] OK: King of Fighters 2002.zip => The King Of Fighters 2002 (Dreamcast) (search)
+[4/405] OK: Twinkle Star Sprites.zip => Twinkle Star Sprites (Dreamcast) (search)
+[1/405] OK: Tee Off.zip => Golf Shiyouyo (Dreamcast) (search)
+[3/405] OK: 4 Wheel Thunder.zip => 4 Wheel Thunder (Dreamcast) (search)
+[8/405] NOK: Donald - Quack Attack.zip (1)
+[7/405] OK: Dave Mirra Freestyle BMX.zip => Dave Mirra Freestyle Bmx (Dreamcast) (search)
+[5/405] OK: Deep Fighter.zip => Deep Fighter (Dreamcast) (search)
+[6/405] OK: Virtua Striker 2.zip => Virtua Striker 2 Ver. 2000.1 (Dreamcast) (search)
+[10/405] OK: Alice Dreams Tournament.zip => Alice Dreams Tournament (Dreamcast) (search)
+[9/405] OK: NCAA College Football 2K2 - Road to the Rose Bowl.zip => Ncaa College Football 2k2 (Dreamcast) (search)
+[11/405] OK: Tokyo Bus Guide.zip => Tokyo Bus Guide (Dreamcast) (search)
+[12/405] OK: Championship Surfer.zip => Championship Surfer (Dreamcast) (search)
+[13/405] OK: Reel Fishing - Wild.zip => Fish Eyes Wild (Dreamcast) (search)
+[14/405] NOK: Blue Shift.zip (1)
+[18/405] NOK: Neo4All.zip (1)
+[16/405] OK: Ikaruga.zip => Ikaruga (Dreamcast) (search)
+[15/405] OK: Floigan Bros. - Episode 1.zip => Floigan Bros. - Episode 1 (Dreamcast) (search)
+[19/405] OK: Metropolis Street Racer.zip => Metropolis Street Racer (Dreamcast) (search)
+[17/405] OK: Hydro Thunder (NO VGA).zip => Hydro Thunder (Dreamcast) (search)
+[20/405] OK: 90 Minutes - Sega Championship Football.zip => 90 Minutes Sega Championship Football (Dreamcast) (search)
+[21/405] OK: ECW Hardcore Revolution.zip => Ecw Hardcore Revolution (Dreamcast) (search)
+[22/405] OK: Virtua Cop 2.zip => Virtua Cop 2 (Dreamcast) (search)
+[24/405] OK: Mat Hoffman's Pro BMX.zip => Mat Hoffman's Pro Bmx (Dreamcast) (search)
+[23/405] OK: Napple Tale - Arsia in Daydream.zip => Napple Tale - Arsia In Daydream (Dreamcast) (search)
+[25/405] OK: Shadow Man.zip => Shadow Man (Dreamcast) (search)
+[27/405] NOK: MTV Sports - Skateboarding Featuring Andy Macdonald.zip (1)
+[29/405] OK: GK - Giant Killers.zip => GK - Giant Killers (Dreamcast) (search)
+[26/405] OK: ESPN International Track & Field.zip => Ganbare Nippon! Olympic 2000 (Dreamcast) (search)
+[28/405] OK: Virtua Athlete 2K.zip => Virtua Athlete 2k (Dreamcast) (search)
+[31/405] NOK: Aero Dancing I - Jikai Saku Made Matemasen.zip (1)
+[30/405] OK: Tony Hawk's Skateboarding.zip => Tony Hawk's Skateboarding (Dreamcast) (search)
+[32/405] OK: Sonic Shuffle.zip => Sonic Shuffle (Dreamcast) (search)
+[33/405] OK: TrickStyle.zip => Trickstyle (Dreamcast) (search)
+[34/405] OK: Phantasy Star Online V1.zip => Phantasy Star Online Ver.2 (Dreamcast) (search)
+[35/405] OK: Evolution 2 - Far Off Promise.zip => Evolution 2 - Far Off Promise (Dreamcast) (search)
+[37/405] NOK: L.O.L. - Lack of Love.zip (1)
+[36/405] OK: Urban Chaos.zip => Urban Chaos (Dreamcast) (search)
+[38/405] OK: Flag to Flag.zip => Super Speed Racing (Dreamcast) (search)
+[39/405] OK: Moho.zip => Moho (Dreamcast) (search)
+[41/405] NOK: Tomb Raider - Sur les traces de Lara Croft.zip (1)
+[40/405] OK: Net De Tennis.zip => Netto De Tennis (Dreamcast) (search)
+[42/405] OK: Trizeal.zip => Trizeal (Dreamcast) (search)
+[43/405] OK: Army Men - Sarge's Heroes.zip => Army Men - Sarge's Heroes (Dreamcast) (search)
+[44/405] OK: Jeremy McGrath Supercross 2000.zip => Jeremy McGrath Supercross 2000 (Dreamcast) (search)
+[47/405] NOK: Dreamkey 3.0.zip (1)
+[45/405] OK: Confidential Mission.zip => Confidential Mission (Dreamcast) (search)
+[46/405] OK: Blue Stinger.zip => Blue Stinger (Dreamcast) (search)
+[48/405] OK: Sakura Taisen 3.zip => Sakura Taisen 3 - Paris Wa Moeteiru Ka (Dreamcast) (search)
+[51/405] OK: Sydney 2000.zip => Sydney 2000 (Dreamcast) (search)
+[49/405] OK: Power Stone 2.zip => Power Stone (Dreamcast) (search)
+[50/405] OK: F1 World Grand Prix II.zip => F1 World Grand Prix 2 (Dreamcast) (search)
+[52/405] OK: Fast Striker.zip => Fast Striker (Dreamcast) (search)
+[53/405] OK: Pro Pinball - Trilogy.zip => Pro-pinball Trilogy (Dreamcast) (search)
+[54/405] OK: Dino Crisis.zip => Dino Crisis (Dreamcast) (search)
+[55/405] OK: Golf Shiyouyo 2 - Aratanaru Chousen.zip => Golf Shiyouyo 2 - Aratanaru Chousen (Dreamcast) (search)
+[57/405] OK: Zusar Vasar.zip => Zusar Vasar (Dreamcast) (search)
+[56/405] OK: NFL 2K.zip => Nfl 2k1 (Dreamcast) (search)
+[58/405] OK: Conflict Zone.zip => Conflict Zone (Dreamcast) (search)
+[59/405] OK: Tom Clancy's Rainbow Six.zip => Tom Clancy's Rainbow Six (Dreamcast) (search)
+[60/405] OK: Sega Bass Fishing 2.zip => Getbass (Dreamcast) (search)
+[62/405] OK: Magic - The Gathering.zip => Magic - The Gathering (Dreamcast) (search)
+[63/405] NOK: Hello Kitty - Lovely Fruit Park.zip (1)
+[61/405] OK: Taxi 2.zip => Crazy Taxi (Dreamcast) (search)
+[65/405] NOK: Draconus - Cult of the Wyrm.zip (1)
+[64/405] OK: Exhibition of Speed.zip => Exhibition Of Speed (Dreamcast) (search)
+[69/405] NOK: D2.zip (1)
+[68/405] NOK: King of Fighters - Dream Match 1999.zip (1)
+[66/405] OK: Trigger Heart Exelica.zip => Trigger Heart Exelica (Dreamcast) (search)
+[67/405] OK: Spirit of Speed 1937.zip => Spirit of Speed 1937 (Dreamcast) (search)
+[70/405] OK: Nettou Golf.zip => Nettou Golf (Dreamcast) (search)
+[71/405] OK: Sega Extreme Sports.zip => Sega Extreme Sports (Dreamcast) (search)
+[72/405] OK: Radirgy.zip => Radirgy (Dreamcast) (search)
+[74/405] OK: Ecco II - Sentinels of the Universe.zip => Ecco 2 - Sentinels Of The Universe (Dreamcast) (search)
+[73/405] OK: Grandia II.zip => Grandia 2 (Dreamcast) (search)
+[77/405] NOK: Fish Life Amazon.zip (1)
+[76/405] OK: AeroWings.zip => AeroWings (Dreamcast) (search)
+[75/405] OK: Toy Commander.zip => Toy Commander (Dreamcast) (search)
+[78/405] OK: Slave Zero.zip => Slave Zero (Dreamcast) (search)
+[79/405] OK: Tom Clancy's Rainbow Six - Rogue Spear.zip => Tom Clancy's Rainbow Six Rogue Spear (Dreamcast) (search)
+[80/405] OK: Volgarr the Viking.zip => Volgarr The Viking (Dreamcast) (search)
+[81/405] OK: Project Justice - Rival Schools 2.zip => Project Justice - Rival Schools 2 (Dreamcast) (search)
+[82/405] OK: UEFA Striker.zip => Super Euro Soccer 2000 (Dreamcast) (search)
+[83/405] OK: Pier Solar HD.zip => Pier Solar and the Great Architects (Dreamcast) (search)
+[84/405] OK: ChuChu Rocket.zip => Chuchu Rocket! (Dreamcast) (search)
+[86/405] OK: Tetris 4D.zip => The Next Tetris - On-line Edition (Dreamcast) (search)
+[85/405] OK: Spawn - In the Demon's Hand.zip => Spawn - In The Demon's Hand (Dreamcast) (search)
+[87/405] OK: Ecco the Dolphin.zip => Ecco The Dolphin - Defender Of The Future (Dreamcast) (search)
+[88/405] OK: Sega GT.zip => Sega Gt - Homologation Special (Dreamcast) (search)
+[89/405] OK: Tech Romancer.zip => Tech Romancer (Dreamcast) (search)
+[90/405] OK: World Series Baseball 2K2.zip => World Series Baseball 2k2 (Dreamcast) (search)
+[91/405] OK: Sega Rally 2.zip => Sega Rally 2 (Dreamcast) (search)
+[92/405] OK: Tokyo Highway Challenge.zip => Tokyo Highway Challenge 2 (Dreamcast) (search)
+[93/405] OK: Neo Golden Logres.zip => Neo Golden Logres (Dreamcast) (search)
+[97/405] NOK: Rez.zip (1)
+[94/405] OK: King of Fighters 2001.zip => The King Of Fighters 2001 (Dreamcast) (search)
+[95/405] OK: Virtua Tennis 2.zip => Virtua Tennis (Dreamcast) (search)
+[99/405] NOK: POD 2 - Multiplayer Online.zip (1)
+[96/405] OK: Resident Evil 2.zip => Resident Evil Code Veronica (Dreamcast) (search)
+[98/405] OK: Space Channel 5 Part 2.zip => Space Channel 5 - Part 2 (Dreamcast) (search)
+[101/405] OK: Aero Dancing I.zip => AeroWings (Dreamcast) (search)
+[104/405] NOK: Industrial Spy - Operation Espionage.zip (1)
+[100/405] OK: Monaco Grand Prix Racing Simulation 2.zip => Monaco Grand Prix - Racing Simulation 2 (Dreamcast) (search)
+[102/405] OK: Rainbow Cotton.zip => Rainbow Cotton (Dreamcast) (search)
+[103/405] OK: Cannon Spike.zip => Gunspike (Dreamcast) (search)
+[107/405] NOK: Sega Smashpack Volume 1.zip (1)
+[105/405] OK: NBA 2K.zip => Nba 2k1 (Dreamcast) (search)
+[106/405] OK: Metal Slug 6.zip => Metal Slug 6 (Dreamcast) (search)
+[111/405] OK: genesis.zip => ZZZ(notgame):Genesis Plus (Dreamcast) (search)
+[108/405] OK: Daytona USA 2001.zip => Daytona Usa 2001 (Dreamcast) (search)
+[110/405] OK: Atsumare! Guru Guru Onsen.zip => Atsumare! Guru Guru Onsen (Dreamcast) (search)
+[109/405] OK: Propeller Arena.zip => Propeller Arena (Dreamcast) (search)
+[112/405] OK: Seaman.zip => Seaman - Kindan No Pet (Dreamcast) (search)
+[113/405] OK: Spider-Man.zip => Spider-man (Dreamcast) (search)
+[117/405] OK: Crazy Taxi 2.zip => Crazy Taxi (Dreamcast) (search)
+[116/405] NOK: Bakumatsu Roman Dai ni Maku - Gekka no Kenshi - Final Edition.zip (1)
+[114/405] OK: 18 Wheeler - American Pro Trucker.zip => 18 Wheeler - American Pro Trucker (Dreamcast) (search)
+[115/405] OK: Snow Surfers.zip => Snow Surfers (Dreamcast) (search)
+[118/405] OK: Evolution - The World of Sacred Device.zip => Evolution - The World of Sacred Device (Dreamcast) (search)
+[119/405] OK: Space Channel 5.zip => Space Channel 5 (Dreamcast) (search)
+[121/405] NOK: Hello Kitty - Magical Block.zip (1)
+[120/405] OK: Hidden & Dangerous.zip => Hidden & Dangerous (Dreamcast) (search)
+[125/405] OK: F1 World Grand Prix.zip => F1 World Grand Prix 2 (Dreamcast) (search)
+[122/405] NOK: Hello Kitty - Garden Panic.zip (1)
+[123/405] OK: Net Versus - Chess.zip => Net Versus - Chess (Dreamcast) (search)
+[124/405] OK: Heavy Metal - Geomatrix.zip => Heavy Metal Geomatrix (Dreamcast) (search)
+[126/405] OK: Super Magnetic Neo.zip => Super Magnetic Neo (Dreamcast) (search)
+[127/405] OK: 4x4 Evolution.zip => 4x4 Evolution (Dreamcast) (search)
+[128/405] OK: South Park Rally.zip => South Park Rally (Dreamcast) (search)
+[131/405] OK: Crazy Taxi.zip => Crazy Taxi (Dreamcast) (search)
+[132/405] OK: Sakura Taisen.zip => Sakura Taisen 3 - Paris Wa Moeteiru Ka (Dreamcast) (search)
+[129/405] NOK: Opposing Force.zip (1)
+[133/405] OK: Armada.zip => Armada (Dreamcast) (search)
+[134/405] OK: Psyvariar 2 - The Will to Fabricate.zip => Psyvariar 2 - The Will To Fabricate (Dreamcast) (search)
+[135/405] OK: Shenmue 2.zip => Shenmue (Dreamcast) (search)
+[130/405] OK: Plasma Sword - Nightmare of Bilstein (NO VGA).zip => Plasma Sword - Nightmare of Bilstein (Dreamcast) (search)
+[139/405] NOK: Street Fighter III - 3rd Strike.zip (1)
+[136/405] OK: Red Dog - Superior Firepower.zip => Red Dog - Superior Firepower (Dreamcast) (search)
+[137/405] OK: NBA 2K2.zip => Nba 2k2 (Dreamcast) (search)
+[138/405] OK: Freestyle Scooter.zip => Freestyle Scooter (Dreamcast) (search)
+[143/405] NOK: Half-Life Gold.zip (1)
+[140/405] OK: Sonic Adventure.zip => Sonic Adventure 2 (Dreamcast) (search)
+[142/405] OK: Fighting Force 2.zip => Fighting Force 2 (Dreamcast) (search)
+[141/405] OK: Star Wars - Demolition.zip => Star Wars - Demolition (Dreamcast) (search)
+[145/405] OK: Toe Jam And Earl 3.zip => Toejam And Earl 3 - Mission To Earth (Dreamcast) (search)
+[146/405] NOK: FX-Unit Yuki.zip (1)
+[147/405] NOK: Hello Kitty - Waku Waku Cookies.zip (1)
+[148/405] NOK: Half-Life - Goldeneye Mod.zip (1)
+[144/405] OK: Toy Racer.zip => Toy Racer (Dreamcast) (search)
+[149/405] NOK: Tomb Raider La Revelation Finale.zip (1)
+[150/405] NOK: The Flinstones Viva Rock Vegas.zip (1)
+[152/405] NOK: Next Tetris - Online Edition.zip (1)
+[151/405] OK: Outtrigger.zip => Outtrigger (Dreamcast) (search)
+[153/405] OK: Evil Dead - Hail to the King.zip => Evil Dead - Hail To The King (Dreamcast) (search)
+[154/405] OK: Vampire Chronicle for Matching Service.zip => Vampire Chronicle For Matching Service (Dreamcast) (search)
+[155/405] OK: Coaster Works.zip => Jet Coaster Dream (Dreamcast) (search)
+[156/405] OK: Culdcept II.zip => Culdcept Second (Dreamcast) (search)
+[157/405] OK: Legacy of Kain - Soul Reaver.zip => Legacy Of Kain - Soul Reaver (Dreamcast) (search)
+[158/405] OK: Prince of Persia - Arabian Nights.zip => Prince Of Persia - Arabian Nights (Dreamcast) (search)
+[159/405] OK: AeroWings 2 - Airstrike.zip => AeroWings 2 - Airstrike (Dreamcast) (search)
+[163/405] NOK: Dream Explorer.zip (1)
+[160/405] OK: Jimmy White's 2 - Cueball.zip => Jimmy White's 2 - Cueball (Dreamcast) (search)
+[161/405] OK: Silent Scope.zip => Silent Scope (Dreamcast) (search)
+[162/405] OK: Ooga Booga.zip => Ooga Booga (Dreamcast) (search)
+[164/405] NOK: GrandiaII.zip (1)
+[165/405] NOK: Soul Calibur.zip (1)
+[169/405] NOK: Frogger 2 - Swampys Revenge.zip (1)
+[166/405] OK: WWF Attitude.zip => WWF Attitude (Dreamcast) (search)
+[167/405] OK: Speed Devils.zip => Speed Devils (Dreamcast) (search)
+[168/405] OK: Stunt GP.zip => Stunt Gp (Dreamcast) (search)
+[170/405] OK: Carrier.zip => Carrier (Dreamcast) (search)
+[171/405] OK: Buggy Heat.zip => Buggy Heat (Dreamcast) (search)
+[172/405] OK: Cleopatra Fortune.zip => Cleopatra Fortune (Dreamcast) (search)
+[175/405] NOK: Q-bert.zip (1)
+[173/405] OK: Power Jet Racing 2001.zip => Power Jet Racing 2001 (Dreamcast) (search)
+[178/405] OK: Sonic Adventure 2.zip => Sonic Adventure 2 (Dreamcast) (search)
+[179/405] OK: Sakura Taisen 4.zip => Sakura Taisen 3 - Paris Wa Moeteiru Ka (Dreamcast) (search)
+[174/405] OK: Ultimate Fighting Championship.zip => Ultimate Fighting Championship (Dreamcast) (search)
+[176/405] OK: HellGate.zip => Hellgate (Dreamcast) (search)
+[177/405] OK: The House Of The Dead 2.zip => House Of The Dead 2, The (Dreamcast) (search)
+[182/405] NOK: Epitech Collection.zip (1)
+[180/405] OK: Ms Pac-Man - Maze Madness.zip => Ms. Pac-man Maze Madness (Dreamcast) (search)
+[181/405] OK: Yu Suzuki Game Works Vol. 1.zip => Yu Suzuki Game Works Vol. 1 (Dreamcast) (search)
+[183/405] NOK: Capcom vs SNK 2 - Millionaire Fighting 2001.zip (1)
+[186/405] NOK: Another World HD.zip (1)
+[187/405] NOK: Millenium Racer - Y2K Fighters.zip (1)
+[184/405] OK: Zero Gunner 2.zip => Zero Gunner 2 (Dreamcast) (search)
+[185/405] OK: Musapey's Choco Marker.zip => Musapey's Choco Marker (Dreamcast) (search)
+[189/405] NOK: dreamsnes.zip (1)
+[188/405] OK: Namco Museum.zip => Namco Museum (Dreamcast) (search)
+[190/405] OK: Demolition Racer - No Exit.zip => Demolition Racer - No Exit (Dreamcast) (search)
+[191/405] OK: Test Drive 6.zip => Mans 24 Hours, Le (Dreamcast) (search)
+[192/405] OK: Sword of the Berserk - Guts' Rage.zip => Sword of the Berserk - Guts' Rage (Dreamcast) (search)
+[193/405] OK: Virtua Fighter 3tb.zip => Virtua Fighter 3tb (Dreamcast) (search)
+[194/405] OK: Bomberman Online.zip => Bomberman Online (Dreamcast) (search)
+[195/405] OK: Shikigami no Shiro II.zip => Shikigami No Shiro 2 (Dreamcast) (search)
+[196/405] OK: Nightmare Creatures II.zip => Nightmare Creatures 2 (Dreamcast) (search)
+[197/405] OK: Elemental Gimmick Gear.zip => Elemental Gimmick Gear - E.g.g. (Dreamcast) (search)
+[201/405] OK: Xtreme Sports.zip => Sega Extreme Sports (Dreamcast) (search)
+[198/405] OK: Boku Doraemon.zip => Boku Doraemon (Dreamcast) (search)
+[200/405] OK: Soldier of Fortune.zip => Soldier Of Fortune (Dreamcast) (search)
+[199/405] OK: Vanishing Point.zip => Vanishing Point (Dreamcast) (search)
+[202/405] OK: Golem no Maigo.zip => Golem No Maigo (Dreamcast) (search)
+[205/405] NOK: Rush Rally Racing Reloaded.zip (1)
+[203/405] OK: Fur Fighters.zip => Fur Fighters (Dreamcast) (search)
+[204/405] OK: Millennium Soldier - Expendable.zip => Millennium Soldier - Expendable (Dreamcast) (search)
+[207/405] NOK: Marvel vs Capcom 2 - New Age of Heroes.zip (1)
+[209/405] NOK: Wetrix+.zip (1)
+[206/405] OK: Midway's Greatest Arcade Hits Volume 1.zip => Midway's Greatest Arcade Hits Volume 1 (Dreamcast) (search)
+[208/405] OK: Chicken Run.zip => Chicken Run (Dreamcast) (search)
+[212/405] NOK: Godzilla Generations Maximum Impact.zip (1)
+[211/405] OK: Pro Mahjong Kiwame D.zip => Pro Mahjong Kiwame D (Dreamcast) (search)
+[210/405] OK: Death Crimson 2 - Meranito no Saidan.zip => Death Crimson 2 - Meranito No Saidan (Dreamcast) (search)
+[214/405] NOK: Looney Tunes Space Race.zip (1)
+[216/405] NOK: Hydra Castle Labyrinth.zip (1)
+[218/405] NOK: Half-Life Darkstar Mod.zip (1)
+[213/405] OK: Fatal Fury - Mark of the Wolves.zip => Fatal Fury - Mark of the Wolves (Dreamcast) (search)
+[215/405] OK: Super Runabout.zip => Super Runabout: The Golden State (Dreamcast) (search)
+[220/405] NOK: Golf Shiyouyo - Kouryaku Pack.zip (1)
+[217/405] OK: Deadly Skies.zip => Deadly Skies (Dreamcast) (search)
+[219/405] OK: Puyo Puyo DA!.zip => Puyo Puyo Da! Featuring Ellena System (Dreamcast) (search)
+[221/405] OK: MDK 2.zip => Mdk 2 (Dreamcast) (search)
+[222/405] OK: Soul Fighter.zip => Soul Fighter (Dreamcast) (search)
+[223/405] OK: NHL 2K2.zip => Nhl 2k2 (Dreamcast) (search)
+[224/405] OK: Under Defeat.zip => Under Defeat (Dreamcast) (search)
+[225/405] OK: Fighting Vipers 2.zip => Fighting Vipers 2 (Dreamcast) (search)
+[226/405] OK: Sega Worldwide Soccer 2000.zip => Sega Worldwide Soccer 2000 (Dreamcast) (search)
+[230/405] OK: Resident Evil Code Veronica.zip => Resident Evil Code Veronica (Dreamcast) (search)
+[227/405] OK: Sega Marine Fishing.zip => Sega Marine Fishing (Dreamcast) (search)
+[228/405] OK: Spec Ops II - Omega Squad.zip => Spec Ops II - Omega Squad (Dreamcast) (search)
+[229/405] OK: World Series Baseball 2K1.zip => World Series Baseball 2k1 (Dreamcast) (search)
+[232/405] OK: Caesars Palace 2000 - Millennium Gold Edition.zip => Caesars Palace 2000 - Millennium Gold Edition (Dreamcast) (search)
+[231/405] OK: NFL Blitz 2000.zip => NFL Blitz 2000 (Dreamcast) (search)
+[233/405] OK: NFL Quarterback Club 2000.zip => Nfl Quarterback Club 2000 (Dreamcast) (search)
+[237/405] NOK: Super Puzzle Fighter IIX for Matching Service.zip (1)
+[234/405] OK: Mortal Kombat Gold.zip => Mortal Kombat Gold (Dreamcast) (search)
+[235/405] OK: UEFA Dream Soccer.zip => Uefa Dream Soccer (Dreamcast) (search)
+[236/405] OK: F1 Racing Championship.zip => F1 Racing Championship (Dreamcast) (search)
+[238/405] OK: Aero Dancing - Todoroki Taichou no Himitsu Disc.zip => Aero Dancing - Todoroki Taichou No Himitsu Disc (Dreamcast) (search)
+[239/405] OK: Puyo Puyo 4.zip => Puyo Puyo~n (Dreamcast) (search)
+[240/405] OK: Black Matrix AD.zip => Black Matrix Advanced (Dreamcast) (search)
+[241/405] OK: Planet Ring.zip => Planet Ring (Dreamcast) (search)
+[245/405] NOK: Marvel vs Capcom - Clash of Super Heroes.zip (1)
+[242/405] OK: GigaWing.zip => Giga Wing (Dreamcast) (search)
+[243/405] OK: Jet Set Radio.zip => Jet Set Radio (Dreamcast) (search)
+[244/405] OK: Record of Lodoss War.zip => Record of Lodoss War (Dreamcast) (search)
+[249/405] OK: Racing Simulation 2 - Monaco Grand Prix On-Line.zip => Monaco Grand Prix - Racing Simulation 2 (Dreamcast) (search)
+[248/405] NOK: Star Wars - Episode I - Racer.zip (1)
+[246/405] OK: Re-Volt.zip => Re-volt (Dreamcast) (search)
+[250/405] NOK: TMNT - The Hyperstone Heist.zip (1)
+[252/405] OK: Tokyo Highway Challenge 2.zip => Tokyo Highway Challenge 2 (Dreamcast) (search)
+[247/405] OK: Mr Driller.zip => Mr. Driller (Dreamcast) (search)
+[251/405] OK: NBA Hoopz.zip => Nba Hoopz (Dreamcast) (search)
+[253/405] OK: Cool Cool Toon.zip => Cool Cool Toon (Dreamcast) (search)
+[254/405] OK: F355 Challenge.zip => F355 Challenge (Dreamcast) (search)
+[257/405] OK: Sega Bass Fishing.zip => Getbass (Dreamcast) (search)
+[255/405] OK: Dead or Alive 2.zip => Dead Or Alive 2 (Dreamcast) (search)
+[259/405] NOK: Half-Life - Black Ops Mod.zip (1)
+[258/405] OK: O-to-i-re - Dreamcast Sequencer.zip => ZZZ(notgame):O-to-i-re - Dreamcast Sequencer (Dreamcast) (search)
+[256/405] OK: Dynamite Cop.zip => Dynamite Deka 2 (Dreamcast) (search)
+[262/405] NOK: Armed 7.zip (1)
+[260/405] OK: Incoming.zip => Incoming - Jinrui Saisyuu Kessen (Dreamcast) (search)
+[261/405] OK: Cosmic Smash.zip => Cosmic Smash (Dreamcast) (search)
+[265/405] OK: NBA 2K1.zip => Nba 2k1 (Dreamcast) (search)
+[263/405] OK: Bangai-O.zip => Bangai-O (Dreamcast) (search)
+[264/405] OK: KISS Psycho Circus - The Nightmare Child.zip => Kiss Psycho Circus - The Nightmare Child (Dreamcast) (search)
+[266/405] OK: Gauntlet Legends.zip => Gauntlet Legends (Dreamcast) (search)
+[267/405] OK: Walt Disney World Quest - Magical Racing Tour.zip => Walt Disney World Quest - Magical Racing Tour (Dreamcast) (search)
+[269/405] OK: Qui veut gagner des millions.zip => Who Wants to Be a Millionaire (Dreamcast) (search)
+[268/405] OK: Ready 2 Rumble Boxing.zip => Ready 2 Rumble Boxing (Dreamcast) (search)
+[271/405] OK: Panzer Front.zip => Panzer Front (Dreamcast) (search)
+[270/405] OK: The Last Blade 2.zip => Last Blade 2 Heart of the Samurai (Dreamcast) (search)
+[275/405] NOK: Street Fighter III - Double Impact.zip (1)
+[272/405] OK: Ducati World.zip => Ducati World Racing Challenge (Dreamcast) (search)
+[273/405] OK: Magforce Racing.zip => Magforce Racing (Dreamcast) (search)
+[278/405] OK: Midway's Greatest Arcade Hits Volume 2.zip => Midway's Greatest Arcade Hits Volume 1 (Dreamcast) (search)
+[276/405] OK: Kidou Senshi Gundam.zip => Kidou Senshi Gundam - Gihren No Yabou - Zeon No Keifu (Dreamcast) (search)
+[279/405] NOK: Star Wars - Episode I - Jedi Power Battles.zip (1)
+[274/405] OK: StarLancer.zip => Starlancer (Dreamcast) (search)
+[280/405] NOK: Sakura Taisen Kinematron Hanagumi Mail.zip (1)
+[283/405] NOK: Capcom vs SNK.zip (1)
+[277/405] OK: Max Steel - Covert Missions.zip => Max Steel Covert Missions (Dreamcast) (search)
+[284/405] NOK: Half-Life - Paranoia Mod.zip (1)
+[281/405] OK: Samba De Amigo.zip => Samba De Amigo (Dreamcast) (search)
+[282/405] OK: Grand Theft Auto 2.zip => Grand Theft Auto 2 (Dreamcast) (search)
+[287/405] NOK: snes4all.zip (1)
+[286/405] OK: Stupid Invaders.zip => Stupid Invaders (Dreamcast) (search)
+[285/405] OK: ECW Anarchy Rulz.zip => Ecw Anarchy Rulz (Dreamcast) (search)
+[291/405] NOK: Half-Life - They Hunger Trilogy Mod.zip (1)
+[288/405] OK: Unreal Tournament.zip => Unreal Tournament (Dreamcast) (search)
+[292/405] NOK: Sakura Taisen Online - Paris no Yuugana Hibi.zip (1)
+[293/405] OK: Resident Evil 3.zip => Resident Evil Code Veronica (Dreamcast) (search)
+[289/405] OK: Disney's Dinosaur.zip => Dinosaur (Dreamcast) (search)
+[294/405] NOK: Railroad Tycoon II - Gold Edition.zip (1)
+[290/405] OK: Rayman 2 - The Great Escape.zip => Rayman 2 - The Great Escape (Dreamcast) (search)
+[296/405] NOK: Battletoads.zip (1)
+[299/405] OK: Golf Shiyouyo - Course Data Shuu - Adventure-hen.zip => Golf Shiyouyo (Dreamcast) (search)
+[295/405] OK: Time Stalkers.zip => Climax Landers (Dreamcast) (search)
+[297/405] OK: Aero Dancing F - Todoroki Tsubasa no Hatsu Hikou.zip => Aero Dancing F - Todoroki Tsubasa no Hatsu Hikou (Dreamcast) (search)
+[298/405] OK: Dance Dance Revolution - 2nd Mix.zip => Dance Dance Revolution 2nd Mix Dreamcast Edition (Dreamcast) (search)
+[301/405] NOK: The Ring - Terror's Realm.zip (1)
+[302/405] OK: Sega Tetris.zip => Sega Tetris (Dreamcast) (search)
+[300/405] OK: Dance Dance Revolution - Club Version.zip => Dance Dance Revolution Club Version Dreamcast Edition (Dreamcast) (search)
+[304/405] OK: Karous.zip => Karous (Dreamcast) (search)
+[303/405] OK: Border Down.zip => Border Down (Dreamcast) (search)
+[305/405] OK: Plus Plumb.zip => Plus Plumb (Dreamcast) (search)
+[309/405] OK: Shenmue.zip => Shenmue (Dreamcast) (search)
+[306/405] OK: Skies of Arcadia.zip => Skies of Arcadia (Dreamcast) (search)
+[311/405] OK: Sakura Taisen 2.zip => Sakura Taisen 3 - Paris Wa Moeteiru Ka (Dreamcast) (search)
+[307/405] OK: Guilty Gear X.zip => Guilty Gear X (Dreamcast) (search)
+[308/405] OK: Puyo Puyo Fever.zip => Puyo Puyo Fever (Dreamcast) (search)
+[310/405] OK: Aqua GT.zip => Aqua Gt (Dreamcast) (search)
+[314/405] NOK: King of Fighters 99 Evolution.zip (1)
+[313/405] OK: Silver.zip => Silver (Dreamcast) (search)
+[312/405] OK: NHL 2K.zip => Nhl 2k (Dreamcast) (search)
+[317/405] OK: Power Stone.zip => Power Stone (Dreamcast) (search)
+[318/405] NOK: NFL Quarterback Club 2001.zip (1)
+[315/405] OK: Bomber Hehhe!.zip => Bomber Hehhe! (Dreamcast) (search)
+[320/405] OK: Jet Coaster Dream.zip => Jet Coaster Dream (Dreamcast) (search)
+[316/405] OK: Densha de go 2.zip => Densha De Go! 2 (Dreamcast) (search)
+[319/405] OK: The Nomad Soul.zip => Omikron - The Nomad Soul (Dreamcast) (search)
+[321/405] OK: Bust-A-Move 4.zip => Puzzle Bobble 4 (Dreamcast) (search)
+[322/405] OK: Iron Aces.zip => Iron Aces (Dreamcast) (search)
+[325/405] NOK: Taisen Net Gimmick - Capcom & Psikyo All Stars.zip (1)
+[323/405] OK: San Francisco Rush 2049.zip => San Francisco Rush 2049 (Dreamcast) (search)
+[326/405] NOK: Cyber Troopers Virtual On - Oratorio Tangram.zip (1)
+[324/405] OK: Death Crimson OX.zip => Death Crimson Ox (Dreamcast) (search)
+[330/405] OK: Phantasy Star Online V2.zip => Phantasy Star Online Ver.2 (Dreamcast) (search)
+[328/405] OK: Super Street Fighter II X for Matching Service.zip => Super Street Fighter 2 X For Matching Service (Dreamcast) (search)
+[329/405] OK: Speed Devils - Online Racing.zip => Speed Devils Online Racing (Dreamcast) (search)
+[327/405] OK: Mars Matrix.zip => Mars Matrix - Hyper Solid Shooting (Dreamcast) (search)
+[331/405] OK: Centipede.zip => Centipede (Dreamcast) (search)
+[333/405] OK: Geist Force.zip => Geist Force (Dreamcast) (search)
+[332/405] OK: Suzuki Alstare Extreme Racing.zip => Redline Racer (Dreamcast) (search)
+[334/405] OK: Gunbird 2.zip => Gunbird 2 (Dreamcast) (search)
+[335/405] OK: Surf Rocket Racers.zip => Surf Rocket Racers (Dreamcast) (search)
+[338/405] OK: GET!! Colonies.zip => Get!! Colonies (Dreamcast) (search)
+[336/405] OK: Macross M3.zip => Macross M3 (Dreamcast) (search)
+[337/405] OK: European Super League.zip => European Super League (Dreamcast) (search)
+[339/405] OK: Quake 3 Arena.zip => Quake 3 Arena (Dreamcast) (search)
+[340/405] OK: Worms Armageddon.zip => Worms Armageddon (Dreamcast) (search)
+[341/405] OK: Zombie Revenge.zip => Zombie Revenge (Dreamcast) (search)
+[342/405] OK: Seventh Cross Evolution.zip => Seventh Cross (Dreamcast) (search)
+[343/405] OK: Atari Anniversary Edition.zip => Atari Anniversary Edition (Dreamcast) (search)
+[344/405] OK: Chaos Field.zip => Chaos Field (Dreamcast) (search)
+[345/405] OK: 102 Dalmatians - Puppies to the Rescue.zip => 102 Dalmatians - Puppies To The Rescue (Dreamcast) (search)
+[346/405] OK: Morita no Saikyou Reversi.zip => Morita No Saikyou Reversi (Dreamcast) (search)
+[350/405] NOK: Capcom vs SNK - Millennium Fight 2000 Pro.zip (1)
+[347/405] OK: Charge 'n Blast.zip => Charge 'n Blast (Dreamcast) (search)
+[351/405] NOK: Toy Story 2 - Buzz l'Eclair a la Rescousse!.zip (1)
+[348/405] OK: Roadsters.zip => Roadsters (Dreamcast) (search)
+[349/405] OK: Evil Twin - Cyprien's Chronicles.zip => Evil Twin - Cyprien's Chronicles (Dreamcast) (search)
+[354/405] OK: Virtua Tennis.zip => Virtua Tennis (Dreamcast) (search)
+[352/405] OK: NFL 2K2.zip => Nfl 2k2 (Dreamcast) (search)
+[353/405] OK: Grinch.zip => Grinch, The (Dreamcast) (search)
+[356/405] OK: Tony Hawk's Pro Skater 2.zip => Tony Hawk's Pro Skater 2 (Dreamcast) (search)
+[358/405] NOK: Agartha.zip (1)
+[355/405] OK: Wacky Races.zip => Wacky Races (Dreamcast) (search)
+[360/405] NOK: Samba De Amigo Ver 2000.zip (1)
+[357/405] OK: King of Fighters 2000.zip => King Of Fighters 2000, The (Dreamcast) (search)
+[362/405] NOK: Gunman Chronicles.zip (1)
+[359/405] OK: Maximum Pool.zip => Maximum Pool (Dreamcast) (search)
+[361/405] OK: SnoCross - Championship Racing.zip => SnoCross - Championship Racing (Dreamcast) (search)
+[365/405] NOK: Robo Ninja Climb.zip (1)
+[363/405] OK: KAO the Kangaroo.zip => Kao The Kangaroo (Dreamcast) (search)
+[367/405] NOK: gnuboy.zip (1)
+[366/405] OK: Hoyle Casino.zip => Hoyle Casino (Dreamcast) (search)
+[368/405] NOK: Sega Worldwide Soccer 2000 Euro Edition.zip (1)
+[369/405] NOK: 4x4 Jam.zip (1)
+[364/405] OK: BANG! Gunship Elite.zip => Bang! Gunship Elite (Dreamcast) (search)
+[372/405] OK: Idol Janshi wo Tsukucchaou.zip => Idol Janshi Wo Tsukucchaou (Dreamcast) (search)
+[370/405] OK: Wild Metal.zip => Wild Metal (Dreamcast) (search)
+[374/405] NOK: Half Life.zip (1)
+[373/405] OK: Worms World Party.zip => Worms World Party (Dreamcast) (search)
+[371/405] OK: Sports Jam.zip => Sports Jam (Dreamcast) (search)
+[376/405] NOK: Gundam - Side Story 0079 - Rise from the Ashes.zip (1)
+[375/405] OK: South Park - Chef's Luv Shack.zip => South Park - Chef's Luv Shack (Dreamcast) (search)
+[380/405] NOK: Lake Masters Pro Dreamcast plus!.zip (1)
+[377/405] OK: Alien Front Online.zip => Alien Front Online (Dreamcast) (search)
+[381/405] OK: NFL 2K1.zip => Nfl 2k1 (Dreamcast) (search)
+[379/405] OK: Pop'n Music 2.zip => Pop'n Music (Dreamcast) (search)
+[378/405] OK: JoJo's Bizarre Adventure.zip => JoJo's Bizarre Adventure (Dreamcast) (search)
+[382/405] OK: Ready 2 Rumble Boxing Round 2.zip => Ready 2 Rumble Boxing Round 2 (Dreamcast) (search)
+[383/405] OK: Maken X.zip => Maken X (Dreamcast) (search)
+[385/405] OK: Cool Herders.zip => Cool Herders (Dreamcast) (search)
+[384/405] OK: Illbleed.zip => Illbleed (Dreamcast) (search)
+[387/405] NOK: nester.zip (1)
+[389/405] OK: GigaWing 2.zip => Giga Wing (Dreamcast) (search)
+[388/405] NOK: FlashBack.zip (1)
+[386/405] OK: Headhunter.zip => Headhunter (Dreamcast) (search)
+[390/405] OK: WWF Royal Rumble.zip => Wwf Royal Rumble (Dreamcast) (search)
+[391/405] OK: ESPN NBA 2night.zip => Espn Nba 2 Night (Dreamcast) (search)
+[393/405] OK: Godzilla Generations.zip => Godzilla Generations (Dreamcast) (search)
+[392/405] OK: The Typing of the Dead.zip => The Typing Of The Dead (Dreamcast) (search)
+[396/405] OK: Pop'n Music.zip => Pop'n Music (Dreamcast) (search)
+[395/405] NOK: TDC Final 2.zip (1)
+[394/405] OK: Street Fighter Alpha 3.zip => Street Fighter Alpha 3 (Dreamcast) (search)
+[399/405] OK: Alone in the Dark.zip => Alone In The Dark - The New Nightmare (Dreamcast) (search)
+[400/405] NOK: Vigilante 8 - 2nd Offense.zip (1)
+[397/405] OK: PenPen TriIcelon.zip => Pen Pen Triicelon (Dreamcast) (search)
+[398/405] OK: Psychic Force 2012.zip => Psychic Force 2012 (Dreamcast) (search)
+[402/405] OK: Le Mans 24 Hours.zip => Mans 24 Hours, Le (Dreamcast) (search)
+[401/405] NOK: V-Rally 2 Expert Edition.zip (1)
+[403/405] OK: Rush Rush Rally Racing.zip => Rush Rush Rally Racing (Dreamcast) (search)
+[404/405] OK: Dragon Riders - Chronicles Of Pern.zip => Dragon Riders - Chronicles Of Pern (Dreamcast) (search)
+[405/405] OK: Aventures de Buzz L'Eclair.zip => Disney/pixar's Buzz Lightyear Of Star Command (Dreamcast) (search)
+
+All Done... found 320/405 games
+
+85 game(s) not found:
+Donald - Quack Attack.zip|28972||2e2bf550|699634c8b97d8974bb5ea336b352b1f2|94142a5161401749f96cfffa5cd9279337b35dac
+Blue Shift.zip|34981||2fd18ce7|ed4c0aed4bd5e75752ad8d059c4c76ce|abea28333bef2acdb04d8bf6d9bd846f458374e0
+Neo4All.zip|25592||25dbed81|0cfd505081703903b21fbacddfe8b85c|b73ffd5f345b418ca405b89c8210ff2f0b4b70be
+MTV Sports - Skateboarding Featuring Andy Macdonald.zip|27047||7acfc032|623624f8d56eef6c1f8d12cd13cfc557|0ce312822731bcca08de308e56f6f1c6a36f0fb1
+Aero Dancing I - Jikai Saku Made Matemasen.zip|30577||1be8bf46|778f1be0ec731e951fa0d3793adf2862|957205020afefc39dd983425f72e7f98de463868
+L.O.L. - Lack of Love.zip|6470||510c3c42|132303643b4f5a6044ee307cbad44aaf|5374dfb7e388f30cc7647c60fd2bdd01ef69ba7e
+Tomb Raider - Sur les traces de Lara Croft.zip|27192||77ba8052|921d7ce563dcc5a111539ff6bbab5612|c022f1af8b837193523fdc23ec2fd6a2d9a41165
+Dreamkey 3.0.zip|19097||5da99e1a|12b8faf727b0c7e2103f8a83e201f677|be6a68de34050c9468bf3a2983b81f14534f2477
+Hello Kitty - Lovely Fruit Park.zip|23730||a1465c4f|33d55b1b6bb288743894c8d411afc09f|710240dfdfeb45e4579ddd1aeba23fb597b058ec
+Draconus - Cult of the Wyrm.zip|26735||b9d2a026|1190940acb99d4d95bf6aebe6bf5fd3e|80aebea8809c6ced1bc42d699a3c20281689516a
+D2.zip|21952||b5cad350|cd25c551aa091ba3c7f70e82ccc38ea1|35aa3b04baab003dba7842e1b207414e2ce93372
+King of Fighters - Dream Match 1999.zip|18300||ad5b842b|7671d9a357b2c59f0880b826feb63dd8|961b6e92346088959920f0fbfaa2f7a6381dd842
+Fish Life Amazon.zip|25015||6500f59b|e5ba40f0f453bfb7294f407d85eb881c|c88563e1f3bdd64dfa9e56843d00eb5de4ff05c3
+Rez.zip|36821||bcb8f388|73bb4f37069492c2622f872290359df8|a210c87549019557cfd19624926dd524de85299e
+POD 2 - Multiplayer Online.zip|22111||803b3fb0|94644d206978fc365d98559e109b396a|8ef2e6645f6e09ce0772f400d7befe569a041aa2
+Industrial Spy - Operation Espionage.zip|34195||9674880b|9a6d014a79c2439f5e864e97106e9ced|5f2c86a546c9364e1d9e5a048191408ad50af935
+Sega Smashpack Volume 1.zip|33603||d5276205|69979047f287023e822355466538aa95|48b9f32b0bec7a5d6c20dd7a61a946d678e7fcc7
+Bakumatsu Roman Dai ni Maku - Gekka no Kenshi - Final Edition.zip|23434||76575b93|b0357277c4dddbec3f623c3a9f5277c6|16b084e14a0928e9c0d6495dd7b356cb57ddd447
+Hello Kitty - Magical Block.zip|23119||ee882ba9|8dbf99aadcee189e121c7ff4e79238cf|950014cdebb5feed40bb841ac7fa6d2901d3a0c2
+Hello Kitty - Garden Panic.zip|26626||18702310|8571657e23bd60b98c921925e2e1d78a|4bcf0b7bc9a9fb41e4401810eaa3b88c2f491ef7
+Opposing Force.zip|48549||cf9f9ac9|305d4cc2ff57460d6324b81de66232d4|08d2146644929cc059847419917bb77f68aa0d34
+Street Fighter III - 3rd Strike.zip|31094||bb4a2c0b|0a1f718a548b4f4d35e163efdc9ed3ac|a87c2196d6a9d50d57a856c152fe8eee1d028873
+Half-Life Gold.zip|35369||c0ef505e|9a7da366ca23f4b6437a225e4f995f1e|c9e511beb91850eab7317f61dd7ab6a09b4e34b0
+FX-Unit Yuki.zip|34239||a03dadd4|5aa8a38f5f9b8895816fee030d97fa10|bc7682182a62bae8f9b1faa0884e5233c198c213
+Hello Kitty - Waku Waku Cookies.zip|30055||91cb9958|d703adb2660c076704934320413d2fd7|a246bcaec1d73dd8a11327a8f9d10a9d179ecbc0
+Half-Life - Goldeneye Mod.zip|32268||4fc5ee7e|3d7357ffa31e4459ddcf06b2cacd6b5c|e7b9b407ac345d8b15386b026be0560e878f2d10
+Tomb Raider La Revelation Finale.zip|19332||fb5bf347|619b87c67a824d7625ad0a5570e99a8e|790fdc55a5fb62f798b0b36193c565a18a3213e8
+The Flinstones Viva Rock Vegas.zip|39025||dc01a355|7c1ea07588629eed033aa88b7e20ffef|828c22e837387fba2fe56942a3a5613b9380f8bf
+Next Tetris - Online Edition.zip|28426||08a85715|eddb892c77db90c811b7ce62641ed200|5b8e491bea1ccd039414a7cda8259885be52bfcd
+Dream Explorer.zip|33502||396055b9|c6d3a49342f5575f74e0341852659729|d4088a347d8ad7e8b30ed4b9edbc008816a5c4de
+GrandiaII.zip|42916||b8e4c2ab|804c65647d29fdd461c6a0e0471ae1c3|f9edad8f68739db90554e928469dcab469078094
+Soul Calibur.zip|33185||2249ae29|072a8bf5c7ae55f9ab2c4aab314488cb|1d0037a8e616d40c607cbad1e5003c1883e42c25
+Frogger 2 - Swampys Revenge.zip|30345||e9f3b4a0|c83a98ac62cdd04b66751ba41c30af5f|24008e93126f489b8e3067a68f0f6243e0d3fe7e
+Q-bert.zip|29054||bbdc717e|3573c007409716a00fcfc9c692a86c4e|6e7a43b454537796cab5301d1e85e9b579adce76
+Epitech Collection.zip|33849||7ce5073d|1f14f8698e1699b005b069248d6722d0|e67591eaaf59d5774225c7d5bc2edeb187559952
+Capcom vs SNK 2 - Millionaire Fighting 2001.zip|29920||b5127962|c62cbfdb6c739e21ff98aa4d91e7ec38|b8133b4259ad5f0867d3cb62dfeeee87d3fc215c
+Another World HD.zip|21109||b5e358c9|a087ffcd85f94d92e8c7161f355c0975|6a6d6072c2b0fb10026c95ca94ccc1038373dec9
+Millenium Racer - Y2K Fighters.zip|37837||e0c8aee9|8c459dfd095ddf28c6e1f4de0b158193|84969575e5d81d9d5961158caa6ab73f177c0a50
+dreamsnes.zip|35590||42eeff8c|35a1409f7ac07605804eeb801e04bf63|a37e85cc3d41b36e56dda5e4c37b7af3309c9b0f
+Rush Rally Racing Reloaded.zip|25887||9e177574|3506576854f83980c9b1056224682207|e1a5b5ff0b1f7524944623bbe58a69f249121218
+Marvel vs Capcom 2 - New Age of Heroes.zip|36606||39d20b84|cefd5463684f7f7715938de2d6519d4e|8c464764a2dd385ebb71a78b54bd635085448f58
+Wetrix+.zip|36286||99d9c74f|ede27f5718cbe9ba1459b0ed6d12c698|b19da42c82b56d5662e7f5ae9da2ba3d3be2dc6c
+Godzilla Generations Maximum Impact.zip|23776||604f16a5|f72b8eccc88f17627b83cccf8e9144c8|2f46657db9c39dd20941eba3c652be59a94c76bf
+Looney Tunes Space Race.zip|29876||ec36614a|2b4e34289c293b11b32bad79377b11b6|79506d275d04414fb94c43fe3175674bed2cb28f
+Hydra Castle Labyrinth.zip|31818||8e0e861d|782ad7991111811cebf2c90db900a4fa|c3d77ba520a1661aec2284782e733dd5560e683d
+Half-Life Darkstar Mod.zip|39812||3adc3799|6e0a3000cac746eeb11bdbb7acea0fef|01b3cf8cebd87e98d24cf66c17a12f0fe5cc9055
+Golf Shiyouyo - Kouryaku Pack.zip|31837||98a656c3|200ccd1df0c3ed5a54d593d38c9bdfd8|ed06e66d1dbc0fd106836be79a9376abdec1c65b
+Super Puzzle Fighter IIX for Matching Service.zip|34401||d2cf05e5|9db7a918a984403eb5786698bae8cf8d|3f708941087cb27b92dede9eb9cb53219ff3db90
+Marvel vs Capcom - Clash of Super Heroes.zip|42516||4cb78118|df5d8e2651f859255f3fca3b226f1780|55e40a0d749b382c4752ea95c647b32eb920800c
+Star Wars - Episode I - Racer.zip|28544||a873fe3a|456dfc6cb7a7f7e3e9db0c0b6738bb67|4494c2473ffe95e783bc4a29e037b22912409be9
+TMNT - The Hyperstone Heist.zip|41467||885ecfb7|7f783af7114f16e7c9f023516a768ee1|d231cdaad2f20ba81b9fe5a52b2c42568bea9967
+Half-Life - Black Ops Mod.zip|23375||7fcd1c98|103375ec8b66d80586b1dd2674f5d24c|1628a1bfc70aaacade66fb07594e5b24c64ea66f
+Armed 7.zip|29761||d1ad176c|49558987d2483bd4261150547f0db505|98513302fcb0a3b0c88266b406650cc0b687cfa8
+Street Fighter III - Double Impact.zip|34745||82ed6445|0fa094915d0e7b2ea4a3241554367bc2|be33a4b07058c37adb6b484ec64d4c64c3322ea8
+Star Wars - Episode I - Jedi Power Battles.zip|31507||0f997018|a238b5cbe5528267bca4a33ba4ec0beb|fedec3307c1a48cd2f1526f5e7bf287d780b06c5
+Sakura Taisen Kinematron Hanagumi Mail.zip|26642||539d0531|1ddf2258bd38d20bf20512a32330c755|72e63ee3779eddb2f05507bb6ae94e18c0963dbf
+Capcom vs SNK.zip|30291||24f76c48|279acef22ac1a4a71dfd642b294c80a2|f8444ace60ea3cafc40139cb62d9c18b2b47fc31
+Half-Life - Paranoia Mod.zip|30351||3a6aa4d5|68933013a86e3d8c64318aa66586ea16|7e5d15bdf041a68d562c9e6e1a05fc4879dc9a26
+snes4all.zip|36324||bc8faa48|0ecea58b1b37d4669ee96998964a1cba|610422fe376d356b308bc535534ba0e476b9829b
+Half-Life - They Hunger Trilogy Mod.zip|28124||ab2c3f37|bd446cc5783734a3f3e8e94403a9f0d8|8477df8719464c8e32e621455945ad333f377616
+Sakura Taisen Online - Paris no Yuugana Hibi.zip|24735||1497b992|b2f9cf3a839f3c1c355682a6cceae83a|c06b02b698c986d8ff5a5d77659a7091d1eef61b
+Railroad Tycoon II - Gold Edition.zip|28137||17c91717|554a5048012475afe70ef7ce113fcf4e|d245e6a437d45962069ee9091be1b12922d5e836
+Battletoads.zip|39492||6808c033|ada2d5041efac23eff8576977b98603f|2424206a5222a48749254a7738bf0ea642bb57e2
+The Ring - Terror's Realm.zip|23443||9ee4bc9f|c8c9f12d4759fa37c097531a58a06d22|937f8bc11f49993a0dff6f2c3cf81f10497c0931
+King of Fighters 99 Evolution.zip|18477||500f664e|2689b9e0d64325c163e2fa4714181608|769a3721faa6798f254c17e3e8a945a438fcecad
+NFL Quarterback Club 2001.zip|31154||f4af6780|fe3622bb1f863dfe41a818b5e8b5a99d|ea14048e85243d3c2821ffba218f33658490b0f4
+Taisen Net Gimmick - Capcom & Psikyo All Stars.zip|30895||9832293b|1788dbdc732f0807bce549008c9bc4f9|9f339990fb3c9d735f7a1582818dc9d9fbc75629
+Cyber Troopers Virtual On - Oratorio Tangram.zip|34167||df04979a|319cbce6cb53abac2c3db10c2a947a9d|c8887086fc0ab4eeadd9aed6b0228cd771a622a1
+Capcom vs SNK - Millennium Fight 2000 Pro.zip|35551||1575818f|50762578e8ef99220081a18f3762b2f7|6d1df3d3a055d8656695bb374b27962e6ff7b521
+Toy Story 2 - Buzz l'Eclair a la Rescousse!.zip|28417||73cb44cb|28bbb10c960a5ef830efec0f04d8f118|cd1bd65c59cdf171566bd23f09dba04fa90b8746
+Agartha.zip|39424||37733752|464f9526aeb839576adfcc09b97abec5|d33aab2768effd8079ac31feb7c3e50d369a3abc
+Samba De Amigo Ver 2000.zip|47215||be7d8713|e2b2c6692f899de607e4ee0ab1fb6c38|9b37a3563ebf7c6f42af183086d91500a7d25cec
+Gunman Chronicles.zip|25890||9aaa3137|4fbf65fd18b7ff4e4d28e6747f7d29f4|61cc97633cde1337f02b87a2db6984bcb2763ed8
+Robo Ninja Climb.zip|21131||47ced8a8|124ae44f7127a07a37d49540372380c1|363e9e1d5e379df95e927f09a4c75c21e002bd1a
+gnuboy.zip|28950||7cc1c5e9|bbd8b76824b36b74574d7d6fd053a924|7acba02febf09e70047cab3623334206cda33941
+Sega Worldwide Soccer 2000 Euro Edition.zip|24028||2253ced7|e4d31a43394b3dddc110b51d00b38ba0|237b2fb1288bfd5bb4ac1b5e61b31428572f996a
+4x4 Jam.zip|35239||e4d35f8e|24eeefd34f00f0ccb70fa3a9bce55627|575ea9caf0e1c9e42204f146b2911b939bce930e
+Half Life.zip|25211||e1f3dc67|a2d35f50a035099a4e89b40e89ba4fce|5b724edece600304d393854aa509ac4a04f11d46
+Gundam - Side Story 0079 - Rise from the Ashes.zip|28601||99b623ba|72b797b338561782a5d95b501e55f246|772c754cd03fdfcc707529042414e4df03d19834
+Lake Masters Pro Dreamcast plus!.zip|29634||1204b8e7|7d98168133d0521c162ce2e1871fd1e8|6ad3b80f71ba0902f8884b16b9fd1095bc66eefc
+nester.zip|30226||d99013de|8c8963dc24ea99954267c795b66cb8ad|0b0810d409ae84c027714e2fd5bd7f1d330b14bc
+FlashBack.zip|29831||0a53fd55|738430d12295687a300145bde6e7354b|8b4b95ad85ed5457f3b5358a4fc38162ee365c5b
+TDC Final 2.zip|37759||821945bc|1019c39f18cc53b42ff3c72c230895af|3e2cfc7cbb6df154d1d56c299f07f46f21d3cf6e
+Vigilante 8 - 2nd Offense.zip|31447||a1a8c4fd|db58c895e109fdee99a96fb52f619950|51fa11ead2fdf5d200b360626c5eaea0ae8658b6
+V-Rally 2 Expert Edition.zip|23127||b4a72538|97daded8659c20d200ea7bf10b4a2016|cbc37878ca13a10a158b07b9270309c3869c32d4
+
