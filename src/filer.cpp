@@ -170,7 +170,7 @@ bool Filer::getDir(const std::string &p) {
         dirList.insert(dirList.begin(), file);
     }
 
-    std::string dsPath = retroDream->getIo()->getDsPath();
+    std::string mediaPath = retroDream->getIo()->getDataPath() + "medias/";
 
     for (auto const &fileData : dirList) {
         RetroFile file;
@@ -187,11 +187,11 @@ bool Filer::getDir(const std::string &p) {
                 } else if (Utility::endsWith(file.isoPath, ".gdi")) {
                     file.isoType = "GDI";
                 }
-                // DreamShell compatibility
+                // set medias path
                 std::string noExt = Utility::removeExt(file.data.name);
-                file.preview = dsPath + "apps/iso_loader/covers/";
-                file.preview += noExt + ".jpg";
-                file.preview_video = dsPath + "apps/iso_loader/videos/";
+                file.preview = mediaPath + "box/";
+                file.preview += noExt + ".png";
+                file.preview_video = mediaPath + "video/";
                 file.preview_video += noExt + ".roq";
             }
         } else if (fileData.type == Io::Type::Directory) {
@@ -220,11 +220,11 @@ bool Filer::getDir(const std::string &p) {
                         file.isoType = "GDI";
                     }
                 }
-                // DreamShell compatibility
+                // set medias path
                 std::string noExt = Utility::removeExt(gameFile.name);
-                file.preview = dsPath + "apps/iso_loader/covers/";
-                file.preview += noExt + ".jpg";
-                file.preview_video = dsPath + "apps/iso_loader/videos/";
+                file.preview = mediaPath + "box/";
+                file.preview += noExt + ".png";
+                file.preview_video = mediaPath + "video/";
                 file.preview_video += noExt + ".roq";
             }
         }

@@ -22,30 +22,16 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // logo
     Group logo = addShape("logo", LogoShape,
-                          FloatRect{477, 196, 256, 256},
-                          0, Origin::Center,
+                          FloatRect{388, 42, 230, 230},
+                          0, Origin::TopLeft,
                           Color{255, 255, 255},
                           Color{255, 255, 255},
                           0, 0);
     addGroup(logo);
 
-    // filer_path
-    Group filer_path = addShape("filer_path", FilerPathShape,
-                                FloatRect{8, 8, 610, 30},
-                                8, Origin::TopLeft,
-                                Color{49, 121, 159},
-                                Color{255, 255, 255},
-                                2, 0);
-    Group filerText = addColor("text", FilerBarText,
-                               Color{240, 226, 107},
-                               Color{0, 0, 0},
-                               2);
-    filer_path.addGroup(filerText);
-    addGroup(filer_path);
-
     /// filer
     Group filer = addShape("filer", FilerShape,
-                           FloatRect{9, 46, 314, 372},
+                           FloatRect{9, 46, 370, 415},
                            8, Origin::TopLeft,
                            Color{204, 228, 240},
                            Color{49, 121, 159},
@@ -62,37 +48,51 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
     filer.addGroup(filerDirText);
     // highlight
     Group filerHighlight = addShape("highlight", FilerHighlightShape,
-                                    FloatRect{1, 0, 312, 26},
+                                    FloatRect{2, 0, 366, 26},
                                     8, Origin::TopLeft,
                                     Color{240, 226, 107},
                                     Color{49, 121, 159},
                                     2, 0);
     filer.addGroup(filerHighlight);
+    // filer_path
+    Group filer_path = addShape("filer_path", FilerPathShape,
+                                FloatRect{8, 8, 610, 30},
+                                8, Origin::TopLeft,
+                                Color{49, 121, 159},
+                                Color{255, 255, 255},
+                                2, 0);
+    Group filerText = addColor("text", FilerBarText,
+                               Color{240, 226, 107},
+                               Color{0, 0, 0},
+                               2);
+    filer_path.addGroup(filerText);
+    filer.addGroup(filer_path);
+    //
     addGroup(filer);
     /// filer
 
     // preview image
     Group preview_image = addShape("preview_image", PreviewImageShape,
-                                   FloatRect{482, 155, 190, 190},
+                                   FloatRect{509, 166, 228, 228},
                                    8, Origin::Center,
                                    Color{204, 228, 240},
-                                   Color{228, 81, 72},
-                                   6, 1);
+                                   Color{49, 121, 159},
+                                   4, 1);
     addGroup(preview_image);
 
     // preview video
     Group preview_video = addShape("preview_video", PreviewVideoShape,
-                                   FloatRect{482, 367, 256, 192},
+                                   FloatRect{509, 378, 228, 171},
                                    8, Origin::Center,
                                    Color{204, 228, 240},
                                    Color{49, 121, 159},
-                                   6, 1);
+                                   4, 1);
     addGroup(preview_video);
 
     // help box
     Group help = addShape("help", HelpShape,
-                          FloatRect{478, 387, 288, 103},
-                          8, Origin::Center,
+                          FloatRect{388, 286, 233, 83},
+                          8, Origin::TopLeft,
                           Color{178, 226, 249},
                           Color{49, 121, 159},
                           2, 0);

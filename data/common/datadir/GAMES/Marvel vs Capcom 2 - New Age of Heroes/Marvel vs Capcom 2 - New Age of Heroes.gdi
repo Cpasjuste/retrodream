@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gameList>
+    <game id="13527">
+        <path>./Toy Story 2 - Buzz l'Eclair a la Rescousse!.jpg</path>
+        <name>Toy Story 2 - Buzz Lightyear To The Rescue!</name>
+        <desc>Woody has been stolen from the bedroom, ready to be sold to the highest bidder by an evil toy collector. It's up to good friend Buzz Lightyear to fight his way through from the bedroom to the outside world in order to save Woody from the toy market and bring him home.
+
+All of the character from the 3D animated movie appear through-out the side scroller to help Buzz get to where he is needed. Along with the use of his cannon, Buzz can jump to hard to reach places, also useful in collecting the hidden coins that open bonus levels.
+</desc>
+        <rating>15</rating>
+        <releasedate>20000000T000000</releasedate>
+        <developer>Travellers Tales</developer>
+        <publisher>Activision</publisher>
+        <genre>Platform</genre>
+        <players>1</players>
+    </game>
+</gameList>
