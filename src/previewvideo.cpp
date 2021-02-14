@@ -188,7 +188,7 @@ static int decodeThread(void *data) {
                 }
 #endif
                 // frame limit
-                while (clock.getElapsedTime().asMilliseconds() < 1000 / framerate) {
+                while (clock.getElapsedTime().asMilliseconds() < (1000 / framerate)) {
                     if (preview->thread_stop) {
                         break;
                     }
@@ -339,11 +339,15 @@ bool PreviewVideo::isLoaded() const {
     return loaded;
 }
 
+static C2DClock debugClock;
+static int unlockTime = 0;
+
 void PreviewVideo::onUpdate() {
 
     if (isVisible() && status == ROQ_PLAYING && videoUpload) {
         if (!texture) {
             texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
+            texture->setFilter(Texture::Filter::Point);
             texture->setCornerPointCount(CORNER_POINTS);
             texture->setCornersRadius(getCornersRadius());
             texture->setTextureRect(IntRect{0, 0, state.width, state.height});
@@ -354,10 +358,16 @@ void PreviewVideo::onUpdate() {
         }
 
         mutex->lock();
-        //C2DClock clock;
+
+        if (debugClock.getElapsedTime().asMilliseconds() > 16 * 60) {
+            unlockTime = debugClock.restart().asMilliseconds();
+        }
         texture->unlock(state.frame[state.current_frame & 1]);
-        //printf("videoTex->unlock: %i ms (fps: %f)\n",
-        //     clock.restart().asMilliseconds(), retroDream->getRender()->getFps());
+        if (unlockTime > 0) {
+            printf("videoTex->unlock: %i ms (fps: %f)\n",
+                   debugClock.getElapsedTime().asMilliseconds(), retroDream->getRender()->getFps());
+            unlockTime = 0;
+        }
         mutex->unlock();
         videoUpload = false;
     }

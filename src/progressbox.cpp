@@ -10,10 +10,10 @@
 using namespace c2d;
 
 ProgressBox::ProgressBox(RetroDream *rd, const c2d::Color &fill, const c2d::Color &out, const c2d::Color &textFill)
-        : RectangleShape(Vector2f(rd->getSize().x / 1.3f, rd->getSize().y / 1.3f)) {
+        : RectangleShape(Vector2f(rd->getSize().x / 1.6f, rd->getSize().y / 1.6f)) {
 
-    float w = rd->getSize().x / 1.3f;
-    float h = rd->getSize().y / 1.3f;
+    float w = rd->getSize().x / 1.6f;
+    float h = rd->getSize().y / 1.6f;
     float margin = 16;
 
     setOrigin(Origin::Center);
