@@ -3,7 +3,7 @@
 ////
 find . -name '*.png' -print0 | xargs -0 -P8 -L1 mogrify -resize 256x256
 find . -name '*.png' -print0 | xargs -0 -P8 -L1 pngquant --ext .png --force 256
-find . -name '*.mp4' -print0 | sed 's|.mp4||g' | xargs -0 -P8 -L1 -I{} ffmpeg -i {}.mp4 -ar 22050 -framerate 30 -vf "scale=128:-2" -t 30 {}.roq
+find . -name '*.mp4' -print0 | sed 's|.mp4||g' | xargs -0 -P8 -L1 -I{} ffmpeg -i {}.mp4 -ar 22050 -framerate 30 -vf "scale=256:-2" -t 30 {}.roq
 
 ////
 //// SCRAPPING RESULT

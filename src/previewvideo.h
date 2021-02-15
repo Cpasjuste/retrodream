@@ -8,9 +8,7 @@
 #include "skinrect.h"
 #include "roqlib.h"
 
-// preview video 128
-// ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=128:-2" -t 30 video.roq
-// preview video 256
+// preview video
 // ffmpeg -i video.mp4 -ar 22050 -framerate 30 -vf "scale=256:-2" -t 30 video.roq
 
 class RetroDream;
