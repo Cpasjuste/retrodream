@@ -12,7 +12,7 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
         : RectangleShape({rect.width, rect.height}) {
 
     retroDream = rd;
-    setPosition(rect.left, rect.top);
+    RectangleShape::setPosition(rect.left, rect.top);
     setCornersRadius(CORNER_RADIUS);
     setCornerPointCount(CORNER_POINTS);
 
@@ -21,7 +21,7 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
     title->setPosition(16, -1);
     title->setOutlineThickness(3);
     title->setOutlineColor(COL_BLUE_DARK);
-    add(title);
+    RectangleShape::add(title);
 
     text = new Text(
             "DREAMSHELL:  A BIG THANKS TO DREAMSHELL DEVELOPERS, WITHOUT THEM RETRODREAM WOULD NOT EXIST.\n\n"
@@ -35,7 +35,7 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
     text->setOutlineThickness(2);
     text->setOverflow(Text::Overflow::NewLine);
     text->setLineSpacingModifier(6);
-    add(text);
+    RectangleShape::add(text);
 
     cpasjuste = new Text("CPASJUSTE IN DA PLACE !", FONT_SIZE);
     cpasjuste->setOrigin(Origin::BottomRight);
@@ -43,10 +43,10 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
     cpasjuste->setFillColor(COL_YELLOW);
     cpasjuste->setOutlineColor(Color::Black);
     cpasjuste->setOutlineThickness(2);
-    add(cpasjuste);
+    RectangleShape::add(cpasjuste);
 
-    add(new TweenPosition({rect.left, -rect.top - 32}, {rect.left, rect.top}, 0.4f));
-    setVisibility(Visibility::Hidden);
+    RectangleShape::add(new TweenPosition({rect.left, -rect.top - 32}, {rect.left, rect.top}, 0.4f));
+    RectangleShape::setVisibility(Visibility::Hidden);
 }
 
 bool Credits::onInput(c2d::Input::Player *players) {

@@ -262,9 +262,6 @@ void retroDebug(const char *fmt, ...) {
         debugText->setString(Utility::toUpper(buffer));
         debugText->setVisibility(Visibility::Visible);
         render->flip();
-#ifndef __DREAMCAST__
-        //sleep(1);
-#endif
     }
 }
 
@@ -347,11 +344,6 @@ int main(int argc, char *argv[]) {
 #ifdef __DREAMCAST__
     cdrom_spin_down();
 #endif
-
-    retroDream->getMessageBox()->show("ROM FLASH",
-                                      "YOU ARE ABOUT TO WRITE TO YOUR FLASH ROM. "
-                                        "BE SURE YOU KNOW WHAT YOU'RE DOING!",
-                                      "CANCEL", "CONFIRM");
 
     // let's go
     while (!retroDream->quit) {

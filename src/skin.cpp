@@ -127,7 +127,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // load the configuration from file, overwriting default values
     if (!load()) {
-#if 0
+#if 1
         // file doesn't exist or is malformed, (re)create it
         printf("Skin: skin configuration file doesn't exist or is malformed, "
                "creating a new one (%s)\n", getPath().c_str());
