@@ -339,8 +339,8 @@ bool PreviewVideo::isLoaded() const {
     return loaded;
 }
 
-static C2DClock debugClock;
-static int unlockTime = 0;
+//static C2DClock debugClock;
+//static int unlockTime = 0;
 
 void PreviewVideo::onUpdate() {
 
@@ -358,16 +358,19 @@ void PreviewVideo::onUpdate() {
         }
 
         mutex->lock();
-
+        /*
         if (debugClock.getElapsedTime().asMilliseconds() > 16 * 60) {
             unlockTime = debugClock.restart().asMilliseconds();
         }
+        */
         texture->unlock(state.frame[state.current_frame & 1]);
+        /*
         if (unlockTime > 0) {
             printf("videoTex->unlock: %i ms (fps: %f)\n",
                    debugClock.getElapsedTime().asMilliseconds(), retroDream->getRender()->getFps());
             unlockTime = 0;
         }
+        */
         mutex->unlock();
         videoUpload = false;
     }

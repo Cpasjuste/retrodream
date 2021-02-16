@@ -15,14 +15,13 @@ using namespace c2d;
 
 Line::Line(const FloatRect &rect, const std::string &str, Font *font, unsigned int fontSize) : RectangleShape(rect) {
 
+    RectangleShape::setFillColor(Color::Transparent);
+
     text = new Text(str, fontSize, font);
     text->setOrigin(Origin::Left);
     text->setPosition(6, rect.height / 2);
     text->setSizeMax(rect.width - ((float) fontSize) - 4, 0);
-
-    setFillColor(Color::Transparent);
-
-    add(text);
+    RectangleShape::add(text);
 }
 
 void Line::setSize(const Vector2f &size) {
@@ -62,7 +61,7 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
     // add selection rectangle (highlight)
     Skin::CustomShape shape2 = RetroDream::getSkin()->getShape(Skin::Id::FilerHighlightShape);
     highlight = new SkinRect(&shape2);
-    add(highlight);
+    SkinRect::add(highlight);
 
     // custom lines/text colors
     fileColor = RetroDream::getSkin()->getColor(Skin::Id::FilerFileText);
@@ -74,7 +73,7 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
         auto line = new Line(r, "", retroDream->getRender()->getFont(), FONT_SIZE);
         line->setLayer(2);
         lines.push_back(line);
-        add(line);
+        SkinRect::add(line);
     }
 
     // "hide main rect" layer
@@ -85,7 +84,7 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
     blurLayer->setLayer(3);
     blurLayer->add(new TweenAlpha(0, 230, 0.3));
     blurLayer->setVisibility(Visibility::Hidden);
-    add(blurLayer);
+    SkinRect::add(blurLayer);
 
     // previews timer delay
     previewImageDelay = RetroDream::getConfig()->getInt(RetroConfig::PreviewImageDelay);
@@ -154,7 +153,7 @@ bool Filer::getDir(const std::string &p) {
         return false;
     }
 
-    printf("getDir(%s):\n", p.c_str());
+    //printf("getDir(%s):\n", p.c_str());
     // TODO: fix random crash :/
     //retroDream->showStatus("LOADING DIRECTORY...", p, COL_GREEN);
 
@@ -490,7 +489,7 @@ bool Filer::onInput(c2d::Input::Player *players) {
         Io::Type type = file.data.type;
         if (file.isGame) {
             // save last path
-            retroDream->getConfig()->set(RetroConfig::FilerPath, path);
+            RetroDream::getConfig()->set(RetroConfig::FilerPath, path);
             IsoLoader::run(retroDream, file.isoPath);
         } else if (type == Io::Type::Directory) {
             retroDream->getPreviewImage()->unload();
@@ -525,26 +524,25 @@ bool Filer::onInput(c2d::Input::Player *players) {
 void Filer::flashBios(const RetroFile &file) {
 
     int ret = retroDream->getMessageBox()->show("BIOS FLASH",
-                                                "YOU ARE ABOUT TO WRITE '" + file.upperName
-                                                + "' TO YOUR ROM CHIP.\n\n"
-                                                  "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
+                                                "YOU ARE ABOUT TO WRITE TO YOUR ROM CHIP."
+                                                "BE SURE YOU KNOW WHAT YOU'RE DOING!",
                                                 "CANCEL", "CONFIRM");
     if (ret == MessageBox::RIGHT) {
         retroDream->getProgressBox()->setTitle("BIOS FLASHING IN PROGRESS");
         retroDream->getProgressBox()->setMessage(
-                "\n\nFLASHING BIOS TO FLASH ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
+                "\nFLASHING BIOS TO FLASH ROM, DO NOT POWER OFF THE DREAMCAST OR DO ANYTHING STUPID...");
         retroDream->getProgressBox()->setProgress("LOADING STUFF.... \n", 0.0f);
         retroDream->getProgressBox()->setVisibility(Visibility::Visible);
         RetroDream *rd = retroDream;
         BiosFlash::flash(file.data.path, [rd](const std::string &msg, float progress) {
             if (progress < 0) {
                 rd->getProgressBox()->setVisibility(Visibility::Hidden);
-                rd->getMessageBox()->show("BIOS FLASH - ERROR", "\n\n\n" + msg, "OK");
+                rd->getMessageBox()->show("BIOS FLASH - ERROR", "\n" + msg, "OK");
                 rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
             } else if (progress > 1) {
                 rd->getProgressBox()->setVisibility(Visibility::Hidden);
                 rd->getMessageBox()->getTitleText()->setFillColor(COL_GREEN);
-                rd->getMessageBox()->show("BIOS FLASH - SUCCESS", "\n\n\n" + msg, "OK");
+                rd->getMessageBox()->show("BIOS FLASH - SUCCESS", "\n" + msg, "OK");
                 rd->getMessageBox()->getTitleText()->setFillColor(COL_RED);
                 rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
             } else {
@@ -558,9 +556,8 @@ void Filer::flashBios(const RetroFile &file) {
 void Filer::flashRom(const RetroFile &file) {
 
     int ret = retroDream->getMessageBox()->show("ROM FLASH",
-                                                "YOU ARE ABOUT TO WRITE '" + file.upperName
-                                                + "' TO YOUR FLASH ROM.\n\n"
-                                                  "BE SURE YOU KNOW WHAT YOU'RE DOING BEFORE SELECTING THE 'CONFIRM' BOX",
+                                                "YOU ARE ABOUT TO WRITE TO YOUR FLASH ROM. "
+                                                "BE SURE YOU KNOW WHAT YOU'RE DOING!",
                                                 "CANCEL", "CONFIRM");
     if (ret == MessageBox::RIGHT) {
 
@@ -592,12 +589,12 @@ void Filer::flashRom(const RetroFile &file) {
 void Filer::restoreVmu(const Filer::RetroFile &file) {
 
     int ret = retroDream->getMessageBox()->show("VMU RESTORE",
-                                                "YOU ARE ABOUT TO RESTORE '" + file.upperName
-                                                + "' TO YOUR SLOT ONE VMU.\n\n", "CANCEL", "CONFIRM");
+                                                "YOU ARE ABOUT TO RESTORE TO YOUR SLOT ONE VMU.",
+                                                "CANCEL", "CONFIRM");
     if (ret == MessageBox::RIGHT) {
 
         retroDream->getProgressBox()->setTitle("VMU RESTORE IN PROGRESS");
-        retroDream->getProgressBox()->setMessage("\n\nDOING RAW VMU RESTORE...");
+        retroDream->getProgressBox()->setMessage("\nDOING RAW VMU RESTORE...");
         retroDream->getProgressBox()->setProgress("PLEASE WAIT.... \n", 0.0f);
         retroDream->getProgressBox()->setVisibility(Visibility::Visible);
 

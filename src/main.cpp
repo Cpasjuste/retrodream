@@ -228,9 +228,11 @@ Skin *RetroDream::getSkin() {
 }
 
 void RetroDream::showStatus(const std::string &title, const std::string &msg, const c2d::Color &color) {
+#if 0
     if (statusBox != nullptr) {
         statusBox->show(title, msg, color);
     }
+#endif
 }
 
 void RetroDream::debugClockStart(const char *msg) {
@@ -345,6 +347,11 @@ int main(int argc, char *argv[]) {
 #ifdef __DREAMCAST__
     cdrom_spin_down();
 #endif
+
+    retroDream->getMessageBox()->show("ROM FLASH",
+                                      "YOU ARE ABOUT TO WRITE TO YOUR FLASH ROM. "
+                                        "BE SURE YOU KNOW WHAT YOU'RE DOING!",
+                                      "CANCEL", "CONFIRM");
 
     // let's go
     while (!retroDream->quit) {

@@ -10,17 +10,17 @@
 using namespace c2d;
 
 ProgressBox::ProgressBox(RetroDream *rd, const c2d::Color &fill, const c2d::Color &out, const c2d::Color &textFill)
-        : RectangleShape(Vector2f(rd->getSize().x / 1.6f, rd->getSize().y / 1.6f)) {
+        : RectangleShape(Vector2f(rd->getSize().x / 1.8f, rd->getSize().y / 1.8f)) {
 
-    float w = rd->getSize().x / 1.6f;
-    float h = rd->getSize().y / 1.6f;
+    float w = rd->getSize().x / 1.8f;
+    float h = rd->getSize().y / 1.8f;
     float margin = 16;
 
-    setOrigin(Origin::Center);
-    setPosition(rd->getSize().x / 2, rd->getSize().y / 2);
-    setFillColor(fill);
-    setOutlineColor(out);
-    setOutlineThickness(5);
+    RectangleShape::setOrigin(Origin::Center);
+    RectangleShape::setPosition(rd->getSize().x / 2, rd->getSize().y / 2);
+    RectangleShape::setFillColor(fill);
+    RectangleShape::setOutlineColor(out);
+    RectangleShape::setOutlineThickness(5);
 
     title = new Text("TITLE", FONT_SIZE);
     title->setPosition(margin, margin);
@@ -28,7 +28,7 @@ ProgressBox::ProgressBox(RetroDream *rd, const c2d::Color &fill, const c2d::Colo
     title->setFillColor(textFill);
     title->setOutlineThickness(2);
     title->setOutlineColor(Color::Black);
-    add(title);
+    RectangleShape::add(title);
 
     message = new Text("MESSAGE", FONT_SIZE);
     message->setPosition(margin, 64);
@@ -38,7 +38,7 @@ ProgressBox::ProgressBox(RetroDream *rd, const c2d::Color &fill, const c2d::Colo
     message->setFillColor(textFill);
     message->setOutlineThickness(2);
     message->setOutlineColor(Color::Black);
-    add(message);
+    RectangleShape::add(message);
 
     progress_bg = new RectangleShape(
             FloatRect(margin, h - margin - (h / 6),
@@ -50,13 +50,13 @@ ProgressBox::ProgressBox(RetroDream *rd, const c2d::Color &fill, const c2d::Colo
     progress_bg->setFillColor(col);
     progress_bg->setOutlineColor(out);
     progress_bg->setOutlineThickness(2);
-    add(progress_bg);
+    RectangleShape::add(progress_bg);
 
     progress_fg = new RectangleShape(
             FloatRect(progress_bg->getPosition().x + 1, progress_bg->getPosition().y + 1,
                       2, progress_bg->getSize().y - 2));
     progress_fg->setFillColor(out);
-    add(progress_fg);
+    RectangleShape::add(progress_fg);
 
     progress_message = new Text("PROGRESS MESSAGE", FONT_SIZE);
     progress_message->setPosition(margin, progress_bg->getPosition().y - FONT_SIZE - 16);
@@ -64,9 +64,9 @@ ProgressBox::ProgressBox(RetroDream *rd, const c2d::Color &fill, const c2d::Colo
     progress_message->setFillColor(textFill);
     progress_message->setOutlineThickness(2);
     progress_message->setOutlineColor(Color::Black);
-    add(progress_message);
+    RectangleShape::add(progress_message);
 
-    setVisibility(Visibility::Hidden);
+    RectangleShape::setVisibility(Visibility::Hidden);
 }
 
 void ProgressBox::setTitle(const std::string &text) {

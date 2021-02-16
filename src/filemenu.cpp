@@ -47,7 +47,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                 setVisibility(Visibility::Hidden, true);
             } else if (option->getId() == VmuBackup) {
                 retroDream->getProgressBox()->setTitle("VMU BACKUP IN PROGRESS");
-                retroDream->getProgressBox()->setMessage("\n\nDOING RAW VMU BACKUP...");
+                retroDream->getProgressBox()->setMessage("\nDOING RAW VMU BACKUP...");
                 retroDream->getProgressBox()->setProgress("PLEASE WAIT.... \n", 0.0f);
                 retroDream->getProgressBox()->setVisibility(Visibility::Visible);
                 RetroDream *rd = retroDream;
@@ -80,7 +80,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                     retroDream->getFiler()->getBlur()->setVisibility(Visibility::Visible);
                     retroDream->getProgressBox()->setTitle("COPY IN PROGRESS");
                     retroDream->getProgressBox()->setMessage(
-                            "\n\n\nCOPYING STUFF, PLEASE WAIT...");
+                            "\nCOPYING STUFF, PLEASE WAIT...");
                     retroDream->getProgressBox()->setProgress("LOADING STUFF.... \n", 0.0f);
                     retroDream->getProgressBox()->setVisibility(Visibility::Visible);
                     RetroDream *rd = retroDream;
@@ -92,7 +92,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                                     rd->getMessageBox()->getTitleText()->setFillColor(COL_RED);
                                     rd->getMessageBox()->show(
                                             "COPY - ERROR",
-                                            "\n\n\nAN ERROR OCCURRED WHILE COPYING FILES...", "OK");
+                                            "AN ERROR OCCURRED WHILE COPYING FILES...", "OK");
                                     rd->getProgressBox()->setVisibility(Visibility::Hidden);
                                     rd->getFiler()->getBlur()->setVisibility(Visibility::Hidden, true);
                                 } else if (progress > 1) {
@@ -111,8 +111,8 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                     file = retroDream->getFiler()->getSelection();
                     setVisibility(Visibility::Hidden, true);
                     int res = retroDream->getMessageBox()->show(
-                            "DELETE",
-                            "\n\nDO YOU REALLY WANT TO DELETE: \n\n" + file.upperName,
+                            "CONFIRM DELETION",
+                            "DO YOU REALLY WANT TO DELETE: \n\"" + file.upperName + "\"",
                             "CANCEL", "CONFIRM");
                     if (res == MessageBox::RIGHT) {
                         if (file.data.type == Io::Type::Directory) {
@@ -126,7 +126,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                         } else {
                             retroDream->getMessageBox()->show(
                                     "DELETE - ERROR",
-                                    "\n\n\nAN ERROR OCCURRED WHILE DELETING FILES...", "OK");
+                                    "AN ERROR OCCURRED WHILE DELETING FILES...", "OK");
                         }
                     }
                     file = {};

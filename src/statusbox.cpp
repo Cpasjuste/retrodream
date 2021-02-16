@@ -16,7 +16,7 @@ StatusBox::StatusBox(const c2d::FloatRect &rect) : Rectangle(rect) {
     titleText->setOutlineColor(Color::Black);
     titleText->setOutlineThickness(2);
     titleText->setSizeMax(rect.width - FONT_SIZE, FONT_SIZE + 4);
-    add(titleText);
+    Rectangle::add(titleText);
 
     messageText = new Text("MESSAGE TEXT", FONT_SIZE);
     messageText->setPosition(0, FONT_SIZE + 6);
@@ -25,9 +25,9 @@ StatusBox::StatusBox(const c2d::FloatRect &rect) : Rectangle(rect) {
     messageText->setOutlineColor(Color::Black);
     messageText->setOutlineThickness(2);
     messageText->setSizeMax(rect.width - FONT_SIZE, FONT_SIZE + 4);
-    add(messageText);
+    Rectangle::add(messageText);
 
-    setVisibility(Visibility::Hidden);
+    Rectangle::setVisibility(Visibility::Hidden);
 }
 
 void StatusBox::show(const std::string &title, const std::string &msg, const c2d::Color &color) {

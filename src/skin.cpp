@@ -91,11 +91,11 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // help box
     Group help = addShape("help", HelpShape,
-                          FloatRect{388, 286, 233, 83},
-                          8, Origin::TopLeft,
+                          FloatRect{509, 466, 233, 83},
+                          8, Origin::Bottom,
                           Color{178, 226, 249},
                           Color{49, 121, 159},
-                          2, 0);
+                          4, 0);
     addGroup(help);
 
     // menus
@@ -127,7 +127,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // load the configuration from file, overwriting default values
     if (!load()) {
-#if 1
+#if 0
         // file doesn't exist or is malformed, (re)create it
         printf("Skin: skin configuration file doesn't exist or is malformed, "
                "creating a new one (%s)\n", getPath().c_str());
