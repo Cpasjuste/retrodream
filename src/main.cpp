@@ -168,6 +168,8 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
         RetroUtility::screenshot(this, getIo()->getScreenshotPath());
     } else if (keys & Input::Key::Fire3 && !optionMenu->isVisible()) {
+        preview->unload();
+        previewVideo->unload();
         optionMenu->setVisibility(Visibility::Hidden, true);
         presetMenu->setVisibility(Visibility::Hidden, true);
         fileMenu->setVisibility(fileMenu->isVisible() ?
@@ -175,12 +177,16 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
     } else if (keys & Input::Key::Fire4 && !optionMenu->isVisible()) {
         Filer::RetroFile file = filer->getSelection();
         if (file.isGame) {
+            preview->unload();
+            previewVideo->unload();
             optionMenu->setVisibility(Visibility::Hidden, true);
             fileMenu->setVisibility(Visibility::Hidden, true);
             presetMenu->setVisibility(presetMenu->isVisible() ?
                                       Visibility::Hidden : Visibility::Visible, true);
         }
     } else if (keys & Input::Key::Start) {
+        preview->unload();
+        previewVideo->unload();
         fileMenu->setVisibility(Visibility::Hidden, true);
         presetMenu->setVisibility(Visibility::Hidden, true);
         optionMenu->setVisibility(optionMenu->isVisible() ?

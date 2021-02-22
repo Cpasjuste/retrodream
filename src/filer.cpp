@@ -462,27 +462,19 @@ bool Filer::onInput(c2d::Input::Player *players) {
         return false;
     }
 
-    unsigned int keys = players[0].keys;
+    // stop previews in any case
+    retroDream->getPreviewImage()->unload();
+    retroDream->getPreviewVideo()->unload();
+    previewClock.restart();
 
+    unsigned int keys = players[0].keys;
     if (keys & Input::Key::Up) {
-        retroDream->getPreviewImage()->unload();
-        retroDream->getPreviewVideo()->unload();
-        previewClock.restart();
         up();
     } else if (keys & Input::Key::Down) {
-        retroDream->getPreviewImage()->unload();
-        retroDream->getPreviewVideo()->unload();
-        previewClock.restart();
         down();
     } else if (keys & Input::Key::Right) {
-        retroDream->getPreviewImage()->unload();
-        retroDream->getPreviewVideo()->unload();
-        previewClock.restart();
         setSelection(getIndex() + getMaxLines());
     } else if (keys & Input::Key::Left) {
-        retroDream->getPreviewImage()->unload();
-        retroDream->getPreviewVideo()->unload();
-        previewClock.restart();
         setSelection(getIndex() - getMaxLines());
     } else if (keys & Input::Key::Fire1) {
         RetroFile file = getSelection();
@@ -492,9 +484,6 @@ bool Filer::onInput(c2d::Input::Player *players) {
             RetroDream::getConfig()->set(RetroConfig::FilerPath, path);
             IsoLoader::run(retroDream, file.isoPath);
         } else if (type == Io::Type::Directory) {
-            retroDream->getPreviewImage()->unload();
-            retroDream->getPreviewVideo()->unload();
-            previewClock.restart();
             enter(getIndex());
         } else if (RetroUtility::isElf(file.data.name)) {
             RetroUtility::exec(file.data.path);
@@ -512,9 +501,6 @@ bool Filer::onInput(c2d::Input::Player *players) {
             blurLayer->setVisibility(Visibility::Hidden, true);
         }
     } else if (keys & Input::Key::Fire2) {
-        retroDream->getPreviewImage()->unload();
-        retroDream->getPreviewVideo()->unload();
-        previewClock.restart();
         exit();
     }
 
