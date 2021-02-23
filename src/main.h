@@ -22,10 +22,11 @@
 #include "helpbox.h"
 #include "credits.h"
 #include "progressbox.h"
+#include "gdplay.h"
 
 #define FONT_SIZE 15
 #define CORNER_RADIUS 8
-#define CORNER_POINTS 8
+#define CORNER_POINTS 4
 
 void retroDebug(const char *fmt, ...);
 

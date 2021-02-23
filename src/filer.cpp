@@ -486,7 +486,18 @@ bool Filer::onInput(c2d::Input::Player *players) {
             RetroDream::getConfig()->set(RetroConfig::FilerPath, path);
             IsoLoader::run(retroDream, file.isoPath);
         } else if (type == Io::Type::Directory) {
-            enter(getIndex());
+            if (file.data.path == "/cd" && GDPlay::isGame()) {
+                int ret = retroDream->getMessageBox()->show("RUN GDROM ?",
+                                                            "DO YOU WANT TO RUN THIS GDROM OR BROWSE IT ?",
+                                                            "RUN", "BROWSE");
+                if (ret == MessageBox::RIGHT) {
+                    enter(getIndex());
+                } else {
+                    GDPlay::run(retroDream);
+                }
+            } else {
+                enter(getIndex());
+            }
         } else if (RetroUtility::isElf(file.data.name)) {
             RetroUtility::exec(file.data.path);
         } else if (Utility::endsWith(file.data.name, ".bios", false)) {

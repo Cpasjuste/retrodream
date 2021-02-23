@@ -16,6 +16,7 @@
 #include "retroio.h"
 #include "systemmenu.h"
 #include "skintex.h"
+#include "gdplay.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
@@ -145,7 +146,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     messageBox->getMessageText()->setFillColor(COL_BLUE_DARK);
     Shape::add(messageBox);
 
-    statusBox = new StatusBox({8, size.y - 14, size.x, FONT_SIZE * 2});
+    statusBox = new StatusBox({9, size.y - 2, size.x - 16, FONT_SIZE * 3 + 2});
     statusBox->setOrigin(Origin::BottomLeft);
     Shape::add(statusBox);
 
@@ -204,7 +205,6 @@ void RetroDream::onUpdate() {
 
     // handle key repeat delay
     unsigned int keys = render->getInput()->getKeys(0);
-
     if (keys != Input::Key::Delay) {
         bool changed = (oldKeys ^ keys) != 0;
         oldKeys = keys;
@@ -222,6 +222,9 @@ void RetroDream::onUpdate() {
         }
     }
 
+    // gdplay
+    GDPlay::check(this);
+
     RectangleShape::onUpdate();
 }
 
@@ -234,11 +237,9 @@ Skin *RetroDream::getSkin() {
 }
 
 void RetroDream::showStatus(const std::string &title, const std::string &msg, const c2d::Color &color) {
-#if 0
     if (statusBox != nullptr) {
         statusBox->show(title, msg, color);
     }
-#endif
 }
 
 void RetroDream::debugClockStart(const char *msg) {
@@ -316,9 +317,9 @@ int main(int argc, char *argv[]) {
     render->add(debugText);
 
 #ifdef __DREAMCAST__
+#ifdef NDEBUG
     retroDebug("MOUNTING HDD...");
     InitIDE();
-#ifdef NDEBUG
     retroDebug("MOUNTING SDCARD...");
     InitSDCard();
 #endif

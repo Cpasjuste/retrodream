@@ -44,6 +44,7 @@ if (PLATFORM_DREAMCAST)
             src/ds_wrapper/ds_wrapper.c
             src/ds_wrapper/exports.c
             src/ds_wrapper/exports_gcc.c
+            src/ds_wrapper/gd_exec.s
             )
     # ds vmu
     list(APPEND SOURCES

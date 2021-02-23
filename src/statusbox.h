@@ -5,7 +5,7 @@
 #ifndef STATUS_BOX_H
 #define STATUS_BOX_H
 
-class StatusBox : public c2d::Rectangle {
+class StatusBox : public c2d::RectangleShape {
 
 public:
 
