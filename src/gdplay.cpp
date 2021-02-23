@@ -30,12 +30,10 @@ bool GDPlay::check(RetroDream *rd) {
             game = false;
             cdrom_reinit();
         }
-        printf("GDPlay::checkGD: cdrom_reinit\n");
         return false;
     }
 
     if (status == CD_STATUS_OPEN || status == CD_STATUS_NO_DISC) {
-        printf("GDPlay::checkGD: CD_STATUS_NO_DISC\n");
         loaded = false;
         game = false;
         return false;
