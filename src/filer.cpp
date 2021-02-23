@@ -133,7 +133,7 @@ void Filer::updateLines() {
                     retroDream->getHeader()->setStringRight(file.data.type == Io::Type::File ? "FIL" : "DIR");
                     retroDream->getHeader()->setStringRightColor(COL_BLUE_DARK);
                     // help buttons
-                    retroDream->getHelpBox()->setString(HelpBox::HelpButton::A, "ENTER");
+                    retroDream->getHelpBox()->setString(HelpBox::HelpButton::A, "ENTER DIRECTORY");
                     retroDream->getHelpBox()->setString(HelpBox::HelpButton::Y, "UNUSED");
                 }
             }

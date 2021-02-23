@@ -12,7 +12,7 @@ project(retrodream)
 enable_language(ASM)
 
 set(PROJECT_AUTHOR "Cpasjuste")
-set(VERSION_MAJOR "2")
+set(VERSION_MAJOR "3")
 set(VERSION_MINOR "0")
 set(VERSION_MICRO "0")
 

@@ -91,11 +91,11 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // help box
     Group help = addShape("help", HelpShape,
-                          FloatRect{509, 466, 233, 83},
-                          8, Origin::Bottom,
+                          FloatRect{508, 288, 233, 172},
+                          8, Origin::Top,
                           Color{178, 226, 249},
                           Color{49, 121, 159},
-                          4, 0);
+                          3, 0);
     addGroup(help);
 
     // menus
