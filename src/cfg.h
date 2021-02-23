@@ -18,7 +18,9 @@ public:
         FilerPath,
         InputDelay,
         PreviewImageDelay,
-        PreviewVideoDelay
+        PreviewVideoDelay,
+        PreviewImagePath,
+        PreviewVideoPath
     };
 
     explicit RetroConfig(RetroIo *io);

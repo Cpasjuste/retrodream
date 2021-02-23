@@ -170,6 +170,8 @@ bool Filer::getDir(const std::string &p) {
     }
 
     std::string mediaPath = retroDream->getIo()->getDataPath() + "medias/";
+    std::string imagePath = RetroDream::getConfig()->get(RetroConfig::PreviewImagePath);
+    std::string videoPath = RetroDream::getConfig()->get(RetroConfig::PreviewVideoPath);
 
     for (auto const &fileData : dirList) {
         RetroFile file;
@@ -188,9 +190,9 @@ bool Filer::getDir(const std::string &p) {
                 }
                 // set medias path
                 std::string noExt = Utility::removeExt(file.data.name);
-                file.preview = mediaPath + "box/";
+                file.preview = mediaPath + imagePath + "/";
                 file.preview += noExt + ".png";
-                file.preview_video = mediaPath + "video/";
+                file.preview_video = mediaPath + videoPath + "/";
                 file.preview_video += noExt + ".roq";
             }
         } else if (fileData.type == Io::Type::Directory) {
@@ -221,9 +223,9 @@ bool Filer::getDir(const std::string &p) {
                 }
                 // set medias path
                 std::string noExt = Utility::removeExt(gameFile.name);
-                file.preview = mediaPath + "box/";
+                file.preview = mediaPath + imagePath + "/";
                 file.preview += noExt + ".png";
-                file.preview_video = mediaPath + "video/";
+                file.preview_video = mediaPath + videoPath + "/";
                 file.preview_video += noExt + ".roq";
             }
         }

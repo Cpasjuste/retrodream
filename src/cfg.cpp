@@ -18,6 +18,8 @@ RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo-
     main.addOption({"input_delay", 200, OptionId::InputDelay});
     main.addOption({"image_delay", 500, OptionId::PreviewImageDelay});
     main.addOption({"video_delay", 3000, OptionId::PreviewVideoDelay});
+    main.addOption({"image_path", "box-2D", OptionId::PreviewImagePath});
+    main.addOption({"video_path", "video-normalized", OptionId::PreviewVideoPath});
     addGroup(main);
 
     // load the configuration from file, overwriting default values
