@@ -61,6 +61,10 @@ void StatusBox::show(const std::string &title, const std::string &msg, const c2d
     if (c != color) {
         titleText->setFillColor(color);
         messageText->setFillColor(color);
+        RectangleShape::setOutlineColor(color);
+        c = color;
+        c.a = 150;
+        RectangleShape::setFillColor(c);
     }
 
     if (!isVisible()) {

@@ -44,6 +44,7 @@ private:
     bool loaded = false;
     c2d::Thread *thread = nullptr;
     c2d::Texture *texture = nullptr;
+    c2d::C2DClock fpsLimitClock;
 };
 
 #endif //RETRODREAM_PREVIEWVIDEO_H

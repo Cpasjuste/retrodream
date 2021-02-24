@@ -339,40 +339,55 @@ bool PreviewVideo::isLoaded() const {
     return loaded;
 }
 
-//static C2DClock debugClock;
-//static int unlockTime = 0;
+#ifndef NDEBUG
+static C2DClock debugClock;
+static int unlockTime = 0;
+#endif
 
 void PreviewVideo::onUpdate() {
 
-    if (isVisible() && status == ROQ_PLAYING && videoUpload) {
-        if (!texture) {
-            texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
-            texture->setFilter(Texture::Filter::Point);
-            texture->setCornerPointCount(CORNER_POINTS);
-            texture->setCornersRadius(getCornersRadius());
-            texture->setTextureRect(IntRect{0, 0, state.width, state.height});
-            texture->setOrigin(Origin::Center);
-            texture->setPosition(Vector2f(getSize().x / 2, getSize().y / 2));
-            texture->setSize(getSize());
-            add(texture);
-        }
+    if (isVisible() && status == ROQ_PLAYING) {
 
-        mutex->lock();
-        /*
-        if (debugClock.getElapsedTime().asMilliseconds() > 16 * 60) {
-            unlockTime = debugClock.restart().asMilliseconds();
+        // frame limit
+        while (fpsLimitClock.getElapsedTime().asMilliseconds() < (1000 / 30)) {
+#ifdef __DREAMCAST__
+            thd_pass();
+#else
+            rd->getRender()->delay(1);
+#endif
         }
-        */
-        texture->unlock(state.frame[state.current_frame & 1]);
-        /*
-        if (unlockTime > 0) {
-            printf("videoTex->unlock: %i ms (fps: %f)\n",
-                   debugClock.getElapsedTime().asMilliseconds(), retroDream->getRender()->getFps());
-            unlockTime = 0;
+        fpsLimitClock.restart();
+
+        if (videoUpload) {
+            if (!texture) {
+                texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
+                texture->setFilter(Texture::Filter::Point);
+                texture->setCornerPointCount(CORNER_POINTS);
+                texture->setCornersRadius(getCornersRadius());
+                texture->setTextureRect(IntRect{0, 0, state.width, state.height});
+                texture->setOrigin(Origin::Center);
+                texture->setPosition(Vector2f(getSize().x / 2, getSize().y / 2));
+                texture->setSize(getSize());
+                add(texture);
+            }
+
+            mutex->lock();
+#ifndef NDEBUG
+            if (debugClock.getElapsedTime().asMilliseconds() > 16 * 60) {
+                unlockTime = debugClock.restart().asMilliseconds();
+            }
+#endif
+            texture->unlock(state.frame[state.current_frame & 1]);
+#ifndef NDEBUG
+            if (unlockTime > 0) {
+                printf("videoTex->unlock: %i ms (fps: %f)\n",
+                       debugClock.getElapsedTime().asMilliseconds(), retroDream->getRender()->getFps());
+                unlockTime = 0;
+            }
+#endif
+            mutex->unlock();
+            videoUpload = false;
         }
-        */
-        mutex->unlock();
-        videoUpload = false;
     }
 
     RectangleShape::onUpdate();
