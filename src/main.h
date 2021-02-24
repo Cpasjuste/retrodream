@@ -133,6 +133,7 @@ private:
     int inputDelay;
     unsigned int oldKeys = 0;
     c2d::C2DClock debugClock;
+    c2d::C2DClock gdCheckClock;
 };
 
 #endif //RETRODREAM_MAIN_H

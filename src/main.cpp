@@ -223,7 +223,10 @@ void RetroDream::onUpdate() {
     }
 
     // gdplay
-    GDPlay::check(this);
+    if (gdCheckClock.getElapsedTime().asSeconds() > 5) {
+        GDPlay::check(this);
+        gdCheckClock.restart();
+    }
 
     RectangleShape::onUpdate();
 }

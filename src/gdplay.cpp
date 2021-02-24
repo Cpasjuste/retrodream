@@ -43,6 +43,7 @@ bool GDPlay::check(RetroDream *rd) {
         switch (type) {
             case CD_CDDA:
                 rd->showStatus("GDROM", "CDDA MEDIA LOADED...");
+                game = true;
                 break;
             case CD_GDROM:
             case CD_CDROM_XA:
