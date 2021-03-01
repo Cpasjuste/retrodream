@@ -46,6 +46,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     render->setFont(font);
     debugText->setFont(font);
 #endif
+    render->getFont()->setFilter(Texture::Filter::Point);
 
     retroDebug("LOADING FONT...");
     debugClockStart("font cache");

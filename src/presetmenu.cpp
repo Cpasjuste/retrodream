@@ -28,7 +28,14 @@ void PresetMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
     if (visibility == Visibility::Visible) {
         Filer::RetroFile file = retroDream->getFiler()->getSelection();
         if (file.isGame) {
-            isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.isoPath);
+            if (file.data.type == Io::Type::Directory) {
+                Io::File gameFile = retroDream->getIo()->findFile(file.data.path, {".gdi", ".cdi", ".iso"}, "track");
+                if (!gameFile.name.empty()) {
+                    isoLoaderConfig = IsoLoader::loadConfig(retroDream, gameFile.path);
+                }
+            } else {
+                isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.data.path);
+            }
             config.getOption(Mode)->setChoicesIndex(isoLoaderConfig.mode);
             config.getOption(Memory)->setChoicesIndex(Utility::toUpper(isoLoaderConfig.memory));
             config.getOption(Dma)->setChoicesIndex(isoLoaderConfig.dma);
