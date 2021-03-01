@@ -165,7 +165,7 @@ bool Filer::getDir(const std::string &p) {
 
     std::vector<Io::File> dirList = io->getDirList(path, true, false);
     if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
-        Io::File file("..", "..", Io::Type::Directory, 0, dirColor.color);
+        Io::File file("..", "..", Io::Type::Directory, 0);
         dirList.insert(dirList.begin(), file);
     }
 
@@ -208,7 +208,7 @@ bool Filer::getDir(const std::string &p) {
                 if (!file.isoType.empty()) {
                     // if we found an iso/cdi and more than one file in the directory, don't add it as a game
                     if (io->hasMoreThanOneFile(fileData.path)) {
-                        files.emplace_back(file);
+                        files.push_back(file);
                         continue;
                     }
                 }
@@ -230,7 +230,7 @@ bool Filer::getDir(const std::string &p) {
             }
         }
 
-        files.emplace_back(file);
+        files.push_back(file);
     }
 
     setSelection(0);
