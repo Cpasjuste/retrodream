@@ -165,9 +165,13 @@ bool Filer::getDir(const std::string &p) {
 
     std::vector<Io::File> dirList = io->getDirList(path, true, false);
     if (p != "/" && (dirList.empty() || dirList.at(0).name != "..")) {
-        Io::File file("..", "..", Io::Type::Directory, 0);
+        Io::File file("..", "..", Io::Type::Directory, 0, dirColor.color);
         dirList.insert(dirList.begin(), file);
     }
+
+    std::string mediaPath = retroDream->getIo()->getDataPath() + "medias/";
+    std::string imagePath = RetroDream::getConfig()->get(RetroConfig::PreviewImagePath);
+    std::string videoPath = RetroDream::getConfig()->get(RetroConfig::PreviewVideoPath);
 
     for (auto const &fileData : dirList) {
         RetroFile file;
@@ -176,35 +180,57 @@ bool Filer::getDir(const std::string &p) {
         if (fileData.type == Io::Type::File) {
             if (RetroUtility::isGame(file.data.name)) {
                 file.isGame = true;
-                if (Utility::endsWith(file.data.path, ".iso")) {
+                file.isoPath = file.data.path;
+                if (Utility::endsWith(file.isoPath, ".iso")) {
                     file.isoType = "ISO";
-                } else if (Utility::endsWith(file.data.path, ".cdi")) {
+                } else if (Utility::endsWith(file.isoPath, ".cdi")) {
                     file.isoType = "CDI";
-                } else if (Utility::endsWith(file.data.path, ".gdi")) {
+                } else if (Utility::endsWith(file.isoPath, ".gdi")) {
                     file.isoType = "GDI";
                 }
+                // set medias path
+                std::string noExt = Utility::removeExt(file.data.name);
+                file.preview = mediaPath + imagePath + "/";
+                file.preview += noExt + ".png";
+                file.preview_video = mediaPath + videoPath + "/";
+                file.preview_video += noExt + ".roq";
             }
         } else if (fileData.type == Io::Type::Directory) {
-#ifdef __DREAMCAST__
-            if (DCIo::existsFile(fileData.path + "/track01.iso")) {
-                file.isoType = "OPT";
+            Io::File gameFile = io->findFile(fileData.path, {".gdi", ".cdi", ".iso"}, "track");
+            // directory contains a game
+            if (!gameFile.name.empty()) {
+                // if sub dir contains iso or cdi but more than one file, don't assume it's a game
+                if (Utility::endsWith(gameFile.name, ".cdi")) {
+                    file.isoType = "CDI";
+                } else if (Utility::endsWith(gameFile.name, ".iso")) {
+                    file.isoType = "ISO";
+                }
+                if (!file.isoType.empty()) {
+                    // if we found an iso/cdi and more than one file in the directory, don't add it as a game
+                    if (io->hasMoreThanOneFile(fileData.path)) {
+                        files.emplace_back(file);
+                        continue;
+                    }
+                }
                 file.isGame = true;
-            } else if (DCIo::existsFile(fileData.path + "/track01.bin")) {
-                file.isoType = "GDI";
-                file.isGame = true;
+                file.isoPath = gameFile.path;
+                if (file.isoType.empty()) {
+                    if (io->exist(fileData.path + "/track01.iso")) {
+                        file.isoType = "OPT";
+                    } else {
+                        file.isoType = "GDI";
+                    }
+                }
+                // set medias path
+                std::string noExt = Utility::removeExt(gameFile.name);
+                file.preview = mediaPath + imagePath + "/";
+                file.preview += noExt + ".png";
+                file.preview_video = mediaPath + videoPath + "/";
+                file.preview_video += noExt + ".roq";
             }
-#else
-            if (io->exist(fileData.path + "/track01.iso")) {
-                file.isoType = "OPT";
-                file.isGame = true;
-            } else if (io->exist(fileData.path + "/track01.bin")) {
-                file.isoType = "GDI";
-                file.isGame = true;
-            }
-#endif
         }
 
-        files.push_back(file);
+        files.emplace_back(file);
     }
 
     setSelection(0);
@@ -329,15 +355,6 @@ Filer::RetroFile Filer::getSelection() {
     return Filer::RetroFile();
 }
 
-Filer::RetroFile *Filer::getSelectionPtr() {
-
-    if (!files.empty() && files.size() > (size_t) file_index + highlight_index) {
-        return &files.at(file_index + highlight_index);
-    }
-
-    return nullptr;
-}
-
 Line *Filer::getSelectionLine() {
 
     if ((size_t) highlight_index < files.size()) {
@@ -416,56 +433,17 @@ void Filer::onUpdate() {
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
     if (keys == 0) {
-        Filer::RetroFile *file = getSelectionPtr();
-        /*
-        // update dir information here as it's too slow from getDirList
-        if (file && file->data.type == Io::Type::Directory
-            && !retroDream->getPreviewImage()->isLoaded() &&
-            previewClock.getElapsedTime().asMilliseconds() > previewImageDelay
-            && file->isoType.empty()) {
-            if (DCIo::existsFile(file->data.path + "/track01.iso")) {
-                file->isoType = "OPT";
-                file->isGame = true;
-            } else if (DCIo::existsFile(file->data.path + "/track01.bin")) {
-                file->isoType = "GDI";
-                file->isGame = true;
-            } else {
-                file->isoType = "DIR";
-            }
-        }
-        */
-        if (file && file->isGame) {
+        const Filer::RetroFile file = getSelection();
+        if (file.isGame) {
             if (previewClock.getElapsedTime().asMilliseconds() > previewVideoDelay) {
                 // load preview video
                 if (!retroDream->getPreviewVideo()->isLoaded()) {
-                    // set preview path
-                    std::string gameName = file->data.name;
-                    if (file->data.type == Io::Type::Directory) {
-                        Io::File gameFile = io->findFile(file->data.path, {".gdi", ".cdi", ".iso"}, "track");
-                        gameName = gameFile.name;
-                    }
-                    if (!gameName.empty()) {
-                        std::string mediaPath = retroDream->getIo()->getDataPath() + "medias/";
-                        std::string videoPath = RetroDream::getConfig()->get(RetroConfig::PreviewVideoPath);
-                        std::string noExt = Utility::removeExt(gameName);
-                        retroDream->getPreviewVideo()->load(mediaPath + videoPath + "/" + noExt + ".roq");
-                    }
+                    retroDream->getPreviewVideo()->load(file.preview_video);
                 }
             } else if (previewClock.getElapsedTime().asMilliseconds() > previewImageDelay) {
                 // load preview image
                 if (!retroDream->getPreviewImage()->isLoaded()) {
-                    // set preview path
-                    std::string gameName = file->data.name;
-                    if (file->data.type == Io::Type::Directory) {
-                        Io::File gameFile = io->findFile(file->data.path, {".gdi", ".cdi", ".iso"}, "track");
-                        gameName = gameFile.name;
-                    }
-                    if (!gameName.empty()) {
-                        std::string mediaPath = retroDream->getIo()->getDataPath() + "medias/";
-                        std::string imagePath = RetroDream::getConfig()->get(RetroConfig::PreviewImagePath);
-                        std::string noExt = Utility::removeExt(gameName);
-                        retroDream->getPreviewImage()->load(mediaPath + imagePath + "/" + noExt + ".png");
-                    }
+                    retroDream->getPreviewImage()->load(file.preview);
                 }
             }
         }
@@ -506,14 +484,7 @@ bool Filer::onInput(c2d::Input::Player *players) {
         if (file.isGame) {
             // save last path
             RetroDream::getConfig()->set(RetroConfig::FilerPath, path);
-            if (file.data.type == Io::Type::Directory) {
-                Io::File gameFile = io->findFile(file.data.path, {".gdi", ".cdi", ".iso"}, "track");
-                if (!gameFile.name.empty()) {
-                    IsoLoader::run(retroDream, gameFile.path);
-                }
-            } else {
-                IsoLoader::run(retroDream, file.data.path);
-            }
+            IsoLoader::run(retroDream, file.isoPath);
         } else if (type == Io::Type::Directory) {
             if (file.data.path == "/cd" && GDPlay::isGame()) {
                 int ret = retroDream->getMessageBox()->show("RUN GDROM ?",

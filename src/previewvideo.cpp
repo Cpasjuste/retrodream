@@ -353,7 +353,7 @@ void PreviewVideo::onUpdate() {
 #ifdef __DREAMCAST__
             thd_pass();
 #else
-            retroDream->getRender()->delay(1);
+            rd->getRender()->delay(1);
 #endif
         }
         fpsLimitClock.restart();

@@ -42,9 +42,9 @@ public:
 
         c2d::Io::File data;
         std::string isoType;
-        //std::string isoPath;
-        //std::string preview;
-        //std::string preview_video;
+        std::string isoPath;
+        std::string preview;
+        std::string preview_video;
         std::string preset;
         std::string upperName;
         bool isGame = false;
@@ -61,8 +61,6 @@ public:
     bool getDir(const std::string &path);
 
     RetroFile getSelection();
-
-    RetroFile *getSelectionPtr();
 
     void setSelection(int index);
 
