@@ -89,8 +89,6 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
     // previews timer delay
     previewImageDelay = RetroDream::getConfig()->getInt(RetroConfig::PreviewImageDelay);
     previewVideoDelay = RetroDream::getConfig()->getInt(RetroConfig::PreviewVideoDelay);
-
-    getDir(path);
 };
 
 void Filer::updateLines() {
@@ -439,12 +437,7 @@ void Filer::onUpdate() {
     if (keys == 0) {
         Filer::RetroFile *file = getSelectionPtr();
         if (file && file->isGame) {
-            if (previewClock.getElapsedTime().asMilliseconds() > previewVideoDelay) {
-                // load preview video
-                if (!retroDream->getPreviewVideo()->isLoaded()) {
-                    retroDream->getPreviewVideo()->load(file->preview_video);
-                }
-            } else if (previewClock.getElapsedTime().asMilliseconds() > previewImageDelay) {
+            if (previewClock.getElapsedTime().asMilliseconds() > previewImageDelay) {
                 // update gdi/opt status here to
                 if (!file->isOptChecked) {
                     if (io->exist(file->data.path + "/track01.iso")) {
@@ -457,6 +450,12 @@ void Filer::onUpdate() {
                 // load preview image
                 if (!retroDream->getPreviewImage()->isLoaded()) {
                     retroDream->getPreviewImage()->load(file->preview);
+                }
+            }
+            if (previewClock.getElapsedTime().asMilliseconds() > previewVideoDelay) {
+                // load preview video
+                if (!retroDream->getPreviewVideo()->isLoaded()) {
+                    retroDream->getPreviewVideo()->load(file->preview_video);
                 }
             }
         }

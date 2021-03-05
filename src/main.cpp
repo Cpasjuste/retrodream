@@ -29,11 +29,12 @@ void vmu_draw_str(uint8 bitmap[192], unsigned char *str, int x, int y);
 using namespace c2d;
 
 static Renderer *render = nullptr;
+static RetroDream *retroDream = nullptr;
 static Texture *splashTex = nullptr;
 static Sprite *splashSprite = nullptr;
-static Text *debugText = nullptr;
 static RetroConfig *retroConfig = nullptr;
 static Skin *skin = nullptr;
+static c2d::Text *debugText = nullptr;
 
 RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_shape) {
 
@@ -87,8 +88,10 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
 
     /// filers
     retroDebug("LOADING GAMES...");
+    std::string filerPath = retroConfig->get(RetroConfig::FilerPath);
     shape = skin->getShape(Skin::Id::FilerShape);
     filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath), 6);
+    filer->getDir(filerPath);
     Shape::add(filer);
 
     retroDebug("LOADING GAME MENU...");
@@ -149,6 +152,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     timer.restart();
 
     retroDebug("ALMOST DONE...");
+    delete (splashSprite);
 }
 
 bool RetroDream::onInput(c2d::Input::Player *players) {
@@ -241,7 +245,7 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg, co
 
 void retroDebug(const char *fmt, ...) {
 
-    if (debugText != nullptr) {
+    if (debugText) {
         va_list args;
         char buffer[512];
 
@@ -251,7 +255,6 @@ void retroDebug(const char *fmt, ...) {
         va_end(args);
 
         debugText->setString(Utility::toUpper(buffer));
-        debugText->setVisibility(Visibility::Visible);
         render->flip();
     }
 }
@@ -311,14 +314,8 @@ int main(int argc, char *argv[]) {
 
     /// main rect
     Skin::CustomShape shape = skin->getShape(Skin::Id::BackgroundShape);
-    auto *retroDream = new RetroDream(render, &shape);
+    retroDream = new RetroDream(render, &shape);
     render->add(retroDream);
-
-    // be sure all stuff is updated/created before splash deletion
-    render->flip();
-    delete (splashSprite);
-    delete (debugText);
-    debugText = nullptr;
 
 #ifdef __DREAMCAST__
     cdrom_spin_down();

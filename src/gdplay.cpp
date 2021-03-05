@@ -6,6 +6,7 @@
 
 #include <cstdio>
 #include <ds.h>
+#include <dc/sound/sound.h>
 
 extern "C" void gdplay_run_game(void *param);
 
@@ -91,6 +92,35 @@ bool GDPlay::run(RetroDream *rd) {
     void *bios_patch = memalign(32, 65280);
     fread(bios_patch, 65280, 1, f);
     fclose(f);
+
+    //
+    g1_ata_shutdown();
+    ubc_disable_all();
+    fs_dclsocket_shutdown();
+    net_shutdown();
+    irq_disable();
+    snd_shutdown();
+    timer_shutdown();
+    la_shutdown();
+    bba_shutdown();
+    maple_shutdown();
+    cdrom_shutdown();
+    spu_dma_shutdown();
+    spu_shutdown();
+    pvr_shutdown();
+    library_shutdown();
+    fs_dcload_shutdown();
+    fs_vmu_shutdown();
+    vmufs_shutdown();
+    fs_iso9660_shutdown();
+    fs_ramdisk_shutdown();
+    fs_romdisk_shutdown();
+    fs_pty_shutdown();
+    fs_shutdown();
+    thd_shutdown();
+    rtc_shutdown();
+    irq_shutdown();
+    //
 
     gdplay_run_game(bios_patch);
     return true;
