@@ -24,17 +24,13 @@ Menu::Menu(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape, false) {
     FloatRect configRect = {16, 16, shape->rect.width - 28, shape->rect.height - 64};
     configBox = new ConfigBox(retroDream->getRender()->getFont(), FONT_SIZE, configRect, FONT_SIZE + 10);
     // left box
-    Skin::CustomColor lcol = RetroDream::getSkin()->getColor(Skin::Id::MenuLeftText);
+    Skin::CustomText ltext = RetroDream::getSkin()->getText(Skin::Id::MenuLeftText);
     configBox->getListBoxLeft()->setFillColor(shape->color);
-    configBox->getListBoxLeft()->setTextColor(lcol.color);
-    configBox->getListBoxLeft()->setTextOutlineColor(lcol.outlineColor);
-    configBox->getListBoxLeft()->setTextOutlineThickness(lcol.outlineSize);
+    configBox->getListBoxLeft()->setTextColor(ltext.color);
     // right box
-    Skin::CustomColor rcol = RetroDream::getSkin()->getColor(Skin::Id::MenuRightText);
+    Skin::CustomText rtext = RetroDream::getSkin()->getText(Skin::Id::MenuRightText);
     configBox->getListBoxRight()->setFillColor(shape->color);
-    configBox->getListBoxRight()->setTextColor(rcol.color);
-    configBox->getListBoxRight()->setTextOutlineColor(rcol.outlineColor);
-    configBox->getListBoxRight()->setTextOutlineThickness(rcol.outlineSize);
+    configBox->getListBoxRight()->setTextColor(rtext.color);
     // right highlight
     Skin::CustomShape hshape = RetroDream::getSkin()->getShape(Skin::Id::MenuHighlightShape);
     configBox->getListBoxRight()->getHighlight()->setFillColor(hshape.color);

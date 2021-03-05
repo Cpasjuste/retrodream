@@ -36,19 +36,15 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
                            Color{204, 228, 240},
                            Color{49, 121, 159},
                            3, 0);
-    Group filerFileText = addColor("file_text", FilerFileText,
-                                   Color{97, 190, 236},
-                                   Color{0, 0, 0},
-                                   0);
-    filer.addGroup(filerFileText);
-    Group filerDirText = addColor("dir_text", FilerDirText,
-                                  Color{49, 121, 159},
-                                  Color{0, 0, 0},
-                                  0);
-    filer.addGroup(filerDirText);
+    // items text
+    filer.addOption({"text_spacing", 8, FilerTextSpacing});
+    filer.addGroup(addText("text_file", FilerFileText,
+                           Color{97, 190, 236}, FONT_SIZE));
+    filer.addGroup(addText("text_dir", FilerDirText,
+                           Color{49, 121, 159}, FONT_SIZE));
     // highlight
     Group filerHighlight = addShape("highlight", FilerHighlightShape,
-                                    FloatRect{2, 0, 366, 24},
+                                    FloatRect{2, 0, 366, 26},
                                     8, Origin::TopLeft,
                                     Color{240, 226, 107},
                                     Color{49, 121, 159},
@@ -61,11 +57,8 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
                                 Color{49, 121, 159},
                                 Color{255, 255, 255},
                                 2, 0);
-    Group filerText = addColor("text", FilerBarText,
-                               Color{240, 226, 107},
-                               Color{0, 0, 0},
-                               0);
-    filer_path.addGroup(filerText);
+    filer_path.addGroup(addText("text", FilerBarText,
+                                Color{240, 226, 107}, FONT_SIZE));
     filer.addGroup(filer_path);
     //
     addGroup(filer);
@@ -105,16 +98,10 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
                           Color{204, 228, 240},
                           Color{49, 121, 159},
                           3, 0);
-    Group menuLeftText = addColor("left_text", MenuLeftText,
-                                  Color{49, 121, 159},
-                                  Color{0, 0, 0},
-                                  0);
-    menu.addGroup(menuLeftText);
-    Group menuRightText = addColor("right_text", MenuRightText,
-                                   Color{255, 255, 255},
-                                   Color{49, 121, 159},
-                                   0);
-    menu.addGroup(menuRightText);
+    menu.addGroup(addText("text_left", MenuLeftText,
+                          Color{49, 121, 159}, FONT_SIZE));
+    menu.addGroup(addText("text_right", MenuRightText,
+                          Color{255, 255, 255}, FONT_SIZE));
     // highlight
     Group menuHighlight = addShape("highlight", MenuHighlightShape,
                                    FloatRect{1, 0, 312, 26},
@@ -178,18 +165,42 @@ Skin::addColor(const std::string &name, int id,
     return group;
 }
 
+config::Group
+Skin::addText(const std::string &name, int id,
+              const Color &color, int size) {
+    config::Group group(name, id);
+    group.addOption({"color", color});
+    group.addOption({"size", size});
+    return group;
+}
+
 Skin::CustomColor Skin::getColor(int groupId) {
-    CustomColor colors;
+    CustomColor customColor;
 
     Group *group = getGroup(groupId);
     if (!group) {
         printf("Skin::getColor(%i): group not found...\n", groupId);
-        return colors;
+        return customColor;
     }
 
-    colors.color = group->getOption("color")->getColor();
-    colors.outlineColor = group->getOption("outline_color")->getColor();
-    colors.outlineSize = (float) group->getOption("outline_size")->getInteger();
+    customColor.color = group->getOption("color")->getColor();
+    customColor.outlineColor = group->getOption("outline_color")->getColor();
+    customColor.outlineSize = (float) group->getOption("outline_size")->getInteger();
 
-    return colors;
+    return customColor;
+}
+
+Skin::CustomText Skin::getText(int groupId) {
+    CustomText customText;
+
+    Group *group = getGroup(groupId);
+    if (!group) {
+        printf("Skin::getText(%i): group not found...\n", groupId);
+        return customText;
+    }
+
+    customText.color = group->getOption("color")->getColor();
+    customText.size = group->getOption("size")->getInteger();
+
+    return customText;
 }

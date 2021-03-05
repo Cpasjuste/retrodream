@@ -57,7 +57,7 @@ public:
         Game
     };
 
-    Filer(RetroDream *retroDream, Skin::CustomShape *shape, const std::string &path, int lineSpacing = 2);
+    Filer(RetroDream *retroDream, Skin::CustomShape *shape, const std::string &path);
 
     bool getDir(const std::string &path);
 
@@ -84,8 +84,6 @@ public:
     void setSize(const c2d::Vector2f &size) override;
 
     void setSize(float width, float height) override;
-
-    void setAlpha(uint8_t alpha, bool recursive = false) override;
 
     int getMaxLines();
 
@@ -115,6 +113,8 @@ private:
     std::vector<RetroFile> files;
     std::vector<Line *> lines;
     std::vector<int> item_index_prev;
+    Skin::CustomText skinFileText;
+    Skin::CustomText skinDirText;
     RetroDream *retroDream = nullptr;
     RetroIo *io = nullptr;
     c2d::RectangleShape *highlight = nullptr;
@@ -124,8 +124,6 @@ private:
     int max_lines;
     int file_index = 0;
     int highlight_index = 0;
-    Skin::CustomColor fileColor;
-    Skin::CustomColor dirColor;
     int previewImageDelay = 500;
     int previewVideoDelay = 5000;
 };

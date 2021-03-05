@@ -8,6 +8,10 @@
 #include "cross2d/skeleton/config.h"
 #include "retroio.h"
 
+#define FONT_SIZE 18
+#define CORNER_RADIUS 8
+#define CORNER_POINTS 4
+
 class Skin : public c2d::config::Config {
 
 public:
@@ -23,6 +27,7 @@ public:
         FilerHighlightShape,
         FilerPathShape,
         FilerBarText,
+        FilerTextSpacing,
         FilerFileText,
         FilerDirText,
         PreviewImageShape,
@@ -42,8 +47,6 @@ public:
         c2d::Color color = c2d::Color::Transparent;
         c2d::Color outlineColor = c2d::Color::Transparent;
         float outlineSize = 0;
-        c2d::Color colorFile;
-        c2d::Color colorDir;
         TweenType tweenType = Scale;
     };
 
@@ -54,11 +57,19 @@ public:
         float outlineSize = 0;
     };
 
+    class CustomText {
+    public:
+        c2d::Color color = c2d::Color::White;
+        int size = 18;
+    };
+
     explicit Skin(RetroIo *retroIo);
 
     CustomShape getShape(int groupId);
 
     CustomColor getColor(int groupId);
+
+    CustomText getText(int groupId);
 
 private:
     RetroIo *io = nullptr;
@@ -70,6 +81,9 @@ private:
 
     c2d::config::Group addColor(const std::string &name, int id,
                                 const c2d::Color &color, const c2d::Color &outlineColor, int outlineSize);
+
+    c2d::config::Group addText(const std::string &name, int id,
+                               const c2d::Color &color, int size);
 };
 
 #endif //RETRODREAM_SKIN_H

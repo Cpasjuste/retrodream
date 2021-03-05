@@ -45,14 +45,21 @@ Text *Line::getText() {
     return text;
 }
 
-Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, int lineSpacing)
+Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path)
         : SkinRect(shape) {
 
     retroDream = rd;
     io = (RetroIo *) retroDream->getRender()->getIo();
 
+    // get lines text values
+    skinFileText = RetroDream::getSkin()->getText(Skin::Id::FilerFileText);
+    skinDirText = RetroDream::getSkin()->getText(Skin::Id::FilerDirText);
+    int lineSpacing = RetroDream::getSkin()->getGroup(Skin::Id::FilerShape)->getOption(
+            Skin::Id::FilerTextSpacing)->getInteger();
+    int fontSize = skinFileText.size > skinDirText.size ? skinFileText.size : skinDirText.size;
+
     // calculate number of lines shown
-    line_height = rd->getRender()->getFont()->getLineSpacing(FONT_SIZE) + (float) lineSpacing;
+    line_height = (float) (fontSize + lineSpacing);
     max_lines = (int) (shape->rect.height / line_height);
     if ((float) max_lines * line_height < shape->rect.height) {
         line_height = shape->rect.height / (float) max_lines;
@@ -63,14 +70,10 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
     highlight = new SkinRect(&shape2);
     SkinRect::add(highlight);
 
-    // custom lines/text colors
-    fileColor = RetroDream::getSkin()->getColor(Skin::Id::FilerFileText);
-    dirColor = RetroDream::getSkin()->getColor(Skin::Id::FilerDirText);
-
     // add lines
     for (unsigned int i = 0; i < (unsigned int) max_lines; i++) {
         FloatRect r = {0, (line_height * (float) i), shape->rect.width, line_height};
-        auto line = new Line(r, "", retroDream->getRender()->getFont(), FONT_SIZE);
+        auto line = new Line(r, "", retroDream->getRender()->getFont(), fontSize);
         line->setLayer(2);
         lines.push_back(line);
         SkinRect::add(line);
@@ -102,10 +105,8 @@ void Filer::updateLines() {
             Filer::RetroFile file = files[file_index + i];
             lines[i]->setVisibility(Visibility::Visible);
             lines[i]->setString(file.upperName);
-            Skin::CustomColor *color = file.data.type == Io::Type::File ? &fileColor : &dirColor;
-            lines[i]->getText()->setFillColor(color->color);
-            lines[i]->getText()->setOutlineColor(color->outlineColor);
-            lines[i]->getText()->setOutlineThickness(color->outlineSize);
+            lines[i]->getText()->setFillColor(file.data.type == Io::Type::File ?
+                                              skinFileText.color : skinDirText.color);
             // set highlight position and color
             if ((int) i == highlight_index) {
                 // handle highlight
@@ -392,20 +393,6 @@ void Filer::setSize(float width, float height) {
     for (auto &line : lines) {
         line->setSize(width, line->getSize().y);
     }
-}
-
-void Filer::setAlpha(uint8_t alpha, bool recursive) {
-    for (auto &line : lines) {
-        line->getText()->setAlpha(alpha);
-        line->getText()->setOutlineThickness(alpha < 255 ? 1 : 2);
-    }
-    highlight->setAlpha(alpha < 150 ? alpha : 150);
-    if (alpha > 150) {
-        Color c = highlight->getOutlineColor();
-        c.a = 255;
-        highlight->setOutlineColor(c);
-    }
-    Shape::setAlpha(alpha);
 }
 
 int Filer::getMaxLines() {

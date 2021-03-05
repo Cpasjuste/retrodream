@@ -20,7 +20,7 @@ StatusBox::StatusBox(const c2d::FloatRect &rect) : RectangleShape(rect) {
     RectangleShape::setCornerPointCount(CORNER_POINTS);
 
     titleText = new Text("TITLE TEXT", FONT_SIZE);
-    titleText->setPosition(5, 5);
+    titleText->setPosition(5, 7);
     titleText->setFillColor(COL_RED);
     titleText->setOutlineColor(Color::Black);
     titleText->setOutlineThickness(2);
@@ -28,7 +28,7 @@ StatusBox::StatusBox(const c2d::FloatRect &rect) : RectangleShape(rect) {
     RectangleShape::add(titleText);
 
     messageText = new Text("MESSAGE TEXT", FONT_SIZE);
-    messageText->setPosition(5, FONT_SIZE + 12);
+    messageText->setPosition(5, FONT_SIZE + 14);
     messageText->setScale(0.8f, 0.8f);
     messageText->setFillColor(COL_RED);
     messageText->setOutlineColor(Color::Black);

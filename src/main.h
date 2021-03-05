@@ -24,10 +24,6 @@
 #include "progressbox.h"
 #include "gdplay.h"
 
-#define FONT_SIZE 18
-#define CORNER_RADIUS 8
-#define CORNER_POINTS 4
-
 void retroDebug(const char *fmt, ...);
 
 class RetroDream : public SkinRect {

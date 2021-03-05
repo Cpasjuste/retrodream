@@ -90,7 +90,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     retroDebug("LOADING GAMES...");
     std::string filerPath = retroConfig->get(RetroConfig::FilerPath);
     shape = skin->getShape(Skin::Id::FilerShape);
-    filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath), 6);
+    filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath));
     filer->getDir(filerPath);
     Shape::add(filer);
 

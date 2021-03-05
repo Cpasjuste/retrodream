@@ -16,14 +16,12 @@ Header::Header(Skin::CustomShape *shape) : Rectangle(shape->rect) {
     left->setPosition(0, 0);
     Rectangle::add(left);
     // left box text
-    Skin::CustomColor colors = RetroDream::getSkin()->getColor(Skin::Id::FilerBarText);
-    textLeft = new Text("", FONT_SIZE);
-    textLeft->setFillColor(colors.color);
-    textLeft->setOutlineColor(colors.outlineColor);
-    textLeft->setOutlineThickness(colors.outlineSize);
+    Skin::CustomText customText = RetroDream::getSkin()->getText(Skin::Id::FilerBarText);
+    textLeft = new Text("", customText.size);
+    textLeft->setFillColor(customText.color);
     textLeft->setOrigin(Origin::Left);
     textLeft->setPosition(PERCENT(left->getSize().x, 1), (Rectangle::getSize().y / 2));
-    textLeft->setSizeMax(left->getSize().x - FONT_SIZE - 10, 0);
+    textLeft->setSizeMax(left->getSize().x - (float) customText.size - 10, 0);
     left->add(textLeft);
 
     // right box
@@ -32,10 +30,8 @@ Header::Header(Skin::CustomShape *shape) : Rectangle(shape->rect) {
     right->setPosition(PERCENT(Rectangle::getSize().x, 93), 0);
     Rectangle::add(right);
     // right box text
-    textRight = new Text("GDI", FONT_SIZE);
-    textRight->setFillColor(colors.color);
-    textRight->setOutlineColor(colors.outlineColor);
-    textRight->setOutlineThickness(colors.outlineSize);
+    textRight = new Text("GDI", customText.size);
+    textRight->setFillColor(customText.color);
     textRight->setOrigin(Origin::Center);
     textRight->setPosition(right->getSize().x / 2, Rectangle::getSize().y / 2);
     textRight->setSizeMax(right->getSize().x, 0);
