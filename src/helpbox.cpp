@@ -20,7 +20,7 @@ HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spri
     text = new Text("UNUSED", FONT_SIZE);
     text->setOrigin(Origin::Left);
     text->setPosition(button->getPosition().x + button->getSize().x + 4, (rect.height / 2) - 1);
-    text->setOutlineThickness(2);
+    //text->setOutlineThickness(2);
     text->setOutlineColor(Color::Black);
     Rectangle::add(text);
 }

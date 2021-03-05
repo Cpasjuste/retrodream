@@ -10,6 +10,7 @@ add_subdirectory(libcross2d)
 project(retrodream)
 
 enable_language(ASM)
+set(CMAKE_CXX_STANDARD 17)
 
 set(PROJECT_AUTHOR "Cpasjuste")
 set(VERSION_MAJOR "3")

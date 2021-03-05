@@ -23,14 +23,10 @@ RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo-
     addGroup(main);
 
     // load the configuration from file, overwriting default values
-    if (!load()) {
-        // file doesn't exist or is malformed, (re)create it
-        printf("RetroConfig: config file doesn't exist or is malformed, "
-               "creating a new one (%s)\n", getPath().c_str());
-        if (!save()) {
-            printf("RetroConfig: could not create configuration file (%s)\n", getPath().c_str());
-        }
-    }
+#if 1
+    load();
+    save();
+#endif
 
     // check default filer data directory
     std::string filerPath = get(FilerPath);

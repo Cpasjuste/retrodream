@@ -16,7 +16,8 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
     setCornersRadius(CORNER_RADIUS);
     setCornerPointCount(CORNER_POINTS);
 
-    title = new Text("CREDITS", FONT_SIZE);
+    title = new Text("CREDITS", FONT_SIZE * 1.2f);
+    title->setFillColor(COL_YELLOW);
     title->setOrigin(Origin::BottomLeft);
     title->setPosition(16, -1);
     title->setOutlineThickness(3);

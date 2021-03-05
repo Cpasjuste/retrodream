@@ -58,6 +58,7 @@ bool Partition::read(c2d::Io *io, const std::string &path) {
         data = nullptr;
     }
 
+    /*
     c2d::Io::File file = io->getFile(path);
     if (file.type != c2d::Io::Type::File) {
         error = FLASHROM_ERR_READ_FILE;
@@ -70,10 +71,17 @@ bool Partition::read(c2d::Io *io, const std::string &path) {
         printf("Partition::read: %s\n", getErrorString().c_str());
         return false;
     }
+    */
 
-    data = (uint8 *) io->read(path);
+    size_t readSize = io->read(path, (char **) &data);
     if (data == nullptr) {
         error = FLASHROM_ERR_NOMEM;
+        printf("Partition::read: %s\n", getErrorString().c_str());
+        return false;
+    }
+
+    if (readSize != size) {
+        error = FLASHROM_ERR_BOGUS_PART;
         printf("Partition::read: %s\n", getErrorString().c_str());
         return false;
     }

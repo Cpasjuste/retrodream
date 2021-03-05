@@ -13,7 +13,8 @@ Menu::Menu(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape, false) {
 
     retroDream = rd;
 
-    title = new Text("MENU", FONT_SIZE);
+    title = new Text("MENU", FONT_SIZE * 1.2f);
+    title->setFillColor(COL_YELLOW);
     title->setOrigin(Origin::BottomLeft);
     title->setPosition(16, 0);
     title->setOutlineThickness(3);

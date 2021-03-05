@@ -40,24 +40,17 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     render = r;
     Vector2f size = SkinRect::getSize();
 
-#if defined( __LINUX__) || defined(__WINDOWS__)
-    Font *font = new Font();
-    font->loadFromFile(render->getIo()->getRomFsPath() + "skin/future.ttf");
+    auto font = new BMFont();
+    font->loadFromFile(render->getIo()->getRomFsPath() + "skin/future.fnt");
     render->setFont(font);
-    debugText->setFont(font);
-#endif
-    render->getFont()->setFilter(Texture::Filter::Point);
-    
-    retroDebug("LOADING FONT...");
-    debugClockStart("font cache");
-    Text *cacheText = new Text(
-            " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!:.,-_'()/\"", FONT_SIZE);
-    cacheText->setOutlineColor(Color::Black);
-    cacheText->setOutlineThickness(2);
-    render->add(cacheText);
-    render->flip(false, false);
-    delete (cacheText);
-    debugClockEnd("font cache");
+
+    // debug text
+    debugText = new Text("LOADING...", FONT_SIZE);
+    debugText->setFillColor(COL_BLUE_DARK);
+    debugText->setOutlineColor(Color::Black);
+    debugText->setOrigin(Origin::BottomLeft);
+    debugText->setPosition(16, C2D_SCREEN_HEIGHT - 16);
+    render->add(debugText);
 
     /// header text
     retroDebug("LOADING HEADER BOX...");
@@ -95,7 +88,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     /// filers
     retroDebug("LOADING GAMES...");
     shape = skin->getShape(Skin::Id::FilerShape);
-    filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath), 10);
+    filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath), 6);
     Shape::add(filer);
 
     retroDebug("LOADING GAME MENU...");
@@ -246,19 +239,6 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg, co
     }
 }
 
-void RetroDream::debugClockStart(const char *msg) {
-#ifndef NDEBUG
-    printf("debugClockStart: %s\n", msg);
-    debugClock.restart();
-#endif
-}
-
-void RetroDream::debugClockEnd(const char *msg) {
-#ifndef NDEBUG
-    printf("debugClockEnd: %s: %f\n", msg, debugClock.getElapsedTime().asSeconds());
-#endif
-}
-
 void retroDebug(const char *fmt, ...) {
 
     if (debugText != nullptr) {
@@ -277,8 +257,6 @@ void retroDebug(const char *fmt, ...) {
 }
 
 int main(int argc, char *argv[]) {
-
-    c2d_default_font_texture_size = {256, 256};
 
     /// render
     render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
@@ -311,15 +289,6 @@ int main(int argc, char *argv[]) {
     render->flip();
     /// splash
 
-    /// debug
-    debugText = new Text("LOADING...", FONT_SIZE);
-    debugText->setFillColor(COL_BLUE_DARK);
-    debugText->setOutlineColor(Color::Black);
-    debugText->setOutlineThickness(2);
-    debugText->setOrigin(Origin::BottomLeft);
-    debugText->setPosition(16, C2D_SCREEN_HEIGHT - 16);
-    render->add(debugText);
-
 #ifdef __DREAMCAST__
     retroDebug("MOUNTING HDD...");
     InitIDE();
@@ -333,7 +302,6 @@ int main(int argc, char *argv[]) {
 #endif
 
     /// config
-    retroDebug("LOADING CONFIG...");
     auto retroIo = new RetroIo();
     retroConfig = new RetroConfig(retroIo);
     render->setIo(retroIo);

@@ -317,22 +317,18 @@ bool PreviewVideo::load(const std::string &path) {
 
 void PreviewVideo::unload() {
 
-    if (loaded && isVisible()) {
-        setVisibility(Visibility::Hidden, true);
-        retroDream->getHelpBox()->setVisibility(Visibility::Visible, true);
-    }
-
-    if (texture != nullptr) {
+    if (loaded) {
         mutex->lock();
-        delete (texture);
-        texture = nullptr;
+        audio->pause(1);
+        status = ROQ_STOPPED;
+        videoUpload = false;
+        if (isVisible()) {
+            setVisibility(Visibility::Hidden, true);
+            retroDream->getHelpBox()->setVisibility(Visibility::Visible, true);
+        }
+        loaded = false;
         mutex->unlock();
     }
-
-    audio->pause(1);
-    status = ROQ_STOPPED;
-    videoUpload = false;
-    loaded = false;
 }
 
 bool PreviewVideo::isLoaded() const {
@@ -359,6 +355,7 @@ void PreviewVideo::onUpdate() {
         fpsLimitClock.restart();
 
         if (videoUpload) {
+            // TODO: check if width changed
             if (!texture) {
                 texture = new C2DTexture({state.width, state.width}, Texture::Format::RGB565);
                 texture->setFilter(Texture::Filter::Point);
@@ -394,15 +391,15 @@ void PreviewVideo::onUpdate() {
 }
 
 PreviewVideo::~PreviewVideo() {
+
     thread_stop = true;
     if (thread) {
         thread->join();
         delete (thread);
     }
+
     delete (mutex);
-    if (texture != nullptr) {
-        delete (texture);
-    }
+
     if (audio) {
         delete (audio);
     }

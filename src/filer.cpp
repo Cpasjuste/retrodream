@@ -52,7 +52,7 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path, 
     io = (RetroIo *) retroDream->getRender()->getIo();
 
     // calculate number of lines shown
-    line_height = FONT_SIZE + lineSpacing;
+    line_height = rd->getRender()->getFont()->getLineSpacing(FONT_SIZE) + (float) lineSpacing;
     max_lines = (int) (shape->rect.height / line_height);
     if ((float) max_lines * line_height < shape->rect.height) {
         line_height = shape->rect.height / (float) max_lines;

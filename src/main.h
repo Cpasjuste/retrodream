@@ -24,7 +24,7 @@
 #include "progressbox.h"
 #include "gdplay.h"
 
-#define FONT_SIZE 15
+#define FONT_SIZE 18
 #define CORNER_RADIUS 8
 #define CORNER_POINTS 4
 
@@ -96,10 +96,6 @@ public:
         return messageBox;
     }
 
-    void debugClockStart(const char *msg);
-
-    void debugClockEnd(const char *msg);
-
     static RetroConfig *getConfig();
 
     static Skin *getSkin();
@@ -132,7 +128,6 @@ private:
     c2d::MessageBox *messageBox = nullptr;
     int inputDelay;
     unsigned int oldKeys = 0;
-    c2d::C2DClock debugClock;
     c2d::C2DClock gdCheckClock;
 };
 

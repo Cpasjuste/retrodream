@@ -39,16 +39,16 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
     Group filerFileText = addColor("file_text", FilerFileText,
                                    Color{97, 190, 236},
                                    Color{0, 0, 0},
-                                   2);
+                                   0);
     filer.addGroup(filerFileText);
     Group filerDirText = addColor("dir_text", FilerDirText,
                                   Color{49, 121, 159},
                                   Color{0, 0, 0},
-                                  2);
+                                  0);
     filer.addGroup(filerDirText);
     // highlight
     Group filerHighlight = addShape("highlight", FilerHighlightShape,
-                                    FloatRect{2, 0, 366, 26},
+                                    FloatRect{2, 0, 366, 24},
                                     8, Origin::TopLeft,
                                     Color{240, 226, 107},
                                     Color{49, 121, 159},
@@ -64,7 +64,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
     Group filerText = addColor("text", FilerBarText,
                                Color{240, 226, 107},
                                Color{0, 0, 0},
-                               2);
+                               0);
     filer_path.addGroup(filerText);
     filer.addGroup(filer_path);
     //
@@ -108,12 +108,12 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
     Group menuLeftText = addColor("left_text", MenuLeftText,
                                   Color{49, 121, 159},
                                   Color{0, 0, 0},
-                                  2);
+                                  0);
     menu.addGroup(menuLeftText);
     Group menuRightText = addColor("right_text", MenuRightText,
                                    Color{255, 255, 255},
                                    Color{49, 121, 159},
-                                   2);
+                                   0);
     menu.addGroup(menuRightText);
     // highlight
     Group menuHighlight = addShape("highlight", MenuHighlightShape,
@@ -126,16 +126,10 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
     addGroup(menu);
 
     // load the configuration from file, overwriting default values
-    if (!load()) {
 #if 1
-        // file doesn't exist or is malformed, (re)create it
-        printf("Skin: skin configuration file doesn't exist or is malformed, "
-               "creating a new one (%s)\n", getPath().c_str());
-        if (!save()) {
-            printf("Skin: could not create skin configuration file (%s)\n", getPath().c_str());
-        }
+    load();
+    save();
 #endif
-    }
 }
 
 config::Group Skin::addShape(const std::string &name, int id,
