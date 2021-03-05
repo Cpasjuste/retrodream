@@ -211,16 +211,11 @@ bool Filer::getDir(const std::string &p) {
                         files.push_back(file);
                         continue;
                     }
+                } else {
+                    file.isoType = "GDI";
                 }
                 file.isGame = true;
                 file.isoPath = gameFile.path;
-                if (file.isoType.empty()) {
-                    if (io->exist(fileData.path + "/track01.iso")) {
-                        file.isoType = "OPT";
-                    } else {
-                        file.isoType = "GDI";
-                    }
-                }
                 // set medias path
                 std::string noExt = Utility::removeExt(gameFile.name);
                 file.preview = mediaPath + imagePath + "/";
@@ -355,6 +350,15 @@ Filer::RetroFile Filer::getSelection() {
     return Filer::RetroFile();
 }
 
+Filer::RetroFile *Filer::getSelectionPtr() {
+
+    if (!files.empty() && files.size() > (size_t) file_index + highlight_index) {
+        return &files.at(file_index + highlight_index);
+    }
+
+    return nullptr;
+}
+
 Line *Filer::getSelectionLine() {
 
     if ((size_t) highlight_index < files.size()) {
@@ -433,17 +437,26 @@ void Filer::onUpdate() {
 
     unsigned int keys = retroDream->getRender()->getInput()->getKeys();
     if (keys == 0) {
-        const Filer::RetroFile file = getSelection();
-        if (file.isGame) {
+        Filer::RetroFile *file = getSelectionPtr();
+        if (file && file->isGame) {
             if (previewClock.getElapsedTime().asMilliseconds() > previewVideoDelay) {
                 // load preview video
                 if (!retroDream->getPreviewVideo()->isLoaded()) {
-                    retroDream->getPreviewVideo()->load(file.preview_video);
+                    retroDream->getPreviewVideo()->load(file->preview_video);
                 }
             } else if (previewClock.getElapsedTime().asMilliseconds() > previewImageDelay) {
+                // update gdi/opt status here to
+                if (!file->isOptChecked) {
+                    if (io->exist(file->data.path + "/track01.iso")) {
+                        file->isoType = "OPT";
+                        retroDream->getHeader()->setStringRight(file->isoType);
+                        retroDream->getHeader()->setStringRightColor(COL_GREEN_DARK);
+                    }
+                    file->isOptChecked = true;
+                }
                 // load preview image
                 if (!retroDream->getPreviewImage()->isLoaded()) {
-                    retroDream->getPreviewImage()->load(file.preview);
+                    retroDream->getPreviewImage()->load(file->preview);
                 }
             }
         }

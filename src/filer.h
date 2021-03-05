@@ -47,6 +47,7 @@ public:
         std::string preview_video;
         std::string preset;
         std::string upperName;
+        bool isOptChecked = false;
         bool isGame = false;
         bool isVmu = false;
     };
@@ -61,6 +62,8 @@ public:
     bool getDir(const std::string &path);
 
     RetroFile getSelection();
+
+    RetroFile *getSelectionPtr();
 
     void setSelection(int index);
 
