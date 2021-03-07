@@ -31,10 +31,10 @@ int roq_unpack_quad_codebook_rgb565(unsigned char *buf, int size,
 
     /* size sanity check, taking alpha into account */
     if (state->alpha && (count2x2 * 10 + count4x4 * 4) != size) {
-        return ROQ_BAD_CODEBOOK;
+        return ROQ_STOPPED;
     }
     if (!state->alpha && (count2x2 * 6 + count4x4 * 4) != size) {
-        return ROQ_BAD_CODEBOOK;
+        return ROQ_STOPPED;
     }
 
     /* unpack the 2x2 vectors */
@@ -86,7 +86,7 @@ int roq_unpack_quad_codebook_rgb565(unsigned char *buf, int size,
 
 #define GET_BYTE(x) \
     if (index >= size) { \
-        status = ROQ_BAD_VQ_STREAM; \
+        status = ROQ_STOPPED; \
         x = 0; \
     } else { \
         x = buf[index++]; \
@@ -287,7 +287,7 @@ int roq_unpack_vq_rgb565(unsigned char *buf, int size, unsigned int arg,
 
     /* sanity check to see if the stream was fully consumed */
     if (status == ROQ_PLAYING && index < size - 2) {
-        status = ROQ_BAD_VQ_STREAM;
+        status = ROQ_STOPPED;
     }
 
     return status;

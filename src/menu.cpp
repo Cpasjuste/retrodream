@@ -26,11 +26,11 @@ Menu::Menu(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape, false) {
     // left box
     Skin::CustomText ltext = RetroDream::getSkin()->getText(Skin::Id::MenuLeftText);
     configBox->getListBoxLeft()->setFillColor(shape->color);
-    configBox->getListBoxLeft()->setTextColor(ltext.color);
+    configBox->getListBoxLeft()->setTextColor(ltext.color, ltext.color);
     // right box
     Skin::CustomText rtext = RetroDream::getSkin()->getText(Skin::Id::MenuRightText);
     configBox->getListBoxRight()->setFillColor(shape->color);
-    configBox->getListBoxRight()->setTextColor(rtext.color);
+    configBox->getListBoxRight()->setTextColor(rtext.color, rtext.color);
     // right highlight
     Skin::CustomShape hshape = RetroDream::getSkin()->getShape(Skin::Id::MenuHighlightShape);
     configBox->getListBoxRight()->getHighlight()->setFillColor(hshape.color);

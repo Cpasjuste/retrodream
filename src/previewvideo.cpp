@@ -43,14 +43,14 @@ static int decodeThread(void *data) {
             file = fopen(preview->previewPath.c_str(), "rb");
             if (!file) {
                 printf("ROQ_FILE_OPEN_FAILURE: %s\n", preview->previewPath.c_str());
-                preview->hide(ROQ_FILE_OPEN_FAILURE);
+                preview->hide(ROQ_STOPPED);
                 continue;
             }
             // read roq header
             file_ret = fread(file_buffer, CHUNK_HEADER_SIZE, 1, file);
             if (file_ret != 1) {
                 printf("ROQ_FILE_READ_FAILURE: %s\n", preview->previewPath.c_str());
-                preview->hide(ROQ_FILE_READ_FAILURE);
+                preview->hide(ROQ_STOPPED);
                 continue;
             }
             // verify signature
@@ -58,7 +58,7 @@ static int decodeThread(void *data) {
             chunk_size = LE_32(&file_buffer[2]);
             if (chunk_id != RoQ_SIGNATURE || chunk_size != 0xFFFFFFFF) {
                 printf("ROQ_FILE_READ_FAILURE\n");
-                preview->hide(ROQ_SIG_FAILURE);
+                preview->hide(ROQ_STOPPED);
                 continue;
             }
             // extract framerate
@@ -89,7 +89,7 @@ static int decodeThread(void *data) {
 
         // sleep thread if not playing
         if (!preview->isLoaded() || preview->status != ROQ_PLAYING) {
-            rd->getRender()->delay(32);
+            rd->getRender()->delay(16);
             continue;
         }
 
@@ -113,13 +113,13 @@ static int decodeThread(void *data) {
         chunk_arg = LE_16(&file_buffer[6]);
 
         if (chunk_size > MAX_BUF_SIZE) {
-            preview->hide(ROQ_CHUNK_TOO_LARGE);
+            preview->hide(ROQ_STOPPED);
             continue;
         }
 
         file_ret = fread(file_buffer, chunk_size, 1, file);
         if (file_ret != 1) {
-            preview->hide(ROQ_FILE_READ_FAILURE);
+            preview->hide(ROQ_STOPPED);
             continue;
         }
 
@@ -133,21 +133,21 @@ static int decodeThread(void *data) {
                 state.height = LE_16(&file_buffer[2]);
                 /* width and height each need to be divisible by 16 */
                 if ((state.width & 0xF) || (state.height & 0xF)) {
-                    preview->hide(ROQ_INVALID_PIC_SIZE);
+                    preview->hide(ROQ_STOPPED);
                     break;
                 }
                 state.mb_width = state.width / 16;
                 state.mb_height = state.height / 16;
                 state.mb_count = state.mb_width * state.mb_height;
                 if (state.width < 8 || state.width > 1024) {
-                    preview->hide(ROQ_INVALID_DIMENSION);
+                    preview->hide(ROQ_STOPPED);
                 } else {
                     state.stride = 8;
                     while (state.stride < state.width)
                         state.stride <<= 1;
                 }
                 if (state.height < 8 || state.height > 1024) {
-                    preview->hide(ROQ_INVALID_DIMENSION);
+                    preview->hide(ROQ_STOPPED);
                 } else {
                     state.texture_height = 8;
                     while (state.texture_height < state.height)
@@ -162,7 +162,7 @@ static int decodeThread(void *data) {
                 if (!state.frame[0] || !state.frame[1]) {
                     free(state.frame[0]);
                     free(state.frame[1]);
-                    preview->hide(ROQ_NO_MEMORY);
+                    preview->hide(ROQ_STOPPED);
                     break;
                 }
                 memset(state.frame[0], 0, state.texture_height * state.stride * sizeof(unsigned short));
@@ -178,15 +178,6 @@ static int decodeThread(void *data) {
                 break;
 
             case RoQ_QUAD_VQ:
-#if 0
-                if (timer.getElapsedTime().asMilliseconds() > 16 * 60) {
-                    printf("roq_unpack: %i ms (frame: %i, fps: %f)\n",
-                           clock.getElapsedTime().asMilliseconds(),
-                           rd->getRender()->getDeltaTime().asMilliseconds(),
-                           rd->getRender()->getFps());
-                    timer.restart();
-                }
-#endif
                 // frame limit
                 while (clock.getElapsedTime().asMilliseconds() < (1000 / framerate)) {
                     if (preview->thread_stop) {
@@ -198,6 +189,7 @@ static int decodeThread(void *data) {
                     rd->getRender()->delay(1);
 #endif
                 }
+                clock.restart();
 
                 if (preview->thread_stop) {
                     break;
@@ -205,7 +197,6 @@ static int decodeThread(void *data) {
 
                 // update buffers
                 preview->mutex->lock();
-                clock.restart();
                 preview->status = roq_unpack_vq_rgb565(file_buffer, (int) chunk_size, chunk_arg, &state);
                 preview->mutex->unlock();
                 preview->videoUpload = true;
@@ -251,7 +242,8 @@ static int decodeThread(void *data) {
                     roq_audio.pcm_sample[i * 2 + 3] = (snd_right & 0xff00) >> 8;
                 }
 
-                preview->audio->play(roq_audio.pcm_sample, roq_audio.pcm_samples / 2 / (int) sizeof(int16_t));
+                preview->audio->play(roq_audio.pcm_sample,
+                                     roq_audio.pcm_samples / roq_audio.channels / (int) sizeof(int16_t));
                 break;
 
             case RoQ_PACKET:
@@ -318,9 +310,9 @@ bool PreviewVideo::load(const std::string &path) {
 void PreviewVideo::unload() {
 
     if (loaded) {
+        status = ROQ_STOPPED;
         mutex->lock();
         audio->pause(1);
-        status = ROQ_STOPPED;
         videoUpload = false;
         if (isVisible()) {
             setVisibility(Visibility::Hidden, true);
@@ -344,15 +336,13 @@ void PreviewVideo::onUpdate() {
 
     if (isVisible() && status == ROQ_PLAYING) {
 
+#ifdef __DREAMCAST__
         // frame limit
         while (fpsLimitClock.getElapsedTime().asMilliseconds() < (1000 / 30)) {
-#ifdef __DREAMCAST__
-            thd_pass();
-#else
             retroDream->getRender()->delay(1);
-#endif
         }
         fpsLimitClock.restart();
+#endif
 
         if (videoUpload) {
             // TODO: check if width changed

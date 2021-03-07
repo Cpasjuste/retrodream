@@ -28,20 +28,9 @@ extern "C" {
 #define ROQ_CODEBOOK_SIZE 256
 #define SQR_ARRAY_SIZE 256
 
-#define ROQ_PLAYING           0
-#define ROQ_FILE_OPEN_FAILURE 1
-#define ROQ_FILE_READ_FAILURE 2
-#define ROQ_CHUNK_TOO_LARGE   3
-#define ROQ_BAD_CODEBOOK      4
-#define ROQ_INVALID_PIC_SIZE  5
-#define ROQ_NO_MEMORY         6
-#define ROQ_BAD_VQ_STREAM     7
-#define ROQ_INVALID_DIMENSION 8
-#define ROQ_RENDER_PROBLEM    9
-#define ROQ_CLIENT_PROBLEM    10
-#define ROQ_STOPPED           11
-#define ROQ_LOAD              12
-#define ROQ_SIG_FAILURE       13
+#define ROQ_LOAD              0
+#define ROQ_PLAYING           1
+#define ROQ_STOPPED           2
 
 typedef struct {
     int pcm_samples;
