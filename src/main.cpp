@@ -48,7 +48,6 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     // debug text
     debugText = new Text("LOADING...", FONT_SIZE);
     debugText->setFillColor(COL_BLUE_DARK);
-    debugText->setOutlineColor(Color::Black);
     debugText->setOrigin(Origin::BottomLeft);
     debugText->setPosition(16, C2D_SCREEN_HEIGHT - 16);
     render->add(debugText);
@@ -147,6 +146,12 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     statusBox->setOrigin(Origin::BottomLeft);
     Shape::add(statusBox);
 
+    fpsText = new Text("60", FONT_SIZE);
+    fpsText->setFillColor(Color::Red);
+    fpsText->setOrigin(Origin::BottomRight);
+    fpsText->setPosition(getSize().x - 8, getSize().y - 8);
+    Shape::add(fpsText);
+
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);
     render->getInput()->setRepeatDelay(inputDelay);
     timer.restart();
@@ -224,6 +229,12 @@ void RetroDream::onUpdate() {
     if (gdCheckClock.getElapsedTime().asSeconds() > 5) {
         GDPlay::check(this);
         gdCheckClock.restart();
+    }
+
+    // fps
+    if (showFps) {
+        snprintf(fpsBuffer, 4, "%i", (int) render->getFps());
+        fpsText->setString(fpsBuffer);
     }
 
     RectangleShape::onUpdate();
