@@ -91,6 +91,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     shape = skin->getShape(Skin::Id::FilerShape);
     filer = new Filer(this, &shape, retroConfig->get(RetroConfig::FilerPath));
     filer->getDir(filerPath);
+    filer->setSelection(retroConfig->getInt(RetroConfig::FilerItem));
     Shape::add(filer);
 
     retroDebug("LOADING GAME MENU...");

@@ -15,6 +15,7 @@ RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo-
 
     Group main("main");
     main.addOption({"filer_path", io->getHomePath(), OptionId::FilerPath});
+    main.addOption({"filer_item", 0, OptionId::FilerItem});
     main.addOption({"input_delay", 200, OptionId::InputDelay});
     main.addOption({"image_delay", 500, OptionId::PreviewImageDelay});
     main.addOption({"video_delay", 3000, OptionId::PreviewVideoDelay});

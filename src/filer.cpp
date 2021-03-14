@@ -322,6 +322,10 @@ void Filer::down() {
 
 void Filer::setSelection(int new_index) {
 
+    if (new_index >= (int) files.size()) {
+        return;
+    }
+
     if (new_index <= max_lines / 2) {
         file_index = 0;
         highlight_index = new_index < 0 ? 0 : new_index;

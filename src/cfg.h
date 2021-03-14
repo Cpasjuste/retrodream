@@ -16,6 +16,7 @@ public:
 
     enum OptionId {
         FilerPath,
+        FilerItem,
         InputDelay,
         PreviewImageDelay,
         PreviewVideoDelay,
