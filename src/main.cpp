@@ -151,6 +151,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     fpsText->setFillColor(Color::Red);
     fpsText->setOrigin(Origin::BottomRight);
     fpsText->setPosition(getSize().x - 8, getSize().y - 8);
+    fpsText->setVisibility(showFps ? Visibility::Visible : Visibility::Hidden);
     Shape::add(fpsText);
 
     inputDelay = retroConfig->getInt(RetroConfig::InputDelay);

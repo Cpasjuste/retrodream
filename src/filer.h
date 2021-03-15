@@ -36,6 +36,29 @@ class Filer : public SkinRect {
 
 public:
 
+    class DirData {
+    public:
+        std::string pathName;
+        std::string gameName;
+        std::string gameType;
+    };
+
+    class DirCache {
+    public:
+        explicit DirCache(c2d::Io *io, const std::string &path, std::vector<c2d::Io::File> *files);
+
+        DirData *getData(const std::string &pathName);
+
+        void addData(const std::string &pathName, const std::string &gameName, const std::string &gameType);
+
+        void save();
+
+    private:
+        c2d::Io *m_io = nullptr;
+        std::string m_path;
+        std::vector<DirData> m_dirList;
+    };
+
     class RetroFile {
     public:
         RetroFile() = default;
@@ -47,7 +70,6 @@ public:
         std::string preview_video;
         std::string preset;
         std::string upperName;
-        bool isOptChecked = false;
         bool isGame = false;
         bool isVmu = false;
     };
