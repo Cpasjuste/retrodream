@@ -35,7 +35,7 @@ RetroConfig::RetroConfig(RetroIo *retroIo) : Config("RetroDreamConfig", retroIo-
         printf("RetroConfig: FilerPath '%s' doesn't exist, restoring default: '%s'\n",
                filerPath.c_str(), io->getHomePath().c_str());
         filerPath = io->getHomePath();
-        set(FilerPath, filerPath, true);
+        set(FilerPath, filerPath);
     }
 
     printf("RetroConfig: retrodream path: %s\n", io->getDataPath().c_str());

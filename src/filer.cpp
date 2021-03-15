@@ -486,7 +486,8 @@ bool Filer::onInput(c2d::Input::Player *players) {
         Io::Type type = file.data.type;
         if (file.isGame) {
             // save last path
-            RetroDream::getConfig()->set(RetroConfig::FilerPath, path);
+            RetroDream::getConfig()->set(RetroConfig::FilerPath, path, false);
+            RetroDream::getConfig()->setInt(RetroConfig::FilerItem, getIndex(), true);
             IsoLoader::run(retroDream, file.isoPath);
         } else if (type == Io::Type::Directory) {
             if (file.data.path == "/cd" && GDPlay::isGame()) {
