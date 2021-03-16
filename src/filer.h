@@ -107,11 +107,11 @@ public:
 
     void setSize(float width, float height) override;
 
-    int getMaxLines();
+    int getMaxLines() const;
 
-    int getIndex();
+    int getIndex() const;
 
-    std::string getPath();
+    std::string getPath() const;
 
     c2d::RectangleShape *getBlur() {
         return blurLayer;

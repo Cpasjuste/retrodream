@@ -160,7 +160,7 @@ Filer::Filer(RetroDream *rd, Skin::CustomShape *shape, const std::string &path)
     // previews timer delay
     previewImageDelay = RetroDream::getConfig()->getInt(RetroConfig::PreviewImageDelay);
     previewVideoDelay = RetroDream::getConfig()->getInt(RetroConfig::PreviewVideoDelay);
-};
+}
 
 bool Filer::getDir(const std::string &p) {
 
@@ -494,15 +494,15 @@ void Filer::setSize(float width, float height) {
     }
 }
 
-int Filer::getMaxLines() {
+int Filer::getMaxLines() const {
     return max_lines;
 }
 
-int Filer::getIndex() {
+int Filer::getIndex() const {
     return file_index + highlight_index;
 }
 
-std::string Filer::getPath() {
+std::string Filer::getPath() const {
     return path;
 }
 
