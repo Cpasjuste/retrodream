@@ -2,12 +2,6 @@
 // Created by cpasjuste on 15/01/2020.
 //
 
-#ifndef __DREAMCAST__
-
-#include <zconf.h>
-
-#endif
-
 #include "cross2d/c2d.h"
 #include "main.h"
 #include "colors.h"
@@ -150,7 +144,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     fpsText = new Text("60", FONT_SIZE);
     fpsText->setFillColor(Color::Red);
     fpsText->setOrigin(Origin::BottomRight);
-    fpsText->setPosition(getSize().x - 8, getSize().y - 8);
+    fpsText->setPosition(RectangleShape::getSize().x - 8, RectangleShape::getSize().y - 8);
     fpsText->setVisibility(showFps ? Visibility::Visible : Visibility::Hidden);
     Shape::add(fpsText);
 
@@ -227,7 +221,7 @@ void RetroDream::onUpdate() {
         }
     }
 
-    // gdplay
+    // gd play
     if (gdCheckClock.getElapsedTime().asSeconds() > 5) {
         GDPlay::check(this);
         gdCheckClock.restart();
@@ -273,6 +267,8 @@ void retroDebug(const char *fmt, ...) {
 }
 
 int main(int argc, char *argv[]) {
+
+    (void) argv[argc - 1];
 
     /// render
     render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});

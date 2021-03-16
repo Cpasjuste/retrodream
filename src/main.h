@@ -123,7 +123,7 @@ private:
     StatusBox *statusBox = nullptr;
     c2d::MessageBox *messageBox = nullptr;
     c2d::Text *fpsText = nullptr;
-    char fpsBuffer[4];
+    char fpsBuffer[4]{};
     bool showFps = false;
     int inputDelay;
     unsigned int oldKeys = 0;
