@@ -7,6 +7,12 @@
 #include "ds/include/console.h"
 #include "ds/include/SDL/SDL_console.h"
 
+// dummy console for guard_irq_handler in src/ds/src/irq/exceptions.c
+static char consoleLines[16][1];
+static ConsoleInformation dummyConsole = {
+        .ConsoleLines = (char **) consoleLines
+};
+
 int ds_printf(const char *fmt, ...) {
 
     char buff[512];
@@ -27,7 +33,7 @@ void dbgio_set_dev_fb() {
 }
 
 ConsoleInformation *GetConsole() {
-    return NULL;
+    return &dummyConsole;
 }
 
 int CallCmdFile(const char *fn, int argc, char *argv[]) {
@@ -57,6 +63,8 @@ void RemoveCmd(Cmd_t *cmd) {}
 Cmd_t *GetCmdByName(const char *name) {
     return NULL;
 }
+
+void fini() {}
 
 #ifdef __EMBEDDED_MODULE_DEBUG__
 export_sym_t ds_isofs_symtab[] = {};

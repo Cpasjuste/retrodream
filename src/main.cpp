@@ -16,8 +16,10 @@
 extern "C" {
 #include "ds/include/fs.h"
 #include "ds/include/isoldr.h"
-void vmu_draw_str(uint8 bitmap[192], unsigned char *str, int x, int y);
 }
+
+#include "vmu.h"
+
 #endif
 
 using namespace c2d;

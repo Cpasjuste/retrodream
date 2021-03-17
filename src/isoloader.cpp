@@ -63,8 +63,8 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
         loaderPath = Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin");
         strncpy(isoLdr->fs_dev, cfg.device.c_str(), 7);
     }
-    setenv("PATH", loaderPath.c_str(), 1);
 
+    setenv("PATH", loaderPath.c_str(), 1);
     isoldr_exec(isoLdr, strtoul(cfg.memory.c_str(), nullptr, 16));
 
     // NOK
