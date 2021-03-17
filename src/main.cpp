@@ -11,15 +11,13 @@
 #include "systemmenu.h"
 #include "skintex.h"
 #include "gdplay.h"
+#include "vmu.h"
 
 #ifdef __DREAMCAST__
 extern "C" {
 #include "ds/include/fs.h"
 #include "ds/include/isoldr.h"
 }
-
-#include "vmu.h"
-
 #endif
 
 using namespace c2d;
