@@ -8,7 +8,7 @@
 #include "ds/include/SDL/SDL_console.h"
 
 // dummy console for guard_irq_handler in src/ds/src/irq/exceptions.c
-static char consoleLines[16][1];
+static char consoleLines[16][16];
 static ConsoleInformation dummyConsole = {
         .ConsoleLines = (char **) consoleLines
 };
