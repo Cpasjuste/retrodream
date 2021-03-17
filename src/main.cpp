@@ -275,21 +275,8 @@ int main(int argc, char *argv[]) {
     /// render
     render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
 
-#ifdef __DREAMCAST__
-    // vmu
-    uint8 bitmap[192];
-    maple_device_t *vmu = maple_enum_type(0, MAPLE_FUNC_LCD);
-    if (vmu != nullptr) {
-        memset(bitmap, 0, sizeof(bitmap));
-        vmu_draw_str(bitmap, (uint8 *) "Retro", 12, 0);
-        vmu_draw_str(bitmap, (uint8 *) "Dream", 12, 10);
-        std::string ver = std::string(VERSION_MAJOR) + "."
-                          + std::string(VERSION_MINOR) + "."
-                          + std::string(VERSION_MICRO);
-        vmu_draw_str(bitmap, (uint8 *) ver.c_str(), 12, 20);
-        vmu_draw_lcd(vmu, bitmap);
-    }
-#endif
+    /// vmu
+    vmu_draw_version();
 
     /// splash
     auto splash = new C2DRectangle({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});

@@ -5,6 +5,6 @@
 #ifndef RETRODREAM_VMU_H
 #define RETRODREAM_VMU_H
 
-void vmu_draw_str(uint8 bitmap[192], unsigned char *str, int x, int y);
+void vmu_draw_version();
 
 #endif //RETRODREAM_VMU_H

@@ -2,14 +2,10 @@
 // Created by cpasjuste on 17/03/2021.
 //
 
-/****************************
- * DreamShell ##version##   *
- * vmu.c                    *
- * DreamShell VMU utils     *
- * Created by SWAT          *
- ****************************/
+#ifdef __DREAMCAST__
 
-#include <cstring>
+#include <string>
+#include <kos.h>
 #include <ds/src/vmu/vmu_font.h>
 
 inline void vmu_set_bit(uint8 bitmap[192], uint8 x, uint8 y)
@@ -19,7 +15,7 @@ inline void vmu_set_bit(uint8 bitmap[192], uint8 x, uint8 y)
         bitmap[6 * (31 - y) + (5 - (x / 8))] |= (1 << (x % 8));
 }
 
-static void vmu_draw_char(uint8 bitmap[192], unsigned char c, int x, int y)
+inline void vmu_draw_char(uint8 bitmap[192], unsigned char c, int x, int y)
 /* (x, y) is position for upper-left corner of character,
     (0, 0) is upper-left corner of screen */
 {
@@ -36,7 +32,7 @@ static void vmu_draw_char(uint8 bitmap[192], unsigned char c, int x, int y)
     }
 }
 
-void vmu_draw_str(uint8 bitmap[192], unsigned char *str, int x, int y)
+static void vmu_draw_str(uint8 bitmap[192], unsigned char *str, int x, int y)
 /* (x, y) is position for upper-left corner of string,
     (0, 0) is upper-left corner of screen */
 {
@@ -56,3 +52,26 @@ void vmu_draw_str(uint8 bitmap[192], unsigned char *str, int x, int y)
             break;
     }
 }
+
+void vmu_draw_version() {
+
+    uint8 bitmap[192];
+
+    maple_device_t *vmu = maple_enum_type(0, MAPLE_FUNC_LCD);
+    if (vmu != nullptr) {
+        memset(bitmap, 0, sizeof(bitmap));
+        vmu_draw_str(bitmap, (uint8 *) "Retro", 12, 0);
+        vmu_draw_str(bitmap, (uint8 *) "Dream", 12, 10);
+        std::string ver = std::string(VERSION_MAJOR) + "."
+                          + std::string(VERSION_MINOR) + "."
+                          + std::string(VERSION_MICRO);
+        vmu_draw_str(bitmap, (uint8 *) ver.c_str(), 12, 20);
+        vmu_draw_lcd(vmu, bitmap);
+    }
+}
+
+#else
+
+void vmu_draw_version() {}
+
+#endif
