@@ -20,6 +20,9 @@ extern "C" {
 #include "ds/include/isoldr.h"
 #include "ds/include/module.h"
 }
+
+//#define __DS_OLD__
+
 #endif
 
 int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
@@ -54,14 +57,14 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
     }
     if (cfg.device == std::string("auto")) {
         std::string p = retroDream->getIo()->getDsPath() + "firmware/isoldr/" + loader + ".bin";
-        printf("IsoLoader::run: loaderPath: %s\n", p.c_str());
         loaderPath = Utility::remove(p, "/firmware/isoldr/" + loader + ".bin");
         strncpy(isoLdr->fs_dev, loader.c_str(), 7);
+        printf("IsoLoader::run: loaderPath: %s (fs_dev: %s)\n", p.c_str(), isoLdr->fs_dev);
     } else {
         std::string p = retroDream->getIo()->getDsPath() + "firmware/isoldr/" + cfg.device + ".bin";
-        printf("IsoLoader::run: loaderPath: %s\n", p.c_str());
         loaderPath = Utility::remove(p, "/firmware/isoldr/" + cfg.device + ".bin");
         strncpy(isoLdr->fs_dev, cfg.device.c_str(), 7);
+        printf("IsoLoader::run: loaderPath: %s (fs_dev: %s)\n", p.c_str(), isoLdr->fs_dev);
     }
 
     if (!retroDream->getIo()->exist(loaderPath)) {
@@ -70,9 +73,9 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
     }
 
     // cleanup
-    auto renderer = retroDream->getRender();
-    delete (renderer);
-    fs_iso_shutdown();
+    //auto renderer = retroDream->getRender();
+    //delete (renderer);
+    //fs_iso_shutdown();
 
     setenv("PATH", loaderPath.c_str(), 1);
     isoldr_exec(isoLdr, strtoul(cfg.memory.c_str(), nullptr, 16));
@@ -185,7 +188,14 @@ bool IsoLoader::getConfigInfo(RetroDream *retroDream, Config *config, const std:
 
     if (fd != FILEHND_INVALID) {
         printf("IsoLoader::getConfigInfo: fs_ioctl\n");
-        if (fs_ioctl(fd, ISOFS_IOCTL_GET_BOOT_SECTOR_DATA, (int) boot_sector) > -1) {
+#if __DS_OLD__
+        if (fs_ioctl(fd, (int) boot_sector, ISOFS_IOCTL_GET_BOOT_SECTOR_DATA) < 0) {
+#else
+        if (fs_ioctl(fd, ISOFS_IOCTL_GET_BOOT_SECTOR_DATA, (int) boot_sector) < 0) {
+#endif
+            memset(md5, 0, sizeof(md5));
+            memset(boot_sector, 0, sizeof(boot_sector));
+        } else {
             kos_md5(boot_sector, sizeof(boot_sector), md5);
         }
         config->title = Utility::trim(((ipbin_meta_t *) boot_sector)->title);

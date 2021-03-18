@@ -64,8 +64,6 @@ Cmd_t *GetCmdByName(const char *name) {
     return NULL;
 }
 
-void fini() {}
-
 #ifdef __EMBEDDED_MODULE_DEBUG__
 export_sym_t ds_isofs_symtab[] = {};
 export_sym_t ds_isoldr_symtab[] = {};
