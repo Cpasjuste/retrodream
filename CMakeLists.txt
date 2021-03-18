@@ -47,10 +47,6 @@ if (PLATFORM_DREAMCAST)
             src/ds_wrapper/exports_gcc.c
             src/ds_wrapper/gd_exec.s
             )
-    # ds vmu
-    list(APPEND SOURCES
-            src/ds/src/vmu/vmu.c
-            )
     # ds fs
     list(APPEND SOURCES
             src/ds/src/drivers/rtc.c
