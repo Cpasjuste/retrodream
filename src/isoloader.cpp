@@ -64,6 +64,16 @@ int IsoLoader::run(RetroDream *retroDream, const std::string &path) {
         strncpy(isoLdr->fs_dev, cfg.device.c_str(), 7);
     }
 
+    if (!retroDream->getIo()->exist(loaderPath)) {
+        printf("IsoLoader::run: loader not found (%s)\n", loaderPath.c_str());
+        return -1;
+    }
+
+    // cleanup
+    auto renderer = retroDream->getRender();
+    delete (renderer);
+    fs_iso_shutdown();
+
     setenv("PATH", loaderPath.c_str(), 1);
     isoldr_exec(isoLdr, strtoul(cfg.memory.c_str(), nullptr, 16));
 
