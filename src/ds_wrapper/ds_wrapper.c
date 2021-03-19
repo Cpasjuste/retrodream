@@ -7,6 +7,8 @@
 #include "ds/include/console.h"
 #include "ds/include/SDL/SDL_console.h"
 
+void pvr_set_zclip(float zc) {}
+
 int ds_printf(const char *fmt, ...) {
 
     char buff[512];
