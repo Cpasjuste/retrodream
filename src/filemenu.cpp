@@ -84,8 +84,9 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                     retroDream->getProgressBox()->setProgress("LOADING STUFF.... \n", 0.0f);
                     retroDream->getProgressBox()->setVisibility(Visibility::Visible);
                     RetroDream *rd = retroDream;
-                    retroDream->getRender()->getIo()->copy(
-                            file.data.path, retroDream->getFiler()->getPath(),
+                    rd->getPreviewVideo()->unload();
+                    rd->getRender()->getIo()->copy(
+                            file.data.path, rd->getFiler()->getPath(),
                             [rd](const Io::File &src, const Io::File &dst, float progress) {
                                 if (progress < 0 && rd->getProgressBox()->isVisible()) {
                                     rd->getProgressBox()->setVisibility(Visibility::Hidden);
@@ -102,6 +103,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                                 } else {
                                     rd->getProgressBox()->setProgress(Utility::toUpper(dst.name), progress);
                                     rd->getRender()->flip(true, false);
+                                    rd->getPreviewVideo()->unload();
                                 }
                             });
                 }
@@ -115,6 +117,7 @@ bool FileMenu::onInput(c2d::Input::Player *players) {
                             "DO YOU REALLY WANT TO DELETE: \n\"" + file.upperName + "\"",
                             "CANCEL", "CONFIRM");
                     if (res == MessageBox::RIGHT) {
+                        retroDream->getPreviewVideo()->unload();
                         if (file.data.type == Io::Type::Directory) {
                             res = (int) retroDream->getRender()->getIo()->removeDir(file.data.path);
                         } else {

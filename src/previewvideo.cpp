@@ -31,6 +31,12 @@ static int decodeThread(void *data) {
     auto file_buffer = (unsigned char *) malloc(MAX_BUF_SIZE);
     roq_audio.pcm_sample = (unsigned char *) malloc(MAX_BUF_SIZE);
 
+    // be sure preview is available
+    while (!preview) {
+        rd->getRender()->delay(16);
+        preview = rd->getPreviewVideo();
+    }
+
     while (!preview->thread_stop) {
 
         // load roq file
@@ -43,14 +49,14 @@ static int decodeThread(void *data) {
             file = fopen(preview->previewPath.c_str(), "rb");
             if (!file) {
                 printf("ROQ_FILE_OPEN_FAILURE: %s\n", preview->previewPath.c_str());
-                preview->hide(ROQ_STOPPED);
+                preview->hide();
                 continue;
             }
             // read roq header
             file_ret = fread(file_buffer, CHUNK_HEADER_SIZE, 1, file);
             if (file_ret != 1) {
                 printf("ROQ_FILE_READ_FAILURE: %s\n", preview->previewPath.c_str());
-                preview->hide(ROQ_STOPPED);
+                preview->hide();
                 continue;
             }
             // verify signature
@@ -58,7 +64,7 @@ static int decodeThread(void *data) {
             chunk_size = LE_32(&file_buffer[2]);
             if (chunk_id != RoQ_SIGNATURE || chunk_size != 0xFFFFFFFF) {
                 printf("ROQ_FILE_READ_FAILURE\n");
-                preview->hide(ROQ_STOPPED);
+                preview->hide();
                 continue;
             }
             // extract framerate
@@ -88,8 +94,15 @@ static int decodeThread(void *data) {
         }
 
         // sleep thread if not playing
-        if (!preview->isLoaded() || preview->status != ROQ_PLAYING) {
-            rd->getRender()->delay(16);
+        if (preview->status != ROQ_PLAYING) {
+            if (preview->status == ROQ_STOPPING) {
+                if (file) {
+                    fclose(file);
+                    file = nullptr;
+                }
+            }
+            preview->status = ROQ_STOPPED;
+            rd->getRender()->delay(2);
             continue;
         }
 
@@ -103,7 +116,7 @@ static int decodeThread(void *data) {
                 fseek(file, 8, SEEK_SET);
                 continue;
             } else {
-                preview->hide(ROQ_STOPPED);
+                preview->hide();
                 continue;
             }
         }
@@ -113,13 +126,13 @@ static int decodeThread(void *data) {
         chunk_arg = LE_16(&file_buffer[6]);
 
         if (chunk_size > MAX_BUF_SIZE) {
-            preview->hide(ROQ_STOPPED);
+            preview->hide();
             continue;
         }
 
         file_ret = fread(file_buffer, chunk_size, 1, file);
         if (file_ret != 1) {
-            preview->hide(ROQ_STOPPED);
+            preview->hide();
             continue;
         }
 
@@ -133,21 +146,21 @@ static int decodeThread(void *data) {
                 state.height = LE_16(&file_buffer[2]);
                 /* width and height each need to be divisible by 16 */
                 if ((state.width & 0xF) || (state.height & 0xF)) {
-                    preview->hide(ROQ_STOPPED);
+                    preview->hide();
                     break;
                 }
                 state.mb_width = state.width / 16;
                 state.mb_height = state.height / 16;
                 state.mb_count = state.mb_width * state.mb_height;
                 if (state.width < 8 || state.width > 1024) {
-                    preview->hide(ROQ_STOPPED);
+                    preview->hide();
                 } else {
                     state.stride = 8;
                     while (state.stride < state.width)
                         state.stride <<= 1;
                 }
                 if (state.height < 8 || state.height > 1024) {
-                    preview->hide(ROQ_STOPPED);
+                    preview->hide();
                 } else {
                     state.texture_height = 8;
                     while (state.texture_height < state.height)
@@ -162,7 +175,7 @@ static int decodeThread(void *data) {
                 if (!state.frame[0] || !state.frame[1]) {
                     free(state.frame[0]);
                     free(state.frame[1]);
-                    preview->hide(ROQ_STOPPED);
+                    preview->hide();
                     break;
                 }
                 memset(state.frame[0], 0, state.texture_height * state.stride * sizeof(unsigned short));
@@ -180,7 +193,7 @@ static int decodeThread(void *data) {
             case RoQ_QUAD_VQ:
                 // frame limit
                 while (clock.getElapsedTime().asMilliseconds() < (1000 / framerate)) {
-                    if (preview->thread_stop) {
+                    if (preview->thread_stop || preview->status != ROQ_PLAYING) {
                         break;
                     }
 #ifdef __DREAMCAST__
@@ -191,7 +204,7 @@ static int decodeThread(void *data) {
                 }
                 clock.restart();
 
-                if (preview->thread_stop) {
+                if (preview->thread_stop || preview->status != ROQ_PLAYING) {
                     break;
                 }
 
@@ -208,6 +221,9 @@ static int decodeThread(void *data) {
 
             case RoQ_SOUND_MONO:
                 //printf("RoQ_SOUND_MONO\n");
+                if (preview->thread_stop || preview->status != ROQ_PLAYING) {
+                    break;
+                }
                 roq_audio.channels = 1;
                 roq_audio.pcm_samples = (int) chunk_size * 2;
                 snd_left = (int) chunk_arg;
@@ -220,10 +236,9 @@ static int decodeThread(void *data) {
                 break;
 
             case RoQ_SOUND_STEREO:
-                if (!preview->audio || !preview->audio->isAvailable()) {
+                if (preview->thread_stop || preview->status != ROQ_PLAYING) {
                     break;
                 }
-
                 if ((int) chunk_size * 2 > preview->audio->getSampleBufferAvailable()) {
                     printf("RoQ_SOUND_STEREO: buffer size (%i), audio size (%i) \n",
                            chunk_size * 2, preview->audio->getSampleBufferAvailable());
@@ -277,14 +292,15 @@ PreviewVideo::PreviewVideo(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(
     retroDream = rd;
     audio = new C2DAudio(22050, 2048);
     mutex = new C2DMutex();
+    thread = new C2DThread(decodeThread, retroDream);
 
     RectangleShape::setFillColor(Color::Transparent);
     RectangleShape::setVisibility(Visibility::Hidden);
 }
 
-void PreviewVideo::hide(int i) {
+void PreviewVideo::hide() {
     mutex->lock();
-    status = i;
+    status = ROQ_STOPPED;
     setVisibility(Visibility::Hidden);
     retroDream->getHelpBox()->setVisibility(Visibility::Visible, true);
     mutex->unlock();
@@ -295,11 +311,6 @@ bool PreviewVideo::load(const std::string &path) {
     printf("PreviewVideo::load: %s\n", path.c_str());
 
     unload();
-
-    if (!thread) {
-        thread = new C2DThread(decodeThread, retroDream);
-    }
-
     previewPath = path;
     status = ROQ_LOAD;
     loaded = true;
@@ -310,8 +321,10 @@ bool PreviewVideo::load(const std::string &path) {
 void PreviewVideo::unload() {
 
     if (loaded) {
-        status = ROQ_STOPPED;
-        mutex->lock();
+        status = ROQ_STOPPING;
+        while (status != ROQ_STOPPED) {
+            retroDream->getRender()->delay(2);
+        }
         audio->pause(1);
         videoUpload = false;
         if (isVisible()) {
@@ -319,7 +332,6 @@ void PreviewVideo::unload() {
             retroDream->getHelpBox()->setVisibility(Visibility::Visible, true);
         }
         loaded = false;
-        mutex->unlock();
     }
 }
 
@@ -382,6 +394,7 @@ void PreviewVideo::onUpdate() {
 
 PreviewVideo::~PreviewVideo() {
 
+    status = ROQ_STOPPED;
     thread_stop = true;
     if (thread) {
         thread->join();

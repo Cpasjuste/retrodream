@@ -28,9 +28,10 @@ extern "C" {
 #define ROQ_CODEBOOK_SIZE 256
 #define SQR_ARRAY_SIZE 256
 
-#define ROQ_LOAD              0
-#define ROQ_PLAYING           1
-#define ROQ_STOPPED           2
+#define ROQ_LOAD        0
+#define ROQ_PLAYING     1
+#define ROQ_STOPPING    2
+#define ROQ_STOPPED     3
 
 typedef struct {
     int pcm_samples;

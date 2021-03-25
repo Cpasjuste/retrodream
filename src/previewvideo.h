@@ -27,7 +27,7 @@ public:
 
     bool isLoaded() const;
 
-    void hide(int status);
+    void hide();
 
     RetroDream *retroDream = nullptr;
     std::string previewPath;
