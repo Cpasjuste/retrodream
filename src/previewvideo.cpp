@@ -16,7 +16,7 @@ static int decodeThread(void *data) {
     auto preview = rd->getPreviewVideo();
 
     int framerate = 30;
-    int chunk_id;
+    int chunk_id, res;
     unsigned int chunk_size;
     unsigned int chunk_arg;
     roq_audio roq_audio;
@@ -186,8 +186,10 @@ static int decodeThread(void *data) {
                 break;
 
             case RoQ_QUAD_CODEBOOK:
-                preview->status = roq_unpack_quad_codebook_rgb565(file_buffer, (int) chunk_size, (int) chunk_arg,
-                                                                  &state);
+                res = roq_unpack_quad_codebook_rgb565(file_buffer, (int) chunk_size, (int) chunk_arg, &state);
+                if (res == ROQ_STOPPED) {
+                    preview->status = ROQ_STOPPED;
+                }
                 break;
 
             case RoQ_QUAD_VQ:
@@ -210,9 +212,14 @@ static int decodeThread(void *data) {
 
                 // update buffers
                 preview->mutex->lock();
-                preview->status = roq_unpack_vq_rgb565(file_buffer, (int) chunk_size, chunk_arg, &state);
+                res = roq_unpack_vq_rgb565(file_buffer, (int) chunk_size, chunk_arg, &state);
+                if (res == ROQ_STOPPED) {
+                    preview->status = ROQ_STOPPED;
+                }
                 preview->mutex->unlock();
-                preview->videoUpload = true;
+                if (res == ROQ_PLAYING) {
+                    preview->videoUpload = true;
+                }
                 state.current_frame++;
                 break;
 
