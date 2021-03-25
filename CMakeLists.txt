@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # add libcross2d library
+set(OPTION_FREETYPE OFF CACHE BOOL "" FORCE)
 add_subdirectory(libcross2d)
 
 #############
