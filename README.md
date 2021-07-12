@@ -22,7 +22,7 @@ A complete and ready to use package, including [DreamShell](https://github.com/D
 
 #### Greetings ?
 
-A big thanks to "DC-SWAT" for all is work on [DreamShell](https://github.com/DC-SWAT/DreamShell), and making it sources public. A lot of inspiration, ideas and code was take from [DreamShell](https://github.com/DC-SWAT/DreamShell). 
+A big thanks to @DC-SWAT for all is work on [DreamShell](https://github.com/DC-SWAT/DreamShell), and making it sources public. A lot of inspiration, ideas and code was take from [DreamShell](https://github.com/DC-SWAT/DreamShell). 
 All my projects are open sources, i like to share, and i like to see people sharing. Thanks mate.
 
 Another big thanks to [DragonCity](http://dragoncity17.wordpress.com) for all the ideas and testing, it was really helpful.
