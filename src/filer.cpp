@@ -519,7 +519,7 @@ void Filer::onUpdate() {
         return;
     }
 
-    unsigned int keys = retroDream->getRender()->getInput()->getKeys();
+    unsigned int keys = retroDream->getRender()->getInput()->getButtons();
     if (keys == 0) {
         Filer::RetroFile *file = getSelectionPtr();
         if (file && file->isGame) {
@@ -558,16 +558,16 @@ bool Filer::onInput(c2d::Input::Player *players) {
     retroDream->getPreviewVideo()->unload();
     previewClock.restart();
 
-    unsigned int keys = players[0].keys;
-    if (keys & Input::Key::Up) {
+    unsigned int keys = players[0].buttons;
+    if (keys & Input::Button::Up) {
         up();
-    } else if (keys & Input::Key::Down) {
+    } else if (keys & Input::Button::Down) {
         down();
-    } else if (keys & Input::Key::Right) {
+    } else if (keys & Input::Button::Right) {
         setSelection(getIndex() + getMaxLines());
-    } else if (keys & Input::Key::Left) {
+    } else if (keys & Input::Button::Left) {
         setSelection(getIndex() - getMaxLines());
-    } else if (keys & Input::Key::Fire1) {
+    } else if (keys & Input::Button::A) {
         RetroFile file = getSelection();
         Io::Type type = file.data.type;
         if (file.isGame) {
@@ -603,7 +603,7 @@ bool Filer::onInput(c2d::Input::Player *players) {
             restoreVmu(file);
             blurLayer->setVisibility(Visibility::Hidden, true);
         }
-    } else if (keys & Input::Key::Fire2) {
+    } else if (keys & Input::Button::B) {
         exit();
     }
 

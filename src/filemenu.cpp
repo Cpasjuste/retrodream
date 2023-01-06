@@ -37,9 +37,9 @@ void FileMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
 bool FileMenu::onInput(c2d::Input::Player *players) {
 
-    unsigned int keys = players[0].keys;
+    unsigned int keys = players[0].buttons;
 
-    if (keys & Input::Key::Fire1) {
+    if (keys & Input::Button::A) {
         auto option = configBox->getSelection();
         if (option != nullptr) {
             if (option->getId() == Browse) {

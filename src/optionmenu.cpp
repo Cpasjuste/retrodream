@@ -9,7 +9,6 @@
 using namespace c2d;
 
 OptionMenu::OptionMenu(RetroDream *rd, Skin::CustomShape *shape) : Menu(rd, shape) {
-
     retroDream = rd;
 
     title->setString("RETRODREAM OPTIONS");
@@ -28,7 +27,6 @@ OptionMenu::OptionMenu(RetroDream *rd, Skin::CustomShape *shape) : Menu(rd, shap
 }
 
 void OptionMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
-
     Menu::setVisibility(visibility, tweenPlay);
 
     if (visibility == Visibility::Visible) {
@@ -37,10 +35,9 @@ void OptionMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 }
 
 bool OptionMenu::onInput(c2d::Input::Player *players) {
+    unsigned int keys = players[0].buttons;
 
-    unsigned int keys = players[0].keys;
-
-    if (keys & Input::Key::Fire1) {
+    if (keys & Input::Button::A) {
         auto option = configBox->getSelection();
         if (option != nullptr) {
             if (option->getId() == LaunchDs) {

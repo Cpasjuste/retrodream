@@ -10,7 +10,6 @@ using namespace c2d;
 
 HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spriteRect, c2d::Texture *texture)
         : Rectangle(rect) {
-
     button = new Sprite(texture, spriteRect);
     button->setOrigin(Origin::Left);
     button->setPosition(0, rect.height / 2);
@@ -20,13 +19,10 @@ HelpBox::HelpLine::HelpLine(const c2d::FloatRect &rect, const c2d::IntRect &spri
     text = new Text("UNUSED", FONT_SIZE);
     text->setOrigin(Origin::Left);
     text->setPosition(button->getPosition().x + button->getSize().x + 4, (rect.height / 2) - 1);
-    //text->setOutlineThickness(2);
-    text->setOutlineColor(Color::Black);
     Rectangle::add(text);
 }
 
 HelpBox::HelpBox(RetroDream *retroDream, Skin::CustomShape *shape) : SkinRect(shape) {
-
     float left = 6;
     float width = SkinRect::getSize().x - 16;
 

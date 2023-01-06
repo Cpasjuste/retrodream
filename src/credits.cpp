@@ -30,7 +30,7 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
             "OPEN SOURCING:  KNOWLEDGE NEED TO BE SHARED, THANKS TO ALL THE PEOPLE AROUND WITH AN OPEN MIND.\n",
             FONT_SIZE);
     text->setPosition(32, 32);
-    text->setSizeMax(rect.width - 64, rect.height - 64);
+    text->setSizeMax(rect.width - 32, rect.height - 32);
     text->setFillColor(COL_BLUE_DARK);
     text->setOutlineColor(Color::Black);
     text->setOutlineThickness(2);
@@ -40,7 +40,7 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
 
     cpasjuste = new Text("CPASJUSTE IN DA PLACE !", FONT_SIZE);
     cpasjuste->setOrigin(Origin::BottomRight);
-    cpasjuste->setPosition(rect.width - 16, rect.height - 16);
+    cpasjuste->setPosition(rect.width - 8, rect.height - 8);
     cpasjuste->setFillColor(COL_YELLOW);
     cpasjuste->setOutlineColor(Color::Black);
     cpasjuste->setOutlineThickness(2);
@@ -51,10 +51,9 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
 }
 
 bool Credits::onInput(c2d::Input::Player *players) {
+    unsigned int keys = players[0].buttons;
 
-    unsigned int keys = players[0].keys;
-
-    if (keys != Input::Key::Delay) {
+    if (keys != Input::Button::Delay) {
         setVisibility(Visibility::Hidden, true);
         retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
         retroDream->getFiler()->setSelectionBack();

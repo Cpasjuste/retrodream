@@ -11,7 +11,6 @@ using namespace c2d;
 static roq_state state;
 
 static int decodeThread(void *data) {
-
     auto rd = (RetroDream *) data;
     auto preview = rd->getPreviewVideo();
 
@@ -166,7 +165,7 @@ static int decodeThread(void *data) {
                     while (state.texture_height < state.height)
                         state.texture_height <<= 1;
                 }
-                printf("  RoQ_INFO: dimensions = %dx%d, %dx%d; %d mbs, texture = %dx%d\n",
+                printf("RoQ_INFO: dimensions = %dx%d, %dx%d; %d mbs, texture = %dx%d\n",
                        state.width, state.height, state.mb_width, state.mb_height,
                        state.mb_count, state.stride, state.texture_height);
                 state.frame[0] = (unsigned char *) malloc(state.width * state.width * 2);
@@ -295,7 +294,6 @@ static int decodeThread(void *data) {
 }
 
 PreviewVideo::PreviewVideo(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape) {
-
     retroDream = rd;
     audio = new C2DAudio(22050, 2048);
     mutex = new C2DMutex();
@@ -314,19 +312,18 @@ void PreviewVideo::hide() {
 }
 
 bool PreviewVideo::load(const std::string &path) {
-
+    /*
     printf("PreviewVideo::load: %s\n", path.c_str());
 
     unload();
     previewPath = path;
     status = ROQ_LOAD;
     loaded = true;
-
+    */
     return true;
 }
 
 void PreviewVideo::unload() {
-
     if (loaded) {
         status = ROQ_STOPPING;
         while (status != ROQ_STOPPED) {
@@ -352,9 +349,7 @@ static int unlockTime = 0;
 #endif
 
 void PreviewVideo::onUpdate() {
-
     if (isVisible() && status == ROQ_PLAYING) {
-
 #ifdef __DREAMCAST__
         // frame limit
         while (fpsLimitClock.getElapsedTime().asMilliseconds() < (1000 / 30)) {
@@ -383,7 +378,12 @@ void PreviewVideo::onUpdate() {
                 unlockTime = debugClock.restart().asMilliseconds();
             }
 #endif
-            texture->unlock(state.frame[state.current_frame & 1]);
+            // TODO: upload frame to pixels buffer directly
+            uint8_t *data;
+            texture->lock(&data);
+            memcpy(data, state.frame[state.current_frame & 1], state.width * state.height * 2);
+            texture->unlock();
+            //texture->unlock(state.frame[state.current_frame & 1]);
 #ifndef NDEBUG
             if (unlockTime > 0) {
                 printf("videoTex->unlock: %i ms (fps: %f)\n",
@@ -400,7 +400,6 @@ void PreviewVideo::onUpdate() {
 }
 
 PreviewVideo::~PreviewVideo() {
-
     status = ROQ_STOPPED;
     thread_stop = true;
     if (thread) {

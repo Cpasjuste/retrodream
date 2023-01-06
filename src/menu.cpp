@@ -10,7 +10,6 @@
 using namespace c2d;
 
 Menu::Menu(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape, false) {
-
     retroDream = rd;
 
     title = new Text("MENU", FONT_SIZE * 1.2f);
@@ -48,7 +47,6 @@ Menu::Menu(RetroDream *rd, Skin::CustomShape *shape) : SkinRect(shape, false) {
 }
 
 void Menu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
-
     if (visibility == Visibility::Visible) {
         configBox->reset();
         retroDream->getFiler()->getBlur()->setVisibility(Visibility::Visible, true);
@@ -62,20 +60,19 @@ void Menu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 }
 
 bool Menu::onInput(c2d::Input::Player *players) {
+    unsigned int keys = players[0].buttons;
 
-    unsigned int keys = players[0].keys;
-
-    if (keys & Input::Key::Up) {
+    if (keys & Input::Button::Up) {
         configBox->navigate(ConfigBox::Navigation::Up);
-    } else if (keys & Input::Key::Down) {
+    } else if (keys & Input::Button::Down) {
         configBox->navigate(ConfigBox::Navigation::Down);
-    } else if (keys & Input::Key::Right) {
+    } else if (keys & Input::Button::Right) {
         configBox->navigate(ConfigBox::Navigation::Right);
         dirty = true;
-    } else if (keys & Input::Key::Left) {
+    } else if (keys & Input::Button::Left) {
         configBox->navigate(ConfigBox::Navigation::Left);
         dirty = true;
-    } else if (keys & Input::Key::Fire2) {
+    } else if (keys & Input::Button::B) {
         setVisibility(Visibility::Hidden, true);
     }
 

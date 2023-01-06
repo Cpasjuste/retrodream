@@ -77,10 +77,9 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 }
 
 bool SystemMenu::onInput(c2d::Input::Player *players) {
+    unsigned int keys = players[0].buttons;
 
-    unsigned int keys = players[0].keys;
-
-    if (keys & Input::Key::Fire1) {
+    if (keys & Input::Button::A) {
         auto option = configBox->getSelection();
         if (option != nullptr && option->getId() == Backup) {
             if (!partition.write(io, backupPath)) {
@@ -89,7 +88,7 @@ bool SystemMenu::onInput(c2d::Input::Player *players) {
                 retroDream->showStatus("SYSTEM CONFIG", "BACKUP SUCCESS: " + backupPath, COL_GREEN);
             }
         }
-    } else if (keys & Input::Key::Fire2) {
+    } else if (keys & Input::Button::B) {
         setVisibility(Visibility::Hidden, true);
         retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
         return true;

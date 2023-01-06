@@ -9,8 +9,8 @@
 #include "retroio.h"
 
 #define FONT_SIZE 18
-#define CORNER_RADIUS 8
-#define CORNER_POINTS 4
+#define CORNER_RADIUS 4
+#define CORNER_POINTS 8
 
 class Skin : public c2d::config::Config {
 
@@ -60,7 +60,7 @@ public:
     class CustomText {
     public:
         c2d::Color color = c2d::Color::White;
-        int size = 18;
+        int size = FONT_SIZE;
     };
 
     explicit Skin(RetroIo *retroIo);

@@ -8,7 +8,6 @@
 using namespace c2d;
 
 Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
-
     io = retroIo;
 
     // background
@@ -44,7 +43,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
                            Color{49, 121, 159}, FONT_SIZE));
     // highlight
     Group filerHighlight = addShape("highlight", FilerHighlightShape,
-                                    FloatRect{2, 0, 366, 26},
+                                    FloatRect{1, 0, 368, 26},
                                     8, Origin::TopLeft,
                                     Color{240, 226, 107},
                                     Color{49, 121, 159},
@@ -66,7 +65,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // preview image
     Group preview_image = addShape("preview_image", PreviewImageShape,
-                                   FloatRect{509, 166, 228, 228},
+                                   FloatRect{505, 161, 228, 228},
                                    8, Origin::Center,
                                    Color{204, 228, 240},
                                    Color{49, 121, 159},
@@ -75,7 +74,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
 
     // preview video
     Group preview_video = addShape("preview_video", PreviewVideoShape,
-                                   FloatRect{509, 378, 228, 171},
+                                   FloatRect{505, 375, 228, 171},
                                    8, Origin::Center,
                                    Color{204, 228, 240},
                                    Color{49, 121, 159},
@@ -113,7 +112,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
     addGroup(menu);
 
     // load the configuration from file, overwriting default values
-#if 1
+#if 0
     load();
     save();
 #endif

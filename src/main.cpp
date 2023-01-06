@@ -31,7 +31,6 @@ static Skin *skin = nullptr;
 static c2d::Text *debugText = nullptr;
 
 RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_shape) {
-
     render = r;
     Vector2f size = SkinRect::getSize();
 
@@ -43,7 +42,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
     debugText = new Text("LOADING...", FONT_SIZE);
     debugText->setFillColor(COL_BLUE_DARK);
     debugText->setOrigin(Origin::BottomLeft);
-    debugText->setPosition(16, C2D_SCREEN_HEIGHT - 16);
+    debugText->setPosition(16, size.y - 16);
     render->add(debugText);
 
     /// header text
@@ -157,24 +156,23 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
 }
 
 bool RetroDream::onInput(c2d::Input::Player *players) {
-
-    unsigned int keys = players[0].keys;
+    unsigned int keys = players[0].buttons;
 
     if (systemMenu->isVisible() || regionFreeMenu->isVisible() || credits->isVisible()
         || progressBox->isVisible() || messageBox->isVisible()) {
         return C2DObject::onInput(players);
     }
 
-    if ((keys & Input::Key::Fire3) && (keys & Input::Key::Fire5) && (keys & Input::Key::Fire6)) {
+    if ((keys & Input::Button::Y) && (keys & Input::Button::LB) && (keys & Input::Button::RB)) {
         RetroUtility::screenshot(this, getIo()->getScreenshotPath());
-    } else if (keys & Input::Key::Fire3 && !optionMenu->isVisible()) {
+    } else if (keys & Input::Button::Y && !optionMenu->isVisible()) {
         preview->unload();
         previewVideo->unload();
         optionMenu->setVisibility(Visibility::Hidden, true);
         presetMenu->setVisibility(Visibility::Hidden, true);
         fileMenu->setVisibility(fileMenu->isVisible() ?
                                 Visibility::Hidden : Visibility::Visible, true);
-    } else if (keys & Input::Key::Fire4 && !optionMenu->isVisible()) {
+    } else if (keys & Input::Button::X && !optionMenu->isVisible()) {
         Filer::RetroFile file = filer->getSelection();
         if (file.isGame) {
             preview->unload();
@@ -184,7 +182,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
             presetMenu->setVisibility(presetMenu->isVisible() ?
                                       Visibility::Hidden : Visibility::Visible, true);
         }
-    } else if (keys & Input::Key::Start) {
+    } else if (keys & Input::Button::Start) {
         preview->unload();
         previewVideo->unload();
         fileMenu->setVisibility(Visibility::Hidden, true);
@@ -193,7 +191,7 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
                                   Visibility::Hidden : Visibility::Visible, true);
     }
 
-    if (keys & EV_QUIT) {
+    if (keys & Input::Button::Quit) {
         quit = true;
     }
 
@@ -201,10 +199,9 @@ bool RetroDream::onInput(c2d::Input::Player *players) {
 }
 
 void RetroDream::onUpdate() {
-
     // handle key repeat delay
-    unsigned int keys = render->getInput()->getKeys(0);
-    if (keys != Input::Key::Delay) {
+    unsigned int keys = render->getInput()->getButtons(0);
+    if (keys != Input::Button::Delay) {
         bool changed = (oldKeys ^ keys) != 0;
         oldKeys = keys;
         if (!changed) {
@@ -251,7 +248,6 @@ void RetroDream::showStatus(const std::string &title, const std::string &msg, co
 }
 
 void retroDebug(const char *fmt, ...) {
-
     if (debugText) {
         va_list args;
         char buffer[512];
@@ -271,19 +267,19 @@ int main(int argc, char *argv[]) {
     (void) argv[argc - 1];
 
     /// render
-    render = new C2DRenderer({C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+    render = new C2DRenderer({640, 480});
 
     /// vmu
     vmu_draw_version();
 
     /// splash
-    auto splash = new C2DRectangle({0, 0, C2D_SCREEN_WIDTH, C2D_SCREEN_HEIGHT});
+    auto splash = new C2DRectangle({0, 0, render->getSize().x, render->getSize().y});
     splash->setFillColor(Color::White);
     render->add(splash);
     splashTex = new C2DTexture(render->getIo()->getRomFsPath() + "skin/splash.png");
-    splashSprite = new Sprite(splashTex, {0, 0, splashTex->getSize().x, splashTex->getSize().y});
+    splashSprite = new Sprite(splashTex, {0, 0, (int) splashTex->getSize().x, (int) splashTex->getSize().y});
     splashSprite->setOrigin(Origin::Center);
-    splashSprite->setPosition((float) C2D_SCREEN_WIDTH / 2, (float) C2D_SCREEN_HEIGHT / 2);
+    splashSprite->setPosition((float) render->getSize().x / 2, (float) render->getSize().y / 2);
     render->add(splashSprite);
     render->flip();
     /// splash

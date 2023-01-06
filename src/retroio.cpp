@@ -21,7 +21,7 @@ std::string RetroIo::getHomePath() {
 #ifdef __DREAMCAST__
     return "/";
 #else
-    return C2DIo::getHomePath();
+    return C2DIo::getDataPath();
 #endif
 }
 
@@ -62,9 +62,9 @@ std::string RetroIo::getDataPath() {
 
     return rdPath;
 #else
-    rdPath = C2DIo::getHomePath() + "RD/";
-    dsPath = C2DIo::getHomePath() + "DS/";
-    dsBinPath = C2DIo::getHomePath() + "DS/DS.BIN";
+    rdPath = C2DIo::getDataPath() + "RD/";
+    dsPath = C2DIo::getDataPath() + "DS/";
+    dsBinPath = C2DIo::getDataPath() + "DS/DS.BIN";
     return rdPath;
 #endif
 }

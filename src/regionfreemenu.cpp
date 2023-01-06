@@ -106,9 +106,9 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
 bool RegionFreeMenu::onInput(c2d::Input::Player *players) {
 
-    unsigned int keys = players[0].keys;
+    unsigned int keys = players[0].buttons;
 
-    if (keys & Input::Key::Fire1) {
+    if (keys & Input::Button::A) {
         auto option = configBox->getSelection();
         if (option != nullptr && option->getId() == Backup) {
             if (!partition.write(io, backupPath)) {
@@ -117,7 +117,7 @@ bool RegionFreeMenu::onInput(c2d::Input::Player *players) {
                 retroDream->showStatus("REGION CHANGER", "BACKUP SUCCESS: " + backupPath, COL_GREEN);
             }
         }
-    } else if (keys & Input::Key::Fire2) {
+    } else if (keys & Input::Button::B) {
         setVisibility(Visibility::Hidden, true);
         retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);
         return true;

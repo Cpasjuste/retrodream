@@ -9,7 +9,7 @@ class RetroIo : public c2d::C2DIo {
 
 public:
 
-    std::string getHomePath() override;
+    std::string getHomePath();
 
     std::string getDataPath() override;
 
