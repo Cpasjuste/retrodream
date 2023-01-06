@@ -37,7 +37,6 @@ static int decodeThread(void *data) {
     }
 
     while (!preview->thread_stop) {
-
         // load roq file
         if (preview->status == ROQ_LOAD) {
             printf("Preview::Thread: ROQ_LOAD (%s)\n", preview->previewPath.c_str());
@@ -312,14 +311,13 @@ void PreviewVideo::hide() {
 }
 
 bool PreviewVideo::load(const std::string &path) {
-    /*
     printf("PreviewVideo::load: %s\n", path.c_str());
 
     unload();
     previewPath = path;
     status = ROQ_LOAD;
     loaded = true;
-    */
+
     return true;
 }
 
@@ -378,12 +376,7 @@ void PreviewVideo::onUpdate() {
                 unlockTime = debugClock.restart().asMilliseconds();
             }
 #endif
-            // TODO: upload frame to pixels buffer directly
-            uint8_t *data;
-            texture->lock(&data);
-            memcpy(data, state.frame[state.current_frame & 1], state.width * state.height * 2);
-            texture->unlock();
-            //texture->unlock(state.frame[state.current_frame & 1]);
+            texture->unlock(state.frame[state.current_frame & 1]);
 #ifndef NDEBUG
             if (unlockTime > 0) {
                 printf("videoTex->unlock: %i ms (fps: %f)\n",
@@ -408,8 +401,5 @@ PreviewVideo::~PreviewVideo() {
     }
 
     delete (mutex);
-
-    if (audio) {
-        delete (audio);
-    }
+    delete (audio);
 }
