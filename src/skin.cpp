@@ -112,7 +112,7 @@ Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
     addGroup(menu);
 
     // load the configuration from file, overwriting default values
-#if 0
+#if 1
     load();
     save();
 #endif
