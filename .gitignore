@@ -1,4 +1,5 @@
 cmake-build*
 .idea
+.cache
 src/ds_wrapper/exports.c
 src/ds_wrapper/exports_gcc.c
