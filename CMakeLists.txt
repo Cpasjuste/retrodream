@@ -48,6 +48,7 @@ if (PLATFORM_DREAMCAST)
             src/ds_wrapper/exports_gcc.c
             src/ds_wrapper/gd_exec.s
             )
+    list(APPEND INCLUDES src/ds_wrapper) # for ciso.c "zlib/zlib.h"
     # ds fs
     list(APPEND SOURCES
             src/ds/src/drivers/rtc.c
