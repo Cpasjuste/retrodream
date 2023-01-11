@@ -14,7 +14,6 @@ static ConsoleInformation dummyConsole = {
 };
 
 int ds_printf(const char *fmt, ...) {
-
     char buff[512];
     va_list args;
     int i;
@@ -67,4 +66,16 @@ Cmd_t *GetCmdByName(const char *name) {
 #ifdef __EMBEDDED_MODULE_DEBUG__
 export_sym_t ds_isofs_symtab[] = {};
 export_sym_t ds_isoldr_symtab[] = {};
+#endif
+
+#if __GNUC__ >= 4
+
+extern void init(void);
+
+extern void fini(void);
+
+void _init(void) { init(); }
+
+void _fini(void) { fini(); }
+
 #endif
