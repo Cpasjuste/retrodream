@@ -8,8 +8,6 @@
 using namespace c2d;
 
 Skin::Skin(RetroIo *retroIo) : Config("SkinConfig", retroIo->getSkinPath()) {
-    io = retroIo;
-
     // background
     Group background = addShape("background", BackgroundShape,
                                 FloatRect{6, 6, 628, 468},
@@ -134,7 +132,6 @@ config::Group Skin::addShape(const std::string &name, int id,
 }
 
 Skin::CustomShape Skin::getShape(int groupId) {
-
     CustomShape shape;
 
     Group *group = getGroup(groupId);
@@ -154,22 +151,12 @@ Skin::CustomShape Skin::getShape(int groupId) {
     return shape;
 }
 
-config::Group
-Skin::addColor(const std::string &name, int id,
-               const Color &color, const Color &outlineColor, int outlineSize) {
+config::Group Skin::addColor(const std::string &name, int id,
+                             const Color &color, const Color &outlineColor, int outlineSize) {
     config::Group group(name, id);
     group.addOption({"color", color});
     group.addOption({"outline_color", outlineColor});
     group.addOption({"outline_size", outlineSize});
-    return group;
-}
-
-config::Group
-Skin::addText(const std::string &name, int id,
-              const Color &color, int size) {
-    config::Group group(name, id);
-    group.addOption({"color", color});
-    group.addOption({"size", size});
     return group;
 }
 
@@ -187,6 +174,13 @@ Skin::CustomColor Skin::getColor(int groupId) {
     customColor.outlineSize = (float) group->getOption("outline_size")->getInteger();
 
     return customColor;
+}
+
+config::Group Skin::addText(const std::string &name, int id, const Color &color, int size) {
+    config::Group group(name, id);
+    group.addOption({"color", color});
+    group.addOption({"size", size});
+    return group;
 }
 
 Skin::CustomText Skin::getText(int groupId) {

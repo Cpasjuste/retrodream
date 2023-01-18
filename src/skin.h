@@ -72,8 +72,6 @@ public:
     CustomText getText(int groupId);
 
 private:
-    RetroIo *io = nullptr;
-
     c2d::config::Group addShape(const std::string &name, int id,
                                 const c2d::FloatRect &rect, int corners_radius, const c2d::Origin &origin,
                                 const c2d::Color &color, const c2d::Color &outlineColor, int outlineSize,

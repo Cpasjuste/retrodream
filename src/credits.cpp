@@ -5,7 +5,6 @@
 #include "cross2d/c2d.h"
 #include "main.h"
 
-
 using namespace c2d;
 
 Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
@@ -26,11 +25,11 @@ Credits::Credits(RetroDream *rd, const c2d::FloatRect &rect)
 
     text = new Text(
             "DREAMSHELL:  A BIG THANKS TO DREAMSHELL DEVELOPERS, WITHOUT THEM RETRODREAM WOULD NOT EXIST.\n\n"
-            "DRAGONCITY:  THANKS FOR ALL THE IDEAS AND TESTING \"DRAGONCITY\", I ENJOYED WORKING WITH YOU MATE!  :)\n\n"
-            "OPEN SOURCING:  KNOWLEDGE NEED TO BE SHARED, THANKS TO ALL THE PEOPLE AROUND WITH AN OPEN MIND.\n",
+            "DRAGONCITY:  THANKS FOR ALL THE IDEAS AND TESTING.\n\n"
+            "OPEN SOURCING:  KNOWLEDGE NEED TO BE SHARED, THANKS TO ALL THE PEOPLE AROUND WITH AN OPEN MIND...\n",
             FONT_SIZE);
-    text->setPosition(32, 32);
-    text->setSizeMax(rect.width - 32, rect.height - 32);
+    text->setPosition(16, 16);
+    text->setSizeMax(rect.width - 16, rect.height - 32);
     text->setFillColor(COL_BLUE_DARK);
     text->setOutlineColor(Color::Black);
     text->setOutlineThickness(2);
