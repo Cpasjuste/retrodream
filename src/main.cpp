@@ -36,6 +36,7 @@ RetroDream::RetroDream(c2d::Renderer *r, Skin::CustomShape *_shape) : SkinRect(_
 
     auto font = new BMFont();
     font->loadFromFile(render->getIo()->getRomFsPath() + "skin/future.fnt");
+    font->setOffset({0, 1});
     render->setFont(font);
 
     // debug text
