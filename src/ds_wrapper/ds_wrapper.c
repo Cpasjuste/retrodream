@@ -43,8 +43,6 @@ void LockVideo() {}
 
 void UnlockVideo() {}
 
-void ShutdownVideo() {}
-
 void ShutdownVideoThread() {}
 
 void *IMG_Load(const char *file) {
@@ -63,19 +61,31 @@ Cmd_t *GetCmdByName(const char *name) {
     return NULL;
 }
 
+void ShutdownDS() {
+#ifdef DS_PROF
+    profiler_stop();
+	profiler_clean_up();
+#endif
+    //dbglog(DBG_INFO, "Shutting down DreamShell Core...\n");
+
+    //char fn[MAX_FN_LEN];
+    //snprintf(fn, MAX_FN_LEN, "%s/lua/shutdown.lua", getenv("PATH"));
+    //LuaDo(LUA_DO_FILE, fn, GetLuaState());
+
+    //ShutdownCmd();
+    ShutdownVideoThread();
+    //ShutdownApps();
+    //ShutdownConsole();
+    //ShutdownModules();
+    //ShutdownEvents();
+    //ShutdownLua();
+    //ShutdownNet();
+
+    //expt_shutdown();
+    g1_ata_shutdown();
+}
+
 #ifdef __EMBEDDED_MODULE_DEBUG__
 export_sym_t ds_isofs_symtab[] = {};
 export_sym_t ds_isoldr_symtab[] = {};
-#endif
-
-#if __GNUC__ >= 4
-
-extern void init(void);
-
-extern void fini(void);
-
-void _init(void) { init(); }
-
-void _fini(void) { fini(); }
-
 #endif

@@ -37,18 +37,20 @@ if (PLATFORM_DREAMCAST)
             DEPENDS dummy_exports
     )
     add_custom_command(OUTPUT
-            dummy_exports ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports.c ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports_gcc.c
-            COMMAND ${KOS_BASE}/utils/genexports/genexports.sh ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports.txt ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports.c ds_symtab
-            COMMAND ${KOS_BASE}/utils/genexports/genexports.sh ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports_gcc.txt ${CMAKE_SOURCE_DIR}/src/ds_wrapper/exports_gcc.c gcc_symtab
+            dummy_exports ${CMAKE_BINARY_DIR}/exports.c ${CMAKE_BINARY_DIR}/exports_gcc.c
+            COMMAND ${KOS_BASE}/utils/genexports/genexports.sh ${CMAKE_SOURCE_DIR}/src/ds/exports.txt ${CMAKE_BINARY_DIR}/exports.c ds_symtab
+            COMMAND ${KOS_BASE}/utils/genexports/genexports.sh ${CMAKE_SOURCE_DIR}/src/ds/exports_gcc.txt ${CMAKE_BINARY_DIR}/exports_gcc.c gcc_symtab
             )
     # retrodream ds wrapper
     list(APPEND SOURCES
             src/ds_wrapper/ds_wrapper.c
-            src/ds_wrapper/exports.c
-            src/ds_wrapper/exports_gcc.c
-            src/ds_wrapper/gd_exec.s
+            ${CMAKE_BINARY_DIR}/exports.c
+            ${CMAKE_BINARY_DIR}/exports_gcc.c
             )
     list(APPEND INCLUDES src/ds_wrapper) # for ciso.c "zlib/zlib.h"
+    # ds gdplay
+    list(APPEND SOURCES src/ds/applications/gdplay/modules/exec.s)
+    # ds gdplay
     # ds fs
     list(APPEND SOURCES
             src/ds/src/drivers/rtc.c
@@ -96,8 +98,7 @@ if (PLATFORM_DREAMCAST)
             src/ds/modules/isofs/fs_iso9660.c
             src/ds/modules/isofs/gdi.c
             src/ds/modules/isofs/map2dev.c
-            #src/ds/modules/isofs/module.c
-            src/ds_wrapper/isofs_module.c
+            src/ds/modules/isofs/module.c
             # isoldr
             src/ds/modules/isoldr/exec.c
             src/ds/modules/isoldr/execasm.s
@@ -108,7 +109,7 @@ if (PLATFORM_DREAMCAST)
             )
     list(APPEND CFLAGS
             -D__EMBEDDED_MODULE_DEBUG__
-            # isofs
+            # modules version (TODO: fix me: same version for every modules...)
             -DVER_MAJOR=0 -DVER_MINOR=6 -DVER_MICRO=7 -DVER_BUILD=0
             )
     # ds embedded modules (debug) - END
