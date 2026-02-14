@@ -95,7 +95,8 @@ bool GDPlay::run(RetroDream *rd) {
 
     //
     g1_ata_shutdown();
-    ubc_disable_all();
+    //ubc_disable_all();
+    ubc_shutdown();
     fs_dclsocket_shutdown();
     net_shutdown();
     irq_disable();
@@ -105,7 +106,8 @@ bool GDPlay::run(RetroDream *rd) {
     bba_shutdown();
     maple_shutdown();
     cdrom_shutdown();
-    spu_dma_shutdown();
+    //spu_dma_shutdown();
+    spu_shutdown();
     spu_shutdown();
     pvr_shutdown();
     library_shutdown();
