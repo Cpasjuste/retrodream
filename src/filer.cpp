@@ -46,17 +46,22 @@ Text *Line::getText() {
 }
 
 Filer::DirCache::DirCache(c2d::Io *io, const std::string &path, std::vector<c2d::Io::File> *files) {
-
-    char *buffer;
     m_io = io;
     m_path = path + "/.cache";
 
-    m_io->read(m_path, &buffer);
-    if (!buffer) {
+    const auto size = m_io->getSize(m_path);
+    if(size != 0) return;
+
+    const auto buffer = static_cast<char *>(malloc(size));
+    if(buffer == nullptr) return;
+
+    const auto read = m_io->read(m_path, buffer);
+    if(read != size) {
+        free(buffer);
         return;
     }
 
-    std::vector<std::string> items = Utility::split(buffer, "/");
+    const std::vector<std::string> items = Utility::split(buffer, "/");
     if (items.empty()) {
         free(buffer);
         return;
@@ -225,36 +230,41 @@ bool Filer::getDir(const std::string &p) {
             } else {
                 // dir cache not found...
                 //printf("getDirList: not cached: %s\n", fileData.name.c_str());
-                Io::File gameFile = io->findFile(fileData.path, {".gdi", ".cdi", ".iso"}, "track");
-                // directory contains a game
-                if (!gameFile.name.empty()) {
-                    file.isGame = true;
-                    // if sub dir contains iso or cdi but more than one file, don't assume it's a game
-                    if (Utility::endsWith(gameFile.name, ".cdi")) {
-                        if (io->hasMoreThanOneFile(fileData.path)) {
-                            file.isGame = false;
-                        } else {
-                            file.isoType = "CDI";
+                const auto gameFiles = io->findFiles(fileData.path,
+                    {".gdi", ".cdi", ".iso"}, "track", true);
+                if (!gameFiles.empty()) {
+                    const auto& gameFile = gameFiles.at(0);
+                    // directory contains a game
+                    if (!gameFile.name.empty()) {
+                        file.isGame = true;
+                        // if sub dir contains iso or cdi but more than one file, don't assume it's a game
+                        if (Utility::endsWith(gameFile.name, ".cdi")) {
+                            if (io->hasMoreThanOneFile(fileData.path)) {
+                                file.isGame = false;
+                            } else {
+                                file.isoType = "CDI";
+                            }
+                        } else if (Utility::endsWith(gameFile.name, ".iso")) {
+                            if (io->hasMoreThanOneFile(fileData.path)) {
+                                file.isGame = false;
+                            } else {
+                                file.isoType = "ISO";
+                            }
+                        } else if (Utility::endsWith(gameFile.name, ".gdi")) {
+                            file.isoType = "GDI";
+                            if (io->exist(fileData.path + "/track01.iso")) {
+                                file.isoType = "OPT";
+                            }
                         }
-                    } else if (Utility::endsWith(gameFile.name, ".iso")) {
-                        if (io->hasMoreThanOneFile(fileData.path)) {
-                            file.isGame = false;
-                        } else {
-                            file.isoType = "ISO";
-                        }
-                    } else if (Utility::endsWith(gameFile.name, ".gdi")) {
-                        file.isoType = "GDI";
-                        if (io->exist(fileData.path + "/track01.iso")) {
-                            file.isoType = "OPT";
+                        if (file.isGame) {
+                            file.isoPath = gameFile.path;
+                            fileNameNoExt = Utility::removeExt(gameFile.name);
                         }
                     }
-                    if (file.isGame) {
-                        file.isoPath = gameFile.path;
-                        fileNameNoExt = Utility::removeExt(gameFile.name);
-                    }
+                    dirCache.addData(file.data.name, gameFile.name, file.isoType);
+                } else {
+                    dirCache.addData(file.data.name, file.data.name, file.isoType);
                 }
-
-                dirCache.addData(file.data.name, gameFile.name, file.isoType);
             }
 
             if (file.isGame) {

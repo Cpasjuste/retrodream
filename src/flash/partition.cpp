@@ -3,10 +3,12 @@
 //
 
 #include "partition.h"
+
+#include <cstring>
+
 #include "romflash.h"
 
 bool Partition::read() {
-
     error = FLASHROM_ERR_NONE;
     fromFile = false;
 
@@ -49,44 +51,36 @@ bool Partition::read() {
 }
 
 bool Partition::read(c2d::Io *io, const std::string &path) {
-
     error = FLASHROM_ERR_NONE;
     fromFile = true;
 
     if (data != nullptr) {
         free(data);
-        data = nullptr;
     }
 
-    /*
-    c2d::Io::File file = io->getFile(path);
-    if (file.type != c2d::Io::Type::File) {
-        error = FLASHROM_ERR_READ_FILE;
-        printf("Partition::read: %s\n", getErrorString().c_str());
-        return false;
-    }
+    data = static_cast<uint8_t *>(malloc(size));
+    memset(data, 0, size);
 
-    if (file.size != size) {
-        error = FLASHROM_ERR_BOGUS_PART;
-        printf("Partition::read: %s\n", getErrorString().c_str());
-        return false;
-    }
-    */
-
-    size_t readSize = io->read(path, (char **) &data);
-    if (data == nullptr) {
+    const auto readSize = io->read(path, reinterpret_cast<char *>(data), size);
+    if (readSize < 1) {
         error = FLASHROM_ERR_NOMEM;
+        free(data);
+        data = nullptr;
         printf("Partition::read: %s\n", getErrorString().c_str());
         return false;
     }
 
     if (readSize != size) {
         error = FLASHROM_ERR_BOGUS_PART;
+        free(data);
+        data = nullptr;
         printf("Partition::read: %s\n", getErrorString().c_str());
         return false;
     }
 
     if (!checkMagic()) {
+        free(data);
+        data = nullptr;
         printf("Partition::read: %s\n", getErrorString().c_str());
         return false;
     }
@@ -95,7 +89,6 @@ bool Partition::read(c2d::Io *io, const std::string &path) {
 }
 
 bool Partition::write() {
-
     error = FLASHROM_ERR_NONE;
 
     if (data == nullptr) {
@@ -119,7 +112,6 @@ bool Partition::write() {
 }
 
 bool Partition::write(c2d::Io *io, const std::string &path) {
-
     error = FLASHROM_ERR_NONE;
 
     if (data == nullptr) {
@@ -138,7 +130,6 @@ bool Partition::write(c2d::Io *io, const std::string &path) {
 }
 
 bool Partition::checkMagic() {
-
     if (data == nullptr) {
         error = FLASHROM_ERR_NOMEM;
         printf("Partition::checkMagic: %s\n", getErrorString().c_str());
@@ -173,7 +164,6 @@ Partition::~Partition() {
 }
 
 std::string Partition::getErrorString() {
-
     if (error == FLASHROM_ERR_NOT_FOUND) {
         return "PARTITION BLOCK NOT FOUND";
     } else if (error == FLASHROM_ERR_NO_PARTITION) {

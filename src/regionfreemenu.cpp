@@ -47,22 +47,22 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 
         // country
         if (partition.getCountry() == SystemPartition::Country::Japan) {
-            config.getOption(Country)->setChoicesIndex(0);
+            config.getOption(Country)->setArrayIndex(0);
         } else if (partition.getCountry() == SystemPartition::Country::Usa) {
-            config.getOption(Country)->setChoicesIndex(1);
+            config.getOption(Country)->setArrayIndex(1);
         } else if (partition.getCountry() == SystemPartition::Country::Europe) {
-            config.getOption(Country)->setChoicesIndex(2);
+            config.getOption(Country)->setArrayIndex(2);
         }
 
         // broadcast
         if (partition.getBroadcast() == SystemPartition::Broadcast::Ntsc) {
-            config.getOption(Broadcast)->setChoicesIndex(0);
+            config.getOption(Broadcast)->setArrayIndex(0);
         } else if (partition.getBroadcast() == SystemPartition::Broadcast::Pal) {
-            config.getOption(Broadcast)->setChoicesIndex(1);
+            config.getOption(Broadcast)->setArrayIndex(1);
         } else if (partition.getBroadcast() == SystemPartition::Broadcast::PalM) {
-            config.getOption(Broadcast)->setChoicesIndex(2);
+            config.getOption(Broadcast)->setArrayIndex(2);
         } else if (partition.getBroadcast() == SystemPartition::Broadcast::PalN) {
-            config.getOption(Broadcast)->setChoicesIndex(3);
+            config.getOption(Broadcast)->setArrayIndex(3);
         }
 
         configBox->load(&config);
@@ -72,7 +72,7 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             dirty = false;
 
             // country
-            int index = config.getOption(Country)->getChoiceIndex();
+            int index = config.getOption(Country)->getArrayIndex();
             if (index == 0) {
                 partition.setCountry(SystemPartition::Country::Japan);
             } else if (index == 1) {
@@ -82,7 +82,7 @@ void RegionFreeMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             }
 
             // broadcast
-            index = config.getOption(Broadcast)->getChoiceIndex();
+            index = config.getOption(Broadcast)->getArrayIndex();
             if (index == 0) {
                 partition.setBroadcast(SystemPartition::Broadcast::Ntsc);
             } else if (index == 1) {

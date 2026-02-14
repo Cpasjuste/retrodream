@@ -29,21 +29,21 @@ void PresetMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         Filer::RetroFile file = retroDream->getFiler()->getSelection();
         if (file.isGame) {
             isoLoaderConfig = IsoLoader::loadConfig(retroDream, file.isoPath);
-            config.getOption(Mode)->setChoicesIndex(isoLoaderConfig.mode);
-            config.getOption(Memory)->setChoicesIndex(Utility::toUpper(isoLoaderConfig.memory));
-            config.getOption(Dma)->setChoicesIndex(isoLoaderConfig.dma);
+            config.getOption(Mode)->setArrayIndex(isoLoaderConfig.mode);
+            config.getOption(Memory)->setArrayIndex(Utility::toUpper(isoLoaderConfig.memory));
+            config.getOption(Dma)->setArrayIndex(isoLoaderConfig.dma);
             if (isoLoaderConfig.async < 1) {
-                config.getOption(Async)->setChoicesIndex(0);
+                config.getOption(Async)->setArrayIndex(0);
             } else {
-                config.getOption(Async)->setChoicesIndex(Utility::toString(isoLoaderConfig.async));
+                config.getOption(Async)->setArrayIndex(Utility::toString(isoLoaderConfig.async));
             }
-            config.getOption(Cdda)->setChoicesIndex(isoLoaderConfig.cdda);
+            config.getOption(Cdda)->setArrayIndex(isoLoaderConfig.cdda);
             if (isoLoaderConfig.device == "auto") {
-                config.getOption(Device)->setChoicesIndex(0);
+                config.getOption(Device)->setArrayIndex(0);
             } else {
-                config.getOption(Device)->setChoicesIndex(isoLoaderConfig.device);
+                config.getOption(Device)->setArrayIndex(isoLoaderConfig.device);
             }
-            config.getOption(Type)->setChoicesIndex(isoLoaderConfig.type);
+            config.getOption(Type)->setArrayIndex(isoLoaderConfig.type);
             configBox->load(&config);
         }
     } else {
@@ -56,12 +56,12 @@ void PresetMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
 void PresetMenu::save() {
     if (dirty) {
         isoLoaderConfig.device = Utility::toLower(config.getOption(Device)->getString());
-        isoLoaderConfig.dma = config.getOption(Dma)->getChoiceIndex();
-        isoLoaderConfig.cdda = config.getOption(Cdda)->getChoiceIndex();
-        isoLoaderConfig.mode = config.getOption(Mode)->getChoiceIndex();
-        isoLoaderConfig.type = config.getOption(Type)->getChoiceIndex();
+        isoLoaderConfig.dma = config.getOption(Dma)->getArrayIndex();
+        isoLoaderConfig.cdda = config.getOption(Cdda)->getArrayIndex();
+        isoLoaderConfig.mode = config.getOption(Mode)->getArrayIndex();
+        isoLoaderConfig.type = config.getOption(Type)->getArrayIndex();
         isoLoaderConfig.memory = Utility::toLower(config.getOption(Memory)->getString());
-        if (config.getOption(Async)->getChoiceIndex() == 0) {
+        if (config.getOption(Async)->getArrayIndex() == 0) {
             isoLoaderConfig.async = 0;
         } else {
             isoLoaderConfig.async = Utility::parseInt(config.getOption(Async)->getString());

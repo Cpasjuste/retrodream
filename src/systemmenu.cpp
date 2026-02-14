@@ -49,9 +49,9 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
         }
 
         // system options
-        config.getOption(Language)->setChoicesIndex((int) partition.getLanguage());
-        config.getOption(Audio)->setChoicesIndex((int) partition.getAudio());
-        config.getOption(AutoStart)->setChoicesIndex((int) partition.getAutoStart());
+        config.getOption(Language)->setArrayIndex((int) partition.getLanguage());
+        config.getOption(Audio)->setArrayIndex((int) partition.getAudio());
+        config.getOption(AutoStart)->setArrayIndex((int) partition.getAutoStart());
 
         configBox->load(&config);
 
@@ -61,9 +61,9 @@ void SystemMenu::setVisibility(c2d::Visibility visibility, bool tweenPlay) {
             dirty = false;
 
             // system options
-            partition.setLanguage((Block1Partition::Language) config.getOption(Language)->getChoiceIndex());
-            partition.setAudio((Block1Partition::Audio) config.getOption(Audio)->getChoiceIndex());
-            partition.setAutoStart((Block1Partition::AutoStart) config.getOption(AutoStart)->getChoiceIndex());
+            partition.setLanguage((Block1Partition::Language) config.getOption(Language)->getArrayIndex());
+            partition.setAudio((Block1Partition::Audio) config.getOption(Audio)->getArrayIndex());
+            partition.setAutoStart((Block1Partition::AutoStart) config.getOption(AutoStart)->getArrayIndex());
 #ifdef __DREAMCAST__
             if (!partition.write()) {
                 retroDream->getOptionMenu()->setVisibility(Visibility::Visible, true);

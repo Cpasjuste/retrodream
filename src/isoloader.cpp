@@ -104,9 +104,10 @@ IsoLoader::Config IsoLoader::loadConfig(RetroDream *retroDream, const std::strin
         return config;
     }
 
-    char *buf = nullptr;
-    retroDream->getRender()->getIo()->read(config.path, &buf);
-    if (buf == nullptr) {
+    const auto buf = static_cast<char *>(malloc(2048));
+    const auto readSize = retroDream->getRender()->getIo()->read(config.path, buf);
+    if (readSize < 1) {
+        free(buf);
         printf("IsoLoader::loadConfig: preset not found: %s\n", config.path.c_str());
         //retroDream->showStatus("PRESET ERROR", "PRESET DOES NOT EXIST");
         return config;
